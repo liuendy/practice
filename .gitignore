@@ -1,2 +1,14 @@
 /.metadata
 /RemoteSystemsTempFiles
+/netty4/.settings
+/netty4/*.project
+/netty4/*.classpath
+/netty4/*.gitignore
+/rocketmq/.settings
+/rocketmq/*.gitignore
+/rocketmq/*.project
+/rocketmq/*.classpath
+/zookeeper/.settings
+/zookeeper/*.project
+/zookeeper/*.classpath
+/zookeeper/*.gitignore
