@@ -6,7 +6,8 @@ public class LockSupportTest {
 
 	/**
 	 * 
-	 * 
+	 * LockSupport+CAS 是JUC框架的两大基础，AQS就是在这两项技术上加上队列实现的
+	 * LockSupport暂停线程优势是可以对线程对象操作，不必用对象锁，灵活性更大
 	 * 
 	 * @param args
 	 */
