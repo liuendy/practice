@@ -1,4 +1,4 @@
-package com.ybwh.netty4.simple.client;
+package com.ybwh.netty4.simple.heartbeat;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -9,10 +9,19 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 
-public class SimpleClient {
+/**
+ * 
+ * 自動重連的客戶端
+ * 
+ * @author fanbeibei
+ *
+ */
+public class Client {
+
 	public static void main(String[] args) {
-		String host = "127.0.0.1";
+		String host = "";
 		int port = 17777;
 
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -24,30 +33,19 @@ public class SimpleClient {
 			b.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				public void initChannel(SocketChannel ch) throws Exception {
-					 ch.pipeline().addLast(new SimpleCinHandler());
 					
+					// ch.pipeline().addLast(new TimeClientHandler());
+					ch.pipeline().addLast(new IdleStateHandler(5, 0, 0));
 				}
 			});
-			
 			// 启动客户端
-			ChannelFuture future = b.connect(host, port).sync();
+			ChannelFuture f = b.connect(host, port).sync(); // (5)
 			
-			if (future.isSuccess()) {
-				
-				
-				
-				
-			}
-			
-			
-			System.in.read();
-			
-			
-//			System.out.println(channel.isActive());
+			Channel channel = f.channel();
+			channel.writeAndFlush("fdsahfsaklgigasd9999999999999");
 			
 			// 等待连接关闭
-			
-			
+			f.channel().closeFuture().sync();
 			
 			
 		} catch (Exception e) {
@@ -56,4 +54,5 @@ public class SimpleClient {
 			workerGroup.shutdownGracefully();
 		}
 	}
+
 }

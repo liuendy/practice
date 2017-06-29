@@ -1,7 +1,6 @@
 package com.ybwh.netty4.simple.client.reconnect;
 
 import io.netty.bootstrap.Bootstrap;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -18,6 +17,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  * @author fanbeibei
  *
  */
+/**
+ * @author fanbeibei
+ *
+ */
 public class Client {
 
 	private String host;
@@ -27,6 +30,8 @@ public class Client {
 	private Bootstrap bootstrap = new Bootstrap();
 	private ReConnectHandler reConnectHandler;
 	private ReconnectListener reconnectListener;
+	private Channel channel;
+	
 
 	public Client() {
 		this("127.0.0.1", 17777);
@@ -40,25 +45,61 @@ public class Client {
 	}
 
 	public void start() {
-		bootstrap.group(eventLoop);
-		bootstrap.channel(NioSocketChannel.class);
-		bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-		bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-			@Override
-			protected void initChannel(SocketChannel socketChannel) throws Exception {
-				socketChannel.pipeline().addLast(reConnectHandler);
+		try {
+			bootstrap.group(eventLoop);
+			bootstrap.channel(NioSocketChannel.class);
+			bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+			bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+				@Override
+				protected void initChannel(SocketChannel socketChannel) throws Exception {
+					socketChannel.pipeline().addLast(reConnectHandler);
+				}
 
-			}
+			});
 
-		});
-
-		bootstrap.remoteAddress(host, port);
-		bootstrap.connect().addListener(reconnectListener);
+			bootstrap.remoteAddress(host, port);
+			ChannelFuture f = bootstrap.connect().addListener(reconnectListener).sync();
+			
+			channel = f.channel();
+			channel.closeFuture().sync();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void reStart() {
 		bootstrap = new Bootstrap();
 		start();
+	}
+	
+	public void close(){
+		eventLoop.shutdownGracefully();
+	}
+	
+	/**
+	 * 发送消息
+	 * 
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	public boolean send(String msg){
+		if (!channel.isActive()) {
+			return false; 
+		}
+		
+		channel.writeAndFlush(msg);
+		return true;
+	}
+	
+	
+	/**
+	 * 客户端是否已连接
+	 * 
+	 * @return
+	 */
+	public boolean isActive(){
+		return null != channel  && channel.isActive();
 	}
 
 	public static void main(String[] args) {
