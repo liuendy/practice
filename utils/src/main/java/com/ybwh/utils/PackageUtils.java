@@ -31,7 +31,7 @@ public class PackageUtils {
 	 * @throws IOException
 	 *             包路径不存在
 	 */
-	public void loadClassesOfPackage(String packageName, boolean recursive) throws IOException {
+	public static void  loadClassesOfPackage(String packageName, boolean recursive) throws IOException {
 		List<String> clazzNames = getClassesNamesOfPackage(packageName, true);
 
 		for (String cn : clazzNames) {
@@ -178,7 +178,7 @@ public class PackageUtils {
 		return clazzNames;
 	}
 
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	/*public static void main(String[] args) throws IOException, URISyntaxException {
 		String packageName = "com.ybwh";
 
 		List<String> names = getClassesNamesOfPackage(packageName, true);
@@ -194,6 +194,6 @@ public class PackageUtils {
 			}
 		}
 
-	}
+	}*/
 
 }
