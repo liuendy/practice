@@ -12,3 +12,6 @@
 /zookeeper/*.project
 /zookeeper/*.classpath
 /zookeeper/*.gitignore
+/.recommenders/
+/test/
+/PackageUtil/
