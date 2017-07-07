@@ -10,10 +10,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.junit.Test;
 
 public class TestConsumer {
-//	@Test
+	@org.junit.Test
 	public void testPoll() {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "localhost:9092");// 该地址是集群的子集，用来探测集群。
@@ -32,7 +31,7 @@ public class TestConsumer {
 
 		try {
 			consumer = new KafkaConsumer<>(props);
-			consumer.subscribe(Arrays.asList("my-topic"));// 订阅的topic,可以多个
+			consumer.subscribe(Arrays.asList("my-topic","maxus-tbox"));// 订阅的topic,可以多个
 			while (true) {
 				ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
 				for (TopicPartition partition : records.partitions()) {
