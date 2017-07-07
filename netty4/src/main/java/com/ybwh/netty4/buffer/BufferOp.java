@@ -3,6 +3,7 @@ package com.ybwh.netty4.buffer;
 import java.io.UnsupportedEncodingException;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -101,33 +102,48 @@ public class BufferOp {
 		byte[] data = "EEEEE十大歌手的公司".getBytes("UTF-8");
 		System.out.println("data length:" + data.length);// 26
 		buf.writeBytes(data);
-		System.out.println("after write  ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex() + ",capacity:"
-				+ buf.capacity());
+		System.out.println("after write  ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex()
+				+ ",capacity:" + buf.capacity());
 
-		//打标记
+		// 打标记
 		buf.markReaderIndex();
-		System.out.println("after mark ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex() + ",capacity:"
-				+ buf.capacity());
-		
+		System.out.println("after mark ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex()
+				+ ",capacity:" + buf.capacity());
+
 		// 读
 		byte[] rData = new byte[buf.readableBytes()];
 		buf.readBytes(rData);
-		System.out.println("after read ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex() + ",capacity:"
-				+ buf.capacity());
-		
-		//还原读指针
-		buf.resetReaderIndex();
-		System.out.println("after reset read index,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex() + ",capacity:"
-				+ buf.capacity());
-		
-		
+		System.out.println("after read ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex()
+				+ ",capacity:" + buf.capacity());
 
+		// 还原读指针
+		buf.resetReaderIndex();
+		System.out.println("after reset read index,read index:" + buf.readerIndex() + ",write index:"
+				+ buf.writerIndex() + ",capacity:" + buf.capacity());
+
+	}
+
+	public static void bufUtil() throws UnsupportedEncodingException {
+		// 分配
+		ByteBuf buf = Unpooled.directBuffer(30);
+		System.out.println("read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex() + ",capacity:"
+				+ buf.capacity());
+
+		// 写
+		byte[] data = "EEEEE十大歌手的公司".getBytes("UTF-8");
+		System.out.println("data length:" + data.length);// 26
+		buf.writeBytes(data);
+		System.out.println("after write  ,read index:" + buf.readerIndex() + ",write index:" + buf.writerIndex()
+				+ ",capacity:" + buf.capacity());
+		System.out.println(ByteBufUtil.hexDump(buf));
+		System.out.println(ByteBufUtil.hexDump(data));
 	}
 
 	public static void main(String[] args) throws Exception {
 		// readAndWrite();
-//		release();
-		mark();
+		// release();
+//		mark();
+		bufUtil();
 
 	}
 }
