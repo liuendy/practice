@@ -20,4 +20,19 @@ zookeeper 常见操作及应用场景
 ### 另外需要说明的是Watcher的执行时同步的，一定是一个执行完之后再执行另一个的，不是同时进行的，比如执行ExistWater执行完在执行DataWatcher，不会同时执行的
 	
 ## 注意：多次注册同一个watcher对象，只会触发一次，要多次触发则需多次注册不同对象（多次new，不能只new一次）
+
+
+# zkclient
+
+## 创建
+### create不支持递归创建
+### createPersistent支持递归创建
+### createEphemeral 不支持递归创建，可以理解，毕竟临时节点不可拥有子节点
+### 可用createPersistent创建父节点，createEphemeral创建叶子节点
+
+## 删除
+	delete 不支持递归删除但deleteRecursive提供递归删除操作
+
+
+# curator
 		  
