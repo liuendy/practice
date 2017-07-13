@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.I0Itec.zkclient.IZkChildListener;
+import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkException;
 import org.I0Itec.zkclient.exception.ZkInterruptedException;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Test;
@@ -115,6 +116,84 @@ public class ZkclientTest {
 		} finally {
 			zkclient.close();
 		}
+	}
+	
+	@Test
+	public void testNodeWatcher(){
+		
+		ZkClient zkclient = new ZkClient("localhost:2181", 5000);
+
+		try {
+			zkclient.subscribeDataChanges("/kkk", new IZkDataListener(){
+
+				@Override
+				public void handleDataChange(String dataPath, Object data) throws Exception {
+					System.out.println("handleDataChange "+dataPath+" "+data);
+				}
+
+				@Override
+				public void handleDataDeleted(String dataPath) throws Exception {
+					System.out.println("handleDataDeleted "+dataPath);
+				}
+				
+			});
+			
+			
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			zkclient.writeData("/kkk", "33333");
+//			zkclient.delete("/kkk");
+			
+			
+			
+			
+			try {
+				Thread.sleep(200000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (ZkException e) {
+			e.printStackTrace();
+		} finally {
+			zkclient.close();
+		}
+		
+	}
+	
+	
+	@Test
+	public void testChildrenWatcher(){
+		
+		ZkClient zkclient = new ZkClient("localhost:2181", 5000);
+
+		try {
+			zkclient.subscribeChildChanges("/kkk", new IZkChildListener() {
+				//创建和删除子节点会触发这里
+				@Override
+				public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
+					System.out.println("ChildChanges"+parentPath+" "+currentChilds);
+					
+				}
+			});
+			
+
+			try {
+				Thread.sleep(200000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (ZkException e) {
+			e.printStackTrace();
+		} finally {
+			zkclient.close();
+		}
+		
 	}
 	
 
