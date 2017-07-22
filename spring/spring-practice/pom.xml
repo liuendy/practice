@@ -2,24 +2,21 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.ybwh</groupId>
-	<artifactId>spring</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<parent>
+		<groupId>com.ybwh</groupId>
+		<artifactId>spring</artifactId>
+		<version>${project.version}</version>
+	</parent>
 
-	<name>spring</name>
+
+	<artifactId>spring-practice</artifactId>
+	<packaging>jar</packaging>
+
+	<name>practice</name>
 	<url>http://maven.apache.org</url>
-	
-	<modules>
-		<module>spring-schema</module>
-		<module>spring-practice</module>
-		<module>spring-main</module>
-	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.version>0.0.1-SNAPSHOT</project.version>
-		<springframework.version>4.1.4.RELEASE</springframework.version>
 	</properties>
 
 	<dependencies>
