@@ -1,5 +1,9 @@
 package com.ybwh.utils;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
 public class ByteUtils {
 	/**
 	 * 将int数值转换为占四个字节的byte数组，本方法适用于(低位在前，高位在后)的顺序。 和bytesToInt（）配套使用
@@ -56,6 +60,41 @@ public class ByteUtils {
 		value = (int) (((src[offset] & 0xFF) << 24) | ((src[offset + 1] & 0xFF) << 16) | ((src[offset + 2] & 0xFF) << 8)
 				| (src[offset + 3] & 0xFF));
 		return value;
+	}
+
+	/**
+	 * char转byte
+	 * 
+	 * @param chars
+	 * @param charSet
+	 * @return
+	 */
+	public static byte[] charsToBytes(char[] chars, String charSet) {
+		Charset cs = Charset.forName(charSet);
+		CharBuffer cb = CharBuffer.allocate(chars.length);
+		cb.put(chars);
+		cb.flip();
+		ByteBuffer bb = cs.encode(cb);
+
+		return bb.array();
+
+	}
+
+	// 
+	/**
+	 * byte转char
+	 * @param bytes
+	 * @param charSet
+	 * @return
+	 */
+	public static char[] bytesToChars(byte[] bytes, String charSet) {
+		Charset cs = Charset.forName(charSet);
+		ByteBuffer bb = ByteBuffer.allocate(bytes.length);
+		bb.put(bytes);
+		bb.flip();
+		CharBuffer cb = cs.decode(bb);
+
+		return cb.array();
 	}
 
 }
