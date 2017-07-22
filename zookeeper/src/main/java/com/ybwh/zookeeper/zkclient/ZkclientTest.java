@@ -12,7 +12,6 @@ import org.I0Itec.zkclient.exception.ZkInterruptedException;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Test;
-import org.w3c.dom.ls.LSException;
 
 public class ZkclientTest {
 
@@ -51,9 +50,9 @@ public class ZkclientTest {
 		ZkClient zkclient = new ZkClient("localhost:2181", 5000);
 		try {
 			// delete不支持递归删除
-			zkclient.delete("/usr/local");
+			// zkclient.delete("/usr/local");
 			// 递归删除
-			zkclient.deleteRecursive("/usr");
+			zkclient.deleteRecursive("/rooster-gather/123456789");
 
 			System.out.println("delete success");
 		} catch (Exception e) {
@@ -315,6 +314,74 @@ public class ZkclientTest {
 			zkclient.close();
 		}
 
+	}
+
+	@Test
+	public void testWatchChildrenWriteAddDelete() {
+		
+		/**
+		 * 3步搞定子节点的增删改事件
+		 */
+		ZkClient zkclient = new ZkClient("localhost:2181", 5000);
+
+		final String PARENT_NODE = "/kkk";
+		IZkDataListener dataListener = new IZkDataListener() {
+
+			@Override
+			public void handleDataChange(String dataPath, Object data) throws Exception {
+				System.out.println("handleDataChange " + dataPath + " " + data);
+			}
+
+			@Override
+			public void handleDataDeleted(String dataPath) throws Exception {
+				System.out.println("handleDataDeleted " + dataPath);
+			}
+
+		};
+
+		IZkChildListener childListener = new IZkChildListener() {
+			@Override
+			public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
+				System.out.println("ChildChanges" + parentPath + " " + currentChilds);
+				if(null !=currentChilds){//为空则是父节点被删除
+					//3.这里对每个子节点再次订阅数据变化。
+					/**
+					 * 由于订阅的是同一个dataListener，旧的子节点不会被触发两次，而新子节点的变化也被订阅
+					 */
+					for (String node : currentChilds) {
+						zkclient.subscribeDataChanges(parentPath + "/" +node, dataListener);
+					}
+				}
+
+			}
+		}; 
+
+		try {
+			//1.先订阅每个子节点的数据变化
+			List<String> childrenNodes = zkclient.getChildren(PARENT_NODE);
+			if (null != childrenNodes) {
+
+				for (String node : childrenNodes) {
+					zkclient.subscribeDataChanges(node, dataListener);
+				}
+			}
+
+			//2.订阅父节点的子节点变化
+			zkclient.subscribeChildChanges(PARENT_NODE, childListener);
+
+			zkclient.createPersistent("/kkk/eee");
+
+			try {
+				Thread.sleep(200000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		} catch (ZkException e) {
+			e.printStackTrace();
+		} finally {
+			zkclient.close();
+		}
 	}
 
 }
