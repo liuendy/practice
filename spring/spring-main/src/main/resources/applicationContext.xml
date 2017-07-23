@@ -9,9 +9,49 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.ybwh.com/schema/mytag http://www.ybwh.com/schema/mytag/ybwh-mytag-1.0.xsd"
 	default-autowire="byName">
-	
-    <context:annotation-config />
-	<context:component-scan base-package="com.ybwh" />
 
- 
+
+	<!-- 最简单的标签，还可以给其他bean引用 -->
+	<mytag:employee id="hr" num="333333" name="Linda">
+	</mytag:employee>
+	<bean id="personnalDept" class="com.ybwh.spring.schema.model.Department">
+		<property name="head" ref="hr"></property>
+	</bean>
+	
+	<!-- 带有子标签且关系为一对一的标签 -->
+	<mytag:department id="devDept" name="development dept" employeeCount="12">
+		<mytag:employee name="Wendy" num="4444" >
+		</mytag:employee>
+	</mytag:department>
+	
+	
+	<!-- 带有子标签且关系为一对多的标签 -->
+	<!-- <mytag:company id="myCompany" name="myCompany" businessLicense="LC34w543363">
+		<mytag:employee name="Fuck" num="1111" ></mytag:employee>
+		<mytag:department name="development dept" employeeCount="12">
+			<mytag:employee name="Wendy" num="4444"></mytag:employee>
+		</mytag:department>
+		<mytag:department name="personal dept" employeeCount="5">
+			<mytag:employee name="Marry" num="3333"></mytag:employee>
+		</mytag:department>
+	</mytag:company> -->
+	
+	
+	
+	
+	
+	
+
+	<bean id="head" class="com.ybwh.spring.schema.model.Employee">
+		<property name="num" value="120000000"></property>
+		<property name="name" value="Mike"></property>
+	</bean>
+
+
+
+
+	<!-- <bean id="myCompany" class="com.ybwh.spring.main.schema.Company"> <property 
+		name="personnalDept" ref="personnalDept"></property> </bean> -->
+
+
 </beans>

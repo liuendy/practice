@@ -8,7 +8,7 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
-public class TestSchema {
+public class TestSchema0 {
 	@Test
 	public void test3BeanDefinitionReader(){
         DefaultResourceLoader loader = new DefaultResourceLoader();

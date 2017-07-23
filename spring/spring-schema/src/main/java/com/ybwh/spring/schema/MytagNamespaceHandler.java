@@ -2,6 +2,9 @@ package com.ybwh.spring.schema;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
+import com.ybwh.spring.schema.parser.DepartmentTagBeanDefinitionParser;
+import com.ybwh.spring.schema.parser.EmployeeTagBeanDefinitionParser;
+
 /**
  * mytag命名空间句柄
  * 
@@ -12,8 +15,11 @@ public class MytagNamespaceHandler extends NamespaceHandlerSupport {
 
 	@Override
 	public void init() {
-		////配置<mytag:mybean>标签解析器
-		registerBeanDefinitionParser("mybean", new MybeanTagBeanDefinitionParser());
+//		System.out.println("MytagNamespaceHandler");
+		registerBeanDefinitionParser("employee", new EmployeeTagBeanDefinitionParser());
+		registerBeanDefinitionParser("department", new DepartmentTagBeanDefinitionParser());
+		
+		
 	}
 
 }
