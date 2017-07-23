@@ -21,7 +21,7 @@ import com.ybwh.spring.schema.model.Company;
  * @author fanbeibei
  *
  */
-public class CompanyTagBeanDefinitionParser2 extends AbstractSimpleBeanDefinitionParser {
+public class CompanyTagBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
 	@Override
 	protected Class<?> getBeanClass(Element element) {// 指定bean对应的Class对象
@@ -36,7 +36,7 @@ public class CompanyTagBeanDefinitionParser2 extends AbstractSimpleBeanDefinitio
 		String name = element.getAttribute("name");
 		
 		if (!StringUtils.isEmpty(businessLicense)) {
-			builder.addPropertyValue("businessLicense", Integer.parseInt(businessLicense));
+			builder.addPropertyValue("businessLicense", businessLicense);
 		}
 		
 		if (!StringUtils.isEmpty(name)) {

@@ -26,7 +26,7 @@
 	
 	
 	<!-- 带有子标签且关系为一对多的标签 -->
-	<!-- <mytag:company id="myCompany" name="myCompany" businessLicense="LC34w543363">
+	<mytag:company id="myCompany" name="myCompany" businessLicense="LC34w543363">
 		<mytag:employee name="Fuck" num="1111" ></mytag:employee>
 		<mytag:department name="development dept" employeeCount="12">
 			<mytag:employee name="Wendy" num="4444"></mytag:employee>
@@ -34,7 +34,7 @@
 		<mytag:department name="personal dept" employeeCount="5">
 			<mytag:employee name="Marry" num="3333"></mytag:employee>
 		</mytag:department>
-	</mytag:company> -->
+	</mytag:company>
 	
 	
 	

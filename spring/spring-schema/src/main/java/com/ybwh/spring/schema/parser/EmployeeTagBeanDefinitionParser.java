@@ -18,7 +18,10 @@ import com.ybwh.spring.schema.model.Employee;
  *
  */
 public class EmployeeTagBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
-
+	private static final String NUM_ATTRIBUTE = "num";
+	private static final String NAME_ATTRIBUTE = "name";
+	
+	
 	@Override
 	protected Class<?> getBeanClass(Element element) {// 指定bean对应的Class对象
 		//可以确定bean类型所以直接指定
@@ -30,15 +33,15 @@ public class EmployeeTagBeanDefinitionParser extends AbstractSimpleBeanDefinitio
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
 		// 从标签中取出对应的属性值
 		// String id = element.getAttribute("id");//id留给spring供其他bean引用
-		String num = element.getAttribute("num");
-		String name = element.getAttribute("name");
+		String numVal = element.getAttribute(NUM_ATTRIBUTE);
+		String nameVal = element.getAttribute(NAME_ATTRIBUTE);
 		
-		if (!StringUtils.isEmpty(num)) {
-			builder.addPropertyValue("num", num);
+		if (!StringUtils.isEmpty(numVal)) {
+			builder.addPropertyValue("num", numVal);
 		}
 		
-		if (!StringUtils.isEmpty(name)) {
-			builder.addPropertyValue("name", name);
+		if (!StringUtils.isEmpty(nameVal)) {
+			builder.addPropertyValue("name", nameVal);
 		}
 	}
 

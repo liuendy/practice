@@ -33,10 +33,10 @@
 
 	<xsd:element name="company">
 		<xsd:complexType mixed="true">
-			<xsd:all>
+			<xsd:sequence>
 				<xsd:element ref="employee" minOccurs="1" maxOccurs="1" />
-				<xsd:element ref="department" minOccurs="1" /> <!-- 这里还可以加其他子标签 -->
-			</xsd:all>
+				<xsd:element ref="department" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
 			<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
 			<xsd:attribute name="businessLicense" type="xsd:string"></xsd:attribute>
