@@ -30,11 +30,11 @@
 		</xsd:complexType>
 	</xsd:element>
 
-
+	<!-- company标签中带多个department标签 -->
 	<xsd:element name="company">
 		<xsd:complexType mixed="true">
 			<xsd:sequence>
-				<xsd:element ref="employee" minOccurs="1" maxOccurs="1" />
+				<xsd:element ref="employee" minOccurs="0" maxOccurs="1" />
 				<xsd:element ref="department" minOccurs="1" maxOccurs="unbounded"/>
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
@@ -43,9 +43,23 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<!-- 以上都是完全自定义标签，都没涉及spring原生标签与自定义标签结合 -->
+	<!-- 下面开始自定义标签与原生标签结合，比如spring的property标签用来注入属性就很好用，
+		    我们可以用他来给自定义标签注入属性，不用再定义一堆标签属性,还有其他例子 -->
 
-
-
+	<xsd:element name="mybean">
+		<xsd:complexType mixed="true">  
+            <xsd:complexContent>  
+                <xsd:extension base="beans:identifiedType">  
+                    <xsd:group ref="beans:beanElements" />  
+					<xsd:attribute name="class" type="xsd:string"></xsd:attribute>
+                </xsd:extension>  
+            </xsd:complexContent>  
+        </xsd:complexType>
+	</xsd:element>
+	
+	
+	
 
 
 

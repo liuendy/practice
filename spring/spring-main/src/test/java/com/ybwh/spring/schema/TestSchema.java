@@ -52,4 +52,19 @@ public class TestSchema {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testCostomerTagWithSubSpringTag(){//带子标签一对多关系的自定义标签
+		try {
+			ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:*.xml");  
+
+			Employee employee =  (Employee) ctx.getBean("head");
+			System.out.println(employee);
+			
+			Department department = (Department) ctx.getBean("mydept");
+			System.out.println(department);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

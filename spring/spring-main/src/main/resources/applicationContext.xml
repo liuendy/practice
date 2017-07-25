@@ -36,22 +36,19 @@
 		</mytag:department>
 	</mytag:company>
 	
-	
-	
-	
-	
-	
-
-	<bean id="head" class="com.ybwh.spring.schema.model.Employee">
-		<property name="num" value="120000000"></property>
+	<!-- 与spring原生标签结合	 -->
+	<mytag:mybean id="head" class="com.ybwh.spring.schema.model.Employee">
 		<property name="name" value="Mike"></property>
-	</bean>
+		<property name="num" value="55555555"></property>
+	</mytag:mybean>
+	
+	<mytag:mybean id="mydept" class="com.ybwh.spring.schema.model.Department">
+		<property name="name" value="Mike"></property>
+		<property name="employeeCount" value="23"></property>
+		<property name="head" ref="head"></property>
+	</mytag:mybean>
 
 
-
-
-	<!-- <bean id="myCompany" class="com.ybwh.spring.main.schema.Company"> <property 
-		name="personnalDept" ref="personnalDept"></property> </bean> -->
 
 
 </beans>
