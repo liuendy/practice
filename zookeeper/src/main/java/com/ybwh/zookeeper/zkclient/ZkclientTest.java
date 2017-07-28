@@ -14,6 +14,35 @@ import org.apache.zookeeper.data.Stat;
 import org.junit.Test;
 
 public class ZkclientTest {
+	
+	@Test
+	public void testEphemeral() throws IOException{
+		/**
+		 * 临时节点失效的时间与sessionTimeout有关，即客户端断开后，服务端经过sessionTimeout时间
+		 * 才认为客户端断开，然后删掉临时节点
+		 * */
+		try {
+			ZkClient zkclient = new ZkClient("localhost:2181",1000,5000);
+			zkclient.createEphemeral("/eee", "112");
+			
+			
+			System.in.read();
+		} catch (ZkInterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ZkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RuntimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 
 	@Test
 	public void testCreate() throws IOException {
@@ -362,14 +391,14 @@ public class ZkclientTest {
 			if (null != childrenNodes) {
 
 				for (String node : childrenNodes) {
-					zkclient.subscribeDataChanges(node, dataListener);
+					zkclient.subscribeDataChanges(PARENT_NODE+"/"+node, dataListener);
 				}
 			}
 
 			//2.订阅父节点的子节点变化
 			zkclient.subscribeChildChanges(PARENT_NODE, childListener);
 
-			zkclient.createPersistent("/kkk/eee");
+			zkclient.createPersistent("/kkk/eee111");
 
 			try {
 				Thread.sleep(200000);

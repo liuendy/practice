@@ -16,9 +16,15 @@ public class SimpleClient {
 		
 		ZooKeeper zooKeeper = new ZooKeeper("127.0.0.1:2181", 3000, new SimpleWatcher());
 		try {
-			String path = "/eee";
-			byte[] data = zooKeeper.getData(path, new ReEffectiveWatcher(zooKeeper), null);
-			System.out.println(data);
+//			String path = "/eee";
+//			byte[] data = zooKeeper.getData(path, new ReEffectiveWatcher(zooKeeper), null);
+//			System.out.println(data);
+			
+			
+			List<ACL> acls = new ArrayList<ACL>();
+			acls.add(new ACL(Perms.ALL, Ids.ANYONE_ID_UNSAFE));
+			zooKeeper.create("/eee", "".getBytes(), acls, CreateMode.EPHEMERAL);
+			
 			
 			
 
