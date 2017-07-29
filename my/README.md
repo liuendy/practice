@@ -12,3 +12,13 @@
 #### 4）系统关闭
 #### 5）使用Kill pid命令干掉进程
 ### 注：在使用kill -9 pid是不会JVM注册的钩子不会被调用。
+
+
+## FileChannel
+
+
+
+
+## ClassLoader
+
+
