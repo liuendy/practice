@@ -26,6 +26,7 @@ public class DepartmentTagBeanDefinitionParser extends AbstractSimpleBeanDefinit
 	
 	@Override
 	protected Class<?> getBeanClass(Element element) {// 指定bean对应的Class对象
+		//这里可以扩展用自定义的加载器对加密的class文件进行加载，返回Class
 		return Department.class;
 	}
 
