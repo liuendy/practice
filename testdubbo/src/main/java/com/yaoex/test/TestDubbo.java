@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.yaoex.dubbo.IUserService;
+import com.yaoex.test.service.HelloService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -15,11 +15,11 @@ import com.yaoex.dubbo.IUserService;
 public class TestDubbo {
 
 	@Autowired
-	private IUserService userService;
+	private HelloService HelloService;
 	
 	@Test
 	public  void test(){
-		userService.sayHello();
+		HelloService.hello();
 		
 	}
 

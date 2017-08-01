@@ -17,12 +17,12 @@
  	
  	<!-- 这里指定你的zookeeper地址，指定dev的zookeeper调用的就是dev的接口 -->
  	<dubbo:registry protocol="zookeeper"
-        address="zookeeper://127.0.0.1:2181" />
+        address="zookeeper://10.0.11.22:2181?backup=10.0.11.23:2181,10.0.11.24:2181" />
  	<dubbo:consumer timeout="30000" > </dubbo:consumer> 
  	
  	
  	<!-- 这里指定要调用的接口 -->
-	<dubbo:reference id="userService" interface="com.yaoex.dubbo.IUserService">
+	<dubbo:reference id="helloService" interface="com.yaoex.test.service.HelloService">
 	</dubbo:reference>
 	
 	
