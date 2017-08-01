@@ -18,7 +18,7 @@
 	<!-- <dubbo:annotation package="com.zookeeper.*" />  注解配置   与 @com.alibaba.dubbo.config.annotation.Service 配合使用-->
 
 	<!-- 使用multicast广播注册中心暴露服务地址 -->
-	<dubbo:registry address="zookeeper://127.0.0.1:2181"></dubbo:registry>
+	<dubbo:registry address="zookeeper://10.0.11.22:2181?backup=10.0.11.23:2181,10.0.11.24:2181"></dubbo:registry>
 
 	<!-- 用dubbo协议在20880端口暴露服务 -->
 	<dubbo:protocol name="dubbo" port="20880"></dubbo:protocol>
@@ -26,7 +26,9 @@
 	<bean id="helloService" class="com.yaoex.test.service.HelloServiceImpl"></bean>
 
 	<!-- 声明需要暴露的服务接口 -->
-	<dubbo:service interface="com.yaoex.test.service.HelloService"
+	<dubbo:service interface="com.yaoex.test.service.HelloService" 
 		ref="helloService"></dubbo:service>
+		
+		
 
 </beans>
