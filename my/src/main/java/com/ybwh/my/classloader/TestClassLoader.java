@@ -1,7 +1,5 @@
 package com.ybwh.my.classloader;
 
-import java.util.TimerTask;
-
 import org.junit.Test;
 
 public class TestClassLoader {
