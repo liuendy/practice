@@ -1,6 +1,5 @@
 package com.ybwh.kafka;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Properties;
 import java.util.concurrent.Future;
@@ -41,7 +40,8 @@ public class TestProducer {
 			
 			for (int i = 0; i < 100; i++) {
 				long start = Calendar.getInstance().getTimeInMillis();
-				 Future<RecordMetadata> future = producer.send(new ProducerRecord<String, String>("my-topic", Integer.toString(i), "dsjlosdgosdo"+i),
+				
+				 Future<RecordMetadata> future = producer.send(new ProducerRecord<String, String>("my-topic", Integer.toString(i), "dsjlosdgosdo"),
 						new Callback() {
 							@Override
 							public void onCompletion(RecordMetadata metadata, Exception exception) {
@@ -50,7 +50,7 @@ public class TestProducer {
 //								System.out.println((Calendar.getInstance().getTimeInMillis() - start)+"ms,callback  " + metadata);
 							}
 						});
-//				future.get();
+				future.get();
 //				 System.out.println("$$$"+(Calendar.getInstance().getTimeInMillis() - start));
 //				 
 //				 System.out.println(future.get().offset());

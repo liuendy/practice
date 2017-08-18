@@ -10,9 +10,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+import org.junit.Test;
 
 public class TestConsumer {
-	@org.junit.Test
+	@Test
 	public void testPoll() {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "localhost:9092");// 该地址是集群的子集，用来探测集群。

@@ -3,6 +3,7 @@ package com.ybwh.hbase;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
@@ -28,6 +29,9 @@ import org.apache.hadoop.hbase.filter.DependentColumnFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.filter.ValueFilter;
+import org.junit.Test;
+
+import com.thoughtworks.xstream.mapper.Mapper.Null;
 
 import sun.tools.tree.BinaryArithmeticExpression;
 
@@ -68,6 +72,8 @@ public class HbaseTest {
 		// updateData("merchant");
 
 		queryAll("merchant");
+		
+		queryByRowkeyRange("merchant","","");
 
 	}
 
@@ -262,6 +268,80 @@ public class HbaseTest {
 		}
 	}
 
+
+	/**
+	 * 根据rowkey作范围查询
+	 * 
+	 * @param tableName
+	 * @param startRowkey
+	 * @param endRowkey
+	 */
+	public static void queryByRowkeyRange(String tableName,String startRowkey,String endRowkey){
+		Connection connection = null;
+		Table table = null;
+		try {
+			connection = ConnectionFactory.createConnection(configuration);
+
+			table = connection.getTable(TableName.valueOf(tableName));
+			// 返回的实际是HTable
+			// System.out.println(table.getClass());
+			// HTable ht = (HTable) table;
+
+			// Use the table as needed, for a single operation and a single
+			// thread
+
+			Scan scan = new Scan(startRowkey.getBytes("UTF-8"), endRowkey.getBytes("UTF-8"));
+			// 指定返回列
+			scan.addColumn("base".getBytes("UTF-8"), "name".getBytes());
+
+			// 指定返回列族
+			// scan.addFamily("base".getBytes("UTF-8"));
+			
+			//offset  limit 
+			scan.setRowOffsetPerColumnFamily(0);
+			scan.setMaxResultSize(10);
+			
+			//设置每次next()返回的行数，性能相关
+//			scan.setBatch(10);
+			
+			
+			//对查询结果筛选
+//			scan.setFilter(filter)
+
+			ResultScanner rs = table.getScanner(scan);
+			
+			for(Result r = rs.next();null != r;r = rs.next()){
+				System.out.println("获得到rowkey:" + new String(r.getRow()) + "  " + r.listCells().size());
+				System.out.println();
+
+				for (Cell cell : r.rawCells()) {
+					System.out.println("列族：" + new String(CellUtil.cloneFamily(cell))+
+							"列：" + new String(CellUtil.cloneQualifier(cell))+
+							"====值:" + new String(CellUtil.cloneValue(cell)));
+					System.out.println();
+
+					// System.out.println("列：" + new String(cell.getFamilyArray()));
+					// System.out.println( "====值:" + new
+					// String(cell.getValueArray()));
+
+				}
+			}
+			
+			
+			rs.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				table.close();
+				connection.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/**
 	 * 插入数据
 	 * 
