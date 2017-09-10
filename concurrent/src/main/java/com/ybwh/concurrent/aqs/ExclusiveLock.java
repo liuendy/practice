@@ -5,13 +5,21 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 /**
  * 用AQS实现锁推荐使用内部类继承AQS，千万不要直接继承AQS，直接继承会向锁使用者暴露一些不应使用的方法
  * 
+ * 排他锁
+ * 
+ * 
  * @author fanbeibei
  *
  */
 public class ExclusiveLock {
 
 	/**
-	 * 实现一个非公平排他锁实现父类tryAcquire和tryRelease就足够了 也就是实现得到锁和释放锁的逻辑
+	 * 实现一个非公平排他锁实现父类tryAcquire和tryRelease就足够了 也就是实现得到锁和释放锁的逻辑,
+	 * 
+	 * 然后调用acquire(int arg) 实现阻塞的lock方法，
+	 * 调用acquireInterruptibly(int arg)实现可中断的lock方法，
+	 * 调用tryAcquireNanos(int arg, long nanosTimeout)实现tryLock方法
+	 * 调用release实现unLock方法 
 	 * 
 	 * @author fanbeibei
 	 *
@@ -25,7 +33,7 @@ public class ExclusiveLock {
 			 */
 			assert acquires == 1; // Otherwise unused
 			if (compareAndSetState(0, 1)) {
-				setExclusiveOwnerThread(Thread.currentThread());
+				setExclusiveOwnerThread(Thread.currentThread());//设置排他锁的拥有者
 				return true;
 			}
 			return false;
@@ -37,7 +45,7 @@ public class ExclusiveLock {
 			 * 成功将state由1设为0则成功释放锁，否则释放锁失败
 			 */
 			assert releases == 1; // Otherwise unused
-			if (getState() == 0)
+			if (getState() == 0)//没获得锁就释放（没调用lock()就unLock()）
 				throw new IllegalMonitorStateException();
 			setExclusiveOwnerThread(null);
 			setState(0);
@@ -59,13 +67,13 @@ public class ExclusiveLock {
 	public ExclusiveLock() {
 		sysc = new Sysc();
 	}
-
+	
 	protected boolean tryRelease(int unused) {
 		return sysc.tryRelease(unused);
 	}
 
 	public void lock() {
-		if(sysc.isHeldExclusively()){
+		if(!sysc.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
 			sysc.acquire(1);
 		}
 		
@@ -86,7 +94,7 @@ public class ExclusiveLock {
 	public static void main(String[] args) {
 		ExclusiveLock lock = new ExclusiveLock();
 
-		new Thread(new Runnable() {
+		/*new Thread(new Runnable() {
 
 			@Override
 			public void run() {
@@ -105,7 +113,7 @@ public class ExclusiveLock {
 				lock.unlock();
 
 			}
-		}).start();
+		}).start();*/
 
 		new Thread(new Runnable() {
 
