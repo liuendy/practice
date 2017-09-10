@@ -73,6 +73,7 @@ public class ExclusiveLock {
 	}
 
 	public void lock() {
+		//支持重入
 		if(!sysc.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
 			sysc.acquire(1);
 		}
@@ -80,7 +81,12 @@ public class ExclusiveLock {
 	}
 
 	public boolean tryLock() {
-		return sysc.tryAcquire(1);
+		//支持重入
+		if(!sysc.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+			return sysc.tryAcquire(1);
+		}
+		
+		return true;
 	}
 
 	public void unlock() {
@@ -94,7 +100,7 @@ public class ExclusiveLock {
 	public static void main(String[] args) {
 		ExclusiveLock lock = new ExclusiveLock();
 
-		/*new Thread(new Runnable() {
+		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
@@ -113,7 +119,7 @@ public class ExclusiveLock {
 				lock.unlock();
 
 			}
-		}).start();*/
+		}).start();
 
 		new Thread(new Runnable() {
 
