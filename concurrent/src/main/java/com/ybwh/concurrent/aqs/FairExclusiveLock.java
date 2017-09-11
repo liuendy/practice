@@ -15,7 +15,7 @@ public class FairExclusiveLock implements Lock{
 	
 	
 	
-	private class FairSysc extends AbstractQueuedSynchronizer{
+	private class FairSync extends AbstractQueuedSynchronizer{
 		
 		/**
 		 * 
@@ -75,16 +75,16 @@ public class FairExclusiveLock implements Lock{
 	}
 	
 	
-	private FairSysc sysc;
+	private FairSync sync;
 
 	public FairExclusiveLock() {
-		sysc = new FairSysc();
+		sync = new FairSync();
 	}
 
 	@Override
 	public void lock() {
-		if(!sysc.isHeldExclusively()){
-			sysc.acquire(1);
+		if(!sync.isHeldExclusively()){
+			sync.acquire(1);
 		}
 		
 	}
@@ -93,28 +93,28 @@ public class FairExclusiveLock implements Lock{
 
 	@Override
 	public boolean tryLock() {
-		if(!sysc.isHeldExclusively()){
-			return sysc.tryAcquire(1);
+		if(!sync.isHeldExclusively()){
+			return sync.tryAcquire(1);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
-		if(!sysc.isHeldExclusively()){
-			return sysc.tryAcquireNanos(1, unit.toNanos(timeout));
+		if(!sync.isHeldExclusively()){
+			return sync.tryAcquireNanos(1, unit.toNanos(timeout));
 		}
 		return true;
 	}
 
 	@Override
 	public void lockInterruptibly() throws InterruptedException {
-		sysc.acquire(1);
+		sync.acquire(1);
 	}
 	
 	@Override
 	public void unlock() {
-		sysc.release(1);
+		sync.release(1);
 	}
 
 	@Override
