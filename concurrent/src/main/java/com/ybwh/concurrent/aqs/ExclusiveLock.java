@@ -1,6 +1,9 @@
 package com.ybwh.concurrent.aqs;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 /**
  * 用AQS实现锁推荐使用内部类继承AQS，千万不要直接继承AQS，直接继承会向锁使用者暴露一些不应使用的方法
@@ -11,20 +14,27 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @author fanbeibei
  *
  */
-public class ExclusiveLock {
+public class ExclusiveLock implements Lock{
 
 	/**
-	 * 实现一个非公平排他锁实现父类tryAcquire和tryRelease就足够了 也就是实现得到锁和释放锁的逻辑,
+	 * 实现一个排他锁实现父类tryAcquire(得到锁)、tryRelease(释放锁)和isHeldExclusively(是否的到锁)
 	 * 
 	 * 然后调用acquire(int arg) 实现阻塞的lock方法，
-	 * 调用acquireInterruptibly(int arg)实现可中断的lock方法，
-	 * 调用tryAcquireNanos(int arg, long nanosTimeout)实现tryLock方法
+	 * 调用acquireInterruptibly(int arg)实现可中断的lockInterruptibly方法，
+	 * 调用tryAcquire实现tryLock(int arg)方法
+	 * 调用tryAcquireNanos(int arg, long nanosTimeout)实现tryLock(long timeout, TimeUnit unit)方法
 	 * 调用release实现unLock方法 
 	 * 
 	 * @author fanbeibei
 	 *
 	 */
-	private class Sysc extends AbstractQueuedSynchronizer {
+	private class Sync extends AbstractQueuedSynchronizer {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4525872546642180350L;
+
 
 		@Override
 		protected boolean tryAcquire(int acquires) {
@@ -62,41 +72,64 @@ public class ExclusiveLock {
 		}
 	}
 
-	private Sysc sysc;
+	private Sync sync;
 
 	public ExclusiveLock() {
-		sysc = new Sysc();
+		sync = new Sync();
 	}
 	
 	protected boolean tryRelease(int unused) {
-		return sysc.tryRelease(unused);
+		return sync.tryRelease(unused);
 	}
 
+	@Override
 	public void lock() {
 		//支持重入
-		if(!sysc.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
-			sysc.acquire(1);
+		if(!sync.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+			sync.acquire(1);
 		}
 		
 	}
-
+	
+	@Override
 	public boolean tryLock() {
 		//支持重入
-		if(!sysc.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
-			return sysc.tryAcquire(1);
+		if(!sync.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+			return sync.tryAcquire(1);
 		}
 		
 		return true;
 	}
-
+	
+	@Override
+	public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
+		if(!sync.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+			return sync.tryAcquireNanos(1, unit.toNanos(timeout));
+		}
+		return true;
+	}
+	
+	@Override
 	public void unlock() {
-		sysc.release(1);
+		sync.release(1);
 	}
 
+	
+	@Override
+	public void lockInterruptibly() throws InterruptedException {
+		sync.acquireInterruptibly(1);
+	}
+	
 	public boolean isLocked() {
-		return sysc.isHeldExclusively();
+		return sync.isHeldExclusively();
 	}
 
+	@Override
+	public Condition newCondition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		ExclusiveLock lock = new ExclusiveLock();
 
