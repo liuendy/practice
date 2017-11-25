@@ -4,6 +4,8 @@ package com.ybwh.utils;/**
 
 import org.junit.Test;
 
+import com.ybwh.utils.http.HttpClientUtil;
+
 /**
  * @author Fan Beibei
  * @Description: 描述

@@ -13,31 +13,42 @@ import org.apache.hadoop.hbase.coprocessor.ObserverContext;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessorEnvironment;
 import org.apache.hadoop.hbase.regionserver.Region;
 import org.apache.hadoop.hbase.regionserver.wal.WALEdit;
-import org.apache.zookeeper.Op.Create;
 
 public class SplitRegionObserver extends BaseRegionObserver {
+	
+	private static final String INDEX_FAMILY = "indexFamily";
+	private static final String INDEX_QUALIFIER = "indexQualifier";
 
 	@Override
 	public void prePut(ObserverContext<RegionCoprocessorEnvironment> e, Put put, WALEdit edit, Durability durability)
 			throws IOException {
 
-		
-
 		// 获取region的startKey,用来作为前缀构建二级索引的rowkey，确保二级索引和对应的数据会保存在同一个region上
 		HRegionInfo regionInfo = e.getEnvironment().getRegionInfo();
 		byte[] regionStartKey = regionInfo.getStartKey();
 
-		//
 		byte[] dataRowKey = put.getRow();
-		byte[] indexRowKey = createIndexRowKey(regionStartKey);
-		Cell cell = put.get("indexFamily".getBytes(), "indexQualifier".getBytes()).get(0);
+		byte[] indexRowKey = createIndexRowKey(regionStartKey, dataRowKey);
+		
+		//保存索引数据
+		Cell cell = put.get(INDEX_FAMILY.getBytes(), INDEX_QUALIFIER.getBytes()).get(0);
 		Put putIndex = new Put(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-		putIndex.addColumn("indexFamily".getBytes(), "indexQualifier".getBytes(), row);
+		putIndex.addColumn(INDEX_FAMILY.getBytes(), INDEX_QUALIFIER.getBytes(), indexRowKey);
+		
+		
 
 	}
 
-	private byte[] createIndexRowKey(byte[] regionStartKey) {
-		// TODO Auto-generated method stub
+	/**
+	 * 根据region的startKey和数据的rowKey创建索引的rowKey
+	 * 
+	 * @param regionStartKey
+	 * @param dataRowKey
+	 * @return
+	 */
+	private byte[] createIndexRowKey(byte[] regionStartKey, byte[] dataRowKey) {
+		// indexRowKey = regionStartKey + | + dataRowKey
+
 		return null;
 	}
 

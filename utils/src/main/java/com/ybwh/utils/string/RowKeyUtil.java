@@ -1,4 +1,4 @@
-package com.ybwh.utils;
+package com.ybwh.utils.string;
 
 import java.util.Random;
 

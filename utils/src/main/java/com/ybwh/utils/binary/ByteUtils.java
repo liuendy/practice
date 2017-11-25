@@ -1,4 +1,4 @@
-package com.ybwh.utils;
+package com.ybwh.utils.binary;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

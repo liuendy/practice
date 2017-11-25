@@ -1,4 +1,4 @@
-package com.ybwh.utils;
+package com.ybwh.utils.dubbo;
 
 import java.io.IOException;
 import java.net.InetAddress;

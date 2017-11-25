@@ -1,4 +1,4 @@
-package com.ybwh.utils;
+package com.ybwh.utils.clazz;
 
 import java.io.File;
 import java.io.IOException;

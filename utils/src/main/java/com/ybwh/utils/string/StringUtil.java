@@ -1,4 +1,4 @@
-package com.ybwh.utils;/**
+package com.ybwh.utils.string;/**
  * Created by fanbeibei on 2017/7/4.
  */
 

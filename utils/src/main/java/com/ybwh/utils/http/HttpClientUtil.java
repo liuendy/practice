@@ -1,4 +1,4 @@
-package com.ybwh.utils;
+package com.ybwh.utils.http;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +30,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+
+import com.ybwh.utils.string.StringUtil;
 
 /**
  * http工具类

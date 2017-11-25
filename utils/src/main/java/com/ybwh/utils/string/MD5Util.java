@@ -1,4 +1,4 @@
-package com.ybwh.utils;
+package com.ybwh.utils.string;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
