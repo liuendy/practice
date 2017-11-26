@@ -15,3 +15,7 @@
 /.recommenders/
 /test/
 /PackageUtil/
+/classLoader/target
+/classLoader/.settings
+/classLoader/*.project
+/classLoader/*.classpath
