@@ -6,6 +6,7 @@ public class LoaderTest {
 		try {
 			
 			System.out.println(String.class.getClassLoader());
+//			System.out.println(String.class.getClassLoader());
 			
 			System.out.println(Thread.currentThread().getContextClassLoader());
 			System.out.println(ClassLoader.getSystemClassLoader());
