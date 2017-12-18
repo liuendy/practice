@@ -13,7 +13,7 @@ public class MyThreadPoolExecutor extends ThreadPoolExecutor {
 
 	@Override
 	protected void beforeExecute(Thread t, Runnable r) {
-
+		System.out.println(t);
 	}
 
 	@Override

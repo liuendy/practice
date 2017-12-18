@@ -3,8 +3,8 @@ package com.ybwh.hbase;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
 
+import org.apache.commons.lang.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
@@ -16,25 +16,15 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Query;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.RowMutations;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.filter.BinaryComparator;
 import org.apache.hadoop.hbase.filter.ColumnPaginationFilter;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.DependentColumnFilter;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.RowFilter;
-import org.apache.hadoop.hbase.filter.ValueFilter;
-import org.junit.Test;
-
-import com.thoughtworks.xstream.mapper.Mapper.Null;
-
-import sun.tools.tree.BinaryArithmeticExpression;
+import org.apache.hadoop.hbase.util.Bytes;
 
 /** 
 * TODO(这里用一句话描述这个类的作用) 
@@ -49,8 +39,8 @@ import sun.tools.tree.BinaryArithmeticExpression;
  * @date 2017年5月11日 下午6:11:03
  * 
  * 
- * 1、win7下用hadoop-common-2.2.0-bin-master.zip中内容覆盖本地hadoop的bin目录
- * 2、在win7的hosts里配置域名
+ *       1、win7下用hadoop-common-2.2.0-bin-master.zip中内容覆盖本地hadoop的bin目录
+ *       2、在win7的hosts里配置域名
  * 
  * 
  */
@@ -68,13 +58,13 @@ public class HbaseTest {
 		System.setProperty("hadoop.home.dir", "D:/soft/java/hadoop-2.7.3");
 
 		// compareAndSet("merchant");
-//		 insertData("merchant");
+		// insertData("merchant");
 		// queryByRowKey("merchant", "rr222");
 		// updateData("merchant");
 
-		queryAll("merchant");
-		
-		queryByRowkeyRange("merchant","","");
+//		queryAll("merchant");
+
+		queryByRowkeyRange("merchant", "", "");
 
 	}
 
@@ -101,12 +91,15 @@ public class HbaseTest {
 			// scan.setStopRow(stopRow);
 
 			// rowkey过滤
-//			scan.setFilter(
-//					new RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL, new BinaryComparator("rowkey".getBytes())));
-//
-//			// 列值过滤
-//			scan.setFilter(new DependentColumnFilter("family".getBytes(), "qualifier".getBytes(), false,
-//					CompareFilter.CompareOp.EQUAL, new BinaryComparator("".getBytes())));
+			// scan.setFilter(
+			// new RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL, new
+			// BinaryComparator("rowkey".getBytes())));
+			//
+			// // 列值过滤
+			// scan.setFilter(new DependentColumnFilter("family".getBytes(),
+			// "qualifier".getBytes(), false,
+			// CompareFilter.CompareOp.EQUAL, new
+			// BinaryComparator("".getBytes())));
 
 			// 性能相关
 			scan.setCaching(10);// 设置客户端一次rpc批量执行10个next()，并将结果缓存在客户；不设则rs一次rpc只执行一个next()
@@ -248,7 +241,6 @@ public class HbaseTest {
 				// String(cell.getValueArray()));
 
 			}
-			
 
 			/*
 			 * for (KeyValue keyValue : r.raw()) { System.out.println("列：" + new
@@ -270,7 +262,6 @@ public class HbaseTest {
 		}
 	}
 
-
 	/**
 	 * 根据rowkey作范围查询
 	 * 
@@ -278,7 +269,7 @@ public class HbaseTest {
 	 * @param startRowkey
 	 * @param endRowkey
 	 */
-	public static void queryByRowkeyRange(String tableName,String startRowkey,String endRowkey){
+	public static void queryByRowkeyRange(String tableName, String startRowkey, String endRowkey) {
 		Connection connection = null;
 		Table table = null;
 		try {
@@ -294,42 +285,51 @@ public class HbaseTest {
 
 			Scan scan = new Scan(startRowkey.getBytes("UTF-8"), endRowkey.getBytes("UTF-8"));
 			// 指定返回列
-			scan.addColumn("base".getBytes("UTF-8"), "name".getBytes());
+//			scan.addColumn("base".getBytes("UTF-8"), "name".getBytes());
 
 			// 指定返回列族
 			// scan.addFamily("base".getBytes("UTF-8"));
-			
-			//offset  limit 
+
+			// offset limit
 			scan.setRowOffsetPerColumnFamily(0);
 			scan.setMaxResultSize(10);
-			
-			//设置每次next()返回的行数，性能相关
-//			scan.setBatch(10);
-			
-			
-			//对查询结果筛选
-//			scan.setFilter(filter)
+
+			// 设置每次next()返回的行数，性能相关
+			// scan.setBatch(10);
+
+			// 对查询结果筛选
+			// scan.setFilter(filter)
+
+			final String family = "base";
+			final String qualifier = "mobile";
 
 			ResultScanner rs = table.getScanner(scan);
-			
-			for(Result r = rs.next();null != r;r = rs.next()){
+
+			for (Result r = rs.next(); null != r; r = rs.next()) {
 				System.out.println("获得到rowkey:" + new String(r.getRow()) + "  " + r.listCells().size());
 				System.out.println();
+				// 根据列名获取列值
+				byte[] val = r.getValue(Bytes.toBytes(family), Bytes.toBytes(qualifier));
+				if (null != val) {
+					String mobile = new String(val);
+					System.out.println(mobile);
+				}
 
+				
+				//遍历所有列
 				for (Cell cell : r.rawCells()) {
-					System.out.println("列族：" + new String(CellUtil.cloneFamily(cell))+
-							"列：" + new String(CellUtil.cloneQualifier(cell))+
-							"====值:" + new String(CellUtil.cloneValue(cell)));
+					System.out.println("列族：" + new String(CellUtil.cloneFamily(cell)) + "列："
+							+ new String(CellUtil.cloneQualifier(cell)) + "====值:"
+							+ new String(CellUtil.cloneValue(cell)));
 					System.out.println();
 
-					// System.out.println("列：" + new String(cell.getFamilyArray()));
-					// System.out.println( "====值:" + new
-					// String(cell.getValueArray()));
+					System.out.println("列：" + new String(cell.getFamilyArray()));
+					System.out.println("====值:" + new String(cell.getValueArray()));
 
 				}
+
 			}
-			
-			
+
 			rs.close();
 
 		} catch (Exception e) {
@@ -343,7 +343,7 @@ public class HbaseTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * 插入数据
 	 * 
@@ -625,7 +625,7 @@ public class HbaseTest {
 			Put put = new Put("rowkey".getBytes());
 			put.addColumn("family".getBytes(), "qualifier".getBytes(), "value".getBytes());
 			rm.add(put);
-			
+
 			Delete delete = new Delete("rowkey".getBytes());
 			delete.addColumns("family".getBytes(), "qualifier".getBytes());
 			rm.add(delete);
@@ -711,8 +711,6 @@ public class HbaseTest {
 
 			// Use the table as needed, for a single operation and a single
 			// thread
-
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
