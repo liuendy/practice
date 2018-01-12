@@ -103,7 +103,7 @@ public class PackageUtils {
 		for (File f : files) {
 			if (f.isDirectory()) {// 是包的路径
 				if (recursive) {
-					clazzNames.addAll(getClassNamesByFile(packageName, f.getPath(), recursive));
+					clazzNames.addAll(getClassNamesByFile(packageName+"."+f.getName(), f.getPath(), recursive));
 				}
 			} else {// 是类的路径
 				if (f.getPath().endsWith(".class")) {
@@ -141,7 +141,8 @@ public class PackageUtils {
 			/**
 			 * name结果如下所示
 			 * 
-			 * com/mysql/jdbc/Wrapper.class com/mysql/jdbc/WriterWatcher.class
+			 * com/mysql/jdbc/Wrapper.class 
+			 * com/mysql/jdbc/WriterWatcher.class
 			 * com/mysql/jdbc/authentication/
 			 * com/mysql/jdbc/authentication/MysqlClearPasswordPlugin.class
 			 * com/mysql/jdbc/authentication/MysqlNativePasswordPlugin.class

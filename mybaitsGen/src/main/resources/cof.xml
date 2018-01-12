@@ -16,7 +16,7 @@
         </commentGenerator>  
   
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://localhost:3306/tmp" userId="root" password="fan1988">  
+            connectionURL="jdbc:mysql://localhost:3306/incar" userId="root" password="fan1988">  
         </jdbcConnection>  
   
         <javaTypeResolver type="com.ybwh.mybaitsGen.MyJavaTypeResolver">  
@@ -24,22 +24,22 @@
         </javaTypeResolver>  
   
         <javaModelGenerator targetPackage="com.entity"  
-            targetProject="E:/my_proj/mybaitsGen/src/test/java">  
+            targetProject="E:/github/practice/mybaitsGen/src/test/java">  
             <property name="enableSubPackages" value="true" />  
             <property name="trimStrings" value="true" />  
         </javaModelGenerator>  
   
         <sqlMapGenerator targetPackage="com.dao"  
-            targetProject="E:/my_proj/mybaitsGen/src/test/java">  
+            targetProject="E:/github/practice/mybaitsGen/src/test/java">  
             <property name="enableSubPackages" value="true" />  
         </sqlMapGenerator>  
   
         <javaClientGenerator type="XMLMAPPER"  
-            targetPackage="com.dao" targetProject="E:/my_proj/mybaitsGen/src/test/java">  
+            targetPackage="com.dao" targetProject="E:/github/practice/mybaitsGen/src/test/java">  
             <property name="enableSubPackages" value="true" />  
         </javaClientGenerator>  
   
-        <table  tableName="t_sim" domainObjectName="SimCard"
+        <table  tableName="t_sys_area" domainObjectName="SysArea"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
