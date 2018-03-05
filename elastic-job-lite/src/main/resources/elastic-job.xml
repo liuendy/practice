@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+	xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.dangdang.com/schema/ddframe/reg
+        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+        http://www.dangdang.com/schema/ddframe/job
+        http://www.dangdang.com/schema/ddframe/job/job.xsd
+        ">
+
+	<!-- 配置注册中心 ，任务的信息都会在zk中存储 -->
+	<reg:zookeeper id="regCenter" server-lists="127.0.0.1:2181"
+		namespace="test-job" base-sleep-time-milliseconds="1000"
+		max-sleep-time-milliseconds="3000" max-retries="3" />
+
+	<!-- 配置简单作业 -->
+	<job:simple id="testTask" class="com.xxx.TestTask"
+		registry-center-ref="regCenter" cron="0 10 * * * ?"
+		sharding-total-count="1" overwrite="true"><!-- 分片为1，即不需要分片；支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 -->
+		<job:event-log /><!-- job运行日志记录到log -->
+		<!-- job运行日志记录到DB， 详细参考：http://dangdangdotcom.github.io/elastic-job/post/user_guide/common/event_trace/ -->
+		<job:event-rdb driver="${ds1.jdbc.driver_class_name}" 
+			url="${ds1.jdbc.url}" username="${ds1.jdbc.username}"
+			password="${ds1.jdbc.password}"
+			log-level="INFO" />
+	</job:simple>
+
+</beans>
