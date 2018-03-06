@@ -52,7 +52,7 @@ public class ProcessEngineTest {
      * 涉及的表：act_re_deployment(部署表)、act_re_procdef(流程定义表)、act_ge_bytearray(二进制表)
      */
     @Test
-    public void test() throws FileNotFoundException {
+    public void testDeploy() throws FileNotFoundException {
     	String resource = "activiti-context.xml";    // 配置文件
 		String beanName = "processEngineConfiguration";  // 配置文件中bean name
 		// 从配置文件创建配置对象
