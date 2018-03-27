@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codegen>
+	<typeMaps db="mysql">
+		<!-- 整型 -->
+		<typeMap columnType="tinyint" javaType="java.lang.Integer" />
+		<typeMap columnType="smallint" javaType="java.lang.Integer" />
+		<typeMap columnType="int" javaType="java.lang.Integer" />
+		<typeMap columnType="bigint" javaType="java.lang.Long" />
+		<typeMap columnType="boolean" javaType="java.lang.Integer" />
+		<typeMap columnType="bit" javaType="java.lang.Integer" />
+		<typeMap columnType="tinyint UNSIGNED" javaType="java.lang.Integer" />
+		<typeMap columnType="smallint UNSIGNED" javaType="java.lang.Integer" />
+		<typeMap columnType="int UNSIGNED" javaType="java.lang.Integer" />
+		<typeMap columnType="bigint UNSIGNED" javaType="java.lang.Long" />
+		<typeMap columnType="boolean UNSIGNED" javaType="java.lang.Integer" />
+		<typeMap columnType="bit UNSIGNED" javaType="java.lang.Integer" />
+		
+		
+		<!-- 实数型 -->
+		<typeMap columnType="float" javaType="java.lang.Float" />
+		<typeMap columnType="double" javaType="java.lang.Double" />
+		<typeMap columnType="decimal" javaType="java.math.BigDecimal" />
+	 
+		<!-- 字符串型 -->
+		<typeMap columnType="char" javaType="java.lang.String" />
+		<typeMap columnType="varchar" javaType="java.lang.String" />
+		<typeMap columnType="tinyblob" javaType="java.lang.String" />
+		<typeMap columnType="tinytext" javaType="java.lang.String" />
+		<typeMap columnType="blob" javaType="java.lang.String" />
+		<typeMap columnType="text" javaType="java.lang.String" />
+		<typeMap columnType="mediumblob" javaType="java.lang.String" />
+		<typeMap columnType="mediumtext" javaType="java.lang.String" />
+		<typeMap columnType="longblob" javaType="java.lang.String" />
+		<typeMap columnType="longtext" javaType="java.lang.String" />
+		<typeMap columnType="varbinary" javaType="java.lang.String" />
+		<typeMap columnType="binary" javaType="java.lang.String" />
+		
+		<!-- 时间日期型 -->
+		<typeMap columnType="date" javaType="java.util.Date" />
+		<typeMap columnType="timestamp" javaType="java.util.Date" />
+		<typeMap columnType="datetime" javaType="java.util.Date" />
+		<typeMap  columnType="time" javaType="java.sql.Time"></typeMap>
+	</typeMaps>
+	
+</codegen>
