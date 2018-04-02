@@ -22,4 +22,8 @@
 		sharding-total-count="1" overwrite="true"><!-- 分片为1，即不需要分片；支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 -->
 	</job:simple>
 
+	<!--<job:dataflow registry-center-ref="regCenter" cron="" sharding-total-count="">
+
+	</job:dataflow>-->
+
 </beans>
