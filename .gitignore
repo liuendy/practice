@@ -19,3 +19,6 @@
 /classLoader/.settings
 /classLoader/*.project
 /classLoader/*.classpath
+.settings
+/springMvc/.project
+/springMvc/.classpath

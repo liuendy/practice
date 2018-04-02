@@ -9,20 +9,25 @@
         http://www.dangdang.com/schema/ddframe/reg/reg.xsd
         http://www.dangdang.com/schema/ddframe/job
         http://www.dangdang.com/schema/ddframe/job/job.xsd">
+     <description>elastic-job配置</description>
 
-<!-- <context:property-placeholder location="classpath:conn.properties"/> -->
+
 	<!-- 配置注册中心 ，任务的信息都会在zk中存储 -->
 	<reg:zookeeper id="regCenter" server-lists="127.0.0.1:2181"
 		namespace="test-job" base-sleep-time-milliseconds="1000"
 		max-sleep-time-milliseconds="3000" max-retries="3" />
-
-	<!-- 配置简单作业 -->
-	<job:simple id="testTask" class="com.ybwh.elasticjoblite.simple.TestTask"
+	
+	<!-- 
+		简单的单节点运行任务:
+		 1.分片为1，即不需要分片；
+		 2. 支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 
+	 -->
+	<job:simple id="standaloneSimpleTask" job-ref="StandaloneSimpleTask"
 		registry-center-ref="regCenter" cron="0 * * * * ?"
-		sharding-total-count="1" overwrite="true"><!-- 分片为1，即不需要分片；支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 -->
+		sharding-total-count="2" overwrite="true" description="简单的单节点运行任务">
 	</job:simple>
 
-	<!--<job:dataflow registry-center-ref="regCenter" cron="" sharding-total-count="">
+	<!--<job:dataflow registry-center-ref="regCenter" sharding-total-count="2" overwrite="true" description="简单的单节点运行任务">
 
 	</job:dataflow>-->
 
