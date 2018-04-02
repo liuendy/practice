@@ -23,48 +23,64 @@
 	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
 
-	<context:component-scan base-package="*" use-default-filters="false">
-		<context:include-filter type="annotation" 
-			expression="org.springframework.stereotype.Controller" />  
+	<context:component-scan base-package="demo"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
-	
+
 	<!--mvc:annotation-driven 默认注册了RequestMappingHandlerMapping和RequestMappingHandlerAdapter -->
-	<mvc:annotation-driven validator="validator">  
-	    <!-- <mvc:return-value-handlers>  
-	        <bean></bean>  
-	    </mvc:return-value-handlers>  -->
-	     
-	    <!-- 自定义的参数解析器 -->
-	    <mvc:argument-resolvers>  
-	    	<bean class="com.common.annotation.resolver.RequestJsonParamMethodArgumentResolver" />
-			<bean class="com.common.annotation.resolver.ExtServletModelAttributeMethodProcessor" />
-	    </mvc:argument-resolvers>  
-	      
-	    <mvc:message-converters>  
-	    	<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
-			<bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+	<mvc:annotation-driven>
+		<!-- <mvc:return-value-handlers> <bean></bean> </mvc:return-value-handlers> -->
+
+		<!-- 自定义的参数解析器 -->
+		<mvc:argument-resolvers>
+			<bean class="com.common.resolver.SimpleMethodArgumentResolver" lazy-init="false"></bean>
+			<!-- <bean
+				class="com.common.annotation.resolver.ExtServletModelAttributeMethodProcessor" /> -->
+
+		</mvc:argument-resolvers> 
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+			<bean
+				class="org.springframework.http.converter.ResourceHttpMessageConverter" />
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
-			<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
-	    </mvc:message-converters> 
-	</mvc:annotation-driven> 
-	
-	
+			<!-- <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" 
+				/> -->
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- <bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="synchronizeOnSession" value="true" />
+		<property name="customArgumentResolvers">
+			<list>
+				<bean class="com.common.resolver.SimpleMethodArgumentResolver" />
+			</list>
+		</property>
+	</bean> -->
+
+
 	<!-- 验证 -->
-	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="providerClass"  value="org.hibernate.validator.HibernateValidator"/>
-        <!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties --> 
-    </bean>
-	
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->
+	</bean>
+
 	<!-- 拦截器 -->
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<!-- 需拦截的地址 一级目录 -->
 			<mvc:mapping path="/*.do" />
-			<mvc:mapping path="/*.ajax" /> <mvc:mapping path="/*.htm" />
+			<mvc:mapping path="/*.ajax" />
+			<mvc:mapping path="/*.htm" />
 
 			<!-- 二级目录 -->
 			<mvc:mapping path="/*/*.do" />
-			<mvc:mapping path="/*/*.ajax" /> <mvc:mapping path="/*/*.htm" />
+			<mvc:mapping path="/*/*.ajax" />
+			<mvc:mapping path="/*/*.htm" />
 
 			<!-- 需排除拦截的地址 -->
 			<mvc:exclude-mapping path="/login.jsp" />
@@ -72,10 +88,10 @@
 			<mvc:exclude-mapping path="/verfyCode.do" />
 			<bean class="com.common.interceptor.LoginInterceptor" />
 		</mvc:interceptor>
-	</mvc:interceptors>  
-	
-	
-	
+	</mvc:interceptors>
+
+
+
 	<!-- 视图解释类 -->
 	<bean id="jspViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -85,16 +101,16 @@
 			value="org.springframework.web.servlet.view.JstlView" />
 		<property name="order" value="10" />
 	</bean>
-	
-	
+
+
 	<!-- 文件上传 -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
 		p:defaultEncoding="UTF-8">
 		<!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是一次上传所有文件的容量之和 -->
-		<property name="maxUploadSize" value="200000"/>
-	</bean> 
-	
+		<property name="maxUploadSize" value="200000" />
+	</bean>
+
 	<!-- 验证码 -->
 	<bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
 		<property name="config">

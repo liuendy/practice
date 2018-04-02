@@ -28,7 +28,7 @@
     	<li><a href="${ctx}/" target="_blank">日期格式问题</a></li>
     	<li><a href="${ctx }/demo/modelDriver.do?demo.name=trwetg&demo.age=345" target="_blank">模型驱动</a></li>
     	<li><a href="${ctx }/verfyCode.jsp" target="_blank">验证码 </a></li>
-    	<li><a href="" target="_blank"></a></li>
+    	<li><a href="${ctx }/arg/test.do?data=123" target="_blank">传入参数123，经过HandlerMethodArgumentResolver处理后让controller的得到456</a></li>
     </ul>
   </body>
 </html>

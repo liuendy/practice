@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.OrganizationBaseInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.entity.OrganizationBaseInfo" >
+    <id column="organization_id" property="organizationId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="TINYINT" />
+    <result column="division" property="division" jdbcType="VARCHAR" />
+    <result column="leader_id" property="leaderId" jdbcType="VARCHAR" />
+    <result column="division_leader_id" property="divisionLeaderId" jdbcType="VARCHAR" />
+    <result column="org_character" property="orgCharacter" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="authorized_strength" property="authorizedStrength" jdbcType="INTEGER" />
+    <result column="employee_num" property="employeeNum" jdbcType="INTEGER" />
+    <result column="business_intro" property="businessIntro" jdbcType="VARCHAR" />
+    <result column="business_scope" property="businessScope" jdbcType="VARCHAR" />
+    <result column="office_location" property="officeLocation" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="create_ts" property="createTs" jdbcType="TIMESTAMP" />
+    <result column="update_ts" property="updateTs" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    organization_id, name, city, source, level, division, leader_id, division_leader_id, 
+    org_character, parent_id, authorized_strength, employee_num, business_intro, business_scope, 
+    office_location, status, create_ts, update_ts
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_organization_base_info
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_organization_base_info
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.entity.OrganizationBaseInfo" >
+    insert into t_organization_base_info (organization_id, name, city, 
+      source, level, division, 
+      leader_id, division_leader_id, org_character, 
+      parent_id, authorized_strength, employee_num, 
+      business_intro, business_scope, office_location, 
+      status, create_ts, update_ts
+      )
+    values (#{organizationId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{source,jdbcType=VARCHAR}, #{level,jdbcType=TINYINT}, #{division,jdbcType=VARCHAR}, 
+      #{leaderId,jdbcType=VARCHAR}, #{divisionLeaderId,jdbcType=VARCHAR}, #{orgCharacter,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=BIGINT}, #{authorizedStrength,jdbcType=INTEGER}, #{employeeNum,jdbcType=INTEGER}, 
+      #{businessIntro,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR}, #{officeLocation,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{createTs,jdbcType=TIMESTAMP}, #{updateTs,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.OrganizationBaseInfo" >
+    insert into t_organization_base_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="organizationId != null" >
+        organization_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="division != null" >
+        division,
+      </if>
+      <if test="leaderId != null" >
+        leader_id,
+      </if>
+      <if test="divisionLeaderId != null" >
+        division_leader_id,
+      </if>
+      <if test="orgCharacter != null" >
+        org_character,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="authorizedStrength != null" >
+        authorized_strength,
+      </if>
+      <if test="employeeNum != null" >
+        employee_num,
+      </if>
+      <if test="businessIntro != null" >
+        business_intro,
+      </if>
+      <if test="businessScope != null" >
+        business_scope,
+      </if>
+      <if test="officeLocation != null" >
+        office_location,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTs != null" >
+        create_ts,
+      </if>
+      <if test="updateTs != null" >
+        update_ts,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="organizationId != null" >
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=TINYINT},
+      </if>
+      <if test="division != null" >
+        #{division,jdbcType=VARCHAR},
+      </if>
+      <if test="leaderId != null" >
+        #{leaderId,jdbcType=VARCHAR},
+      </if>
+      <if test="divisionLeaderId != null" >
+        #{divisionLeaderId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCharacter != null" >
+        #{orgCharacter,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="authorizedStrength != null" >
+        #{authorizedStrength,jdbcType=INTEGER},
+      </if>
+      <if test="employeeNum != null" >
+        #{employeeNum,jdbcType=INTEGER},
+      </if>
+      <if test="businessIntro != null" >
+        #{businessIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="businessScope != null" >
+        #{businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="officeLocation != null" >
+        #{officeLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTs != null" >
+        #{createTs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTs != null" >
+        #{updateTs,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.OrganizationBaseInfo" >
+    update t_organization_base_info
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=TINYINT},
+      </if>
+      <if test="division != null" >
+        division = #{division,jdbcType=VARCHAR},
+      </if>
+      <if test="leaderId != null" >
+        leader_id = #{leaderId,jdbcType=VARCHAR},
+      </if>
+      <if test="divisionLeaderId != null" >
+        division_leader_id = #{divisionLeaderId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCharacter != null" >
+        org_character = #{orgCharacter,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="authorizedStrength != null" >
+        authorized_strength = #{authorizedStrength,jdbcType=INTEGER},
+      </if>
+      <if test="employeeNum != null" >
+        employee_num = #{employeeNum,jdbcType=INTEGER},
+      </if>
+      <if test="businessIntro != null" >
+        business_intro = #{businessIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="businessScope != null" >
+        business_scope = #{businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="officeLocation != null" >
+        office_location = #{officeLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTs != null" >
+        create_ts = #{createTs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTs != null" >
+        update_ts = #{updateTs,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.OrganizationBaseInfo" >
+    update t_organization_base_info
+    set name = #{name,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      level = #{level,jdbcType=TINYINT},
+      division = #{division,jdbcType=VARCHAR},
+      leader_id = #{leaderId,jdbcType=VARCHAR},
+      division_leader_id = #{divisionLeaderId,jdbcType=VARCHAR},
+      org_character = #{orgCharacter,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      authorized_strength = #{authorizedStrength,jdbcType=INTEGER},
+      employee_num = #{employeeNum,jdbcType=INTEGER},
+      business_intro = #{businessIntro,jdbcType=VARCHAR},
+      business_scope = #{businessScope,jdbcType=VARCHAR},
+      office_location = #{officeLocation,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_ts = #{createTs,jdbcType=TIMESTAMP},
+      update_ts = #{updateTs,jdbcType=TIMESTAMP}
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  </update>
+</mapper>

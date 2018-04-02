@@ -39,9 +39,8 @@ public class MD5Util {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(calcMd5("{\"userId\":\"1000101120\"}"));
+		System.out.println(calcMd5("{\"userId\":\"1000089999\"}"));
 		System.out.println(calcMd5("{\"employeeId\":\"66053\"}"));
 		
-		System.out.println("8k5Xj71hG0zS+FsVYE7ST1F6WVTXkl7NX1vJdvYj/2/F9zMkOpZCuVbBOinqTKiwZ0sUDOK9jnIA\\r\\n7Wnai2Q7vwyy2v7Qwwktfdm3EpsWjZsMwT3v56BIQOINRVZ5gdhr9Ka4T/bdj/3l25EqRY5O9cN9\\r\\nfNe6Qk0ZDJ2JK2uYNACNu8ZPyywFa9getV+JV6Zp5mnklnP7PS1xnFVhswCfJg==");
 	}
 }
