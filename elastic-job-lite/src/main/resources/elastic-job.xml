@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
 	xmlns:job="http://www.dangdang.com/schema/ddframe/job"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -9,26 +8,29 @@
         http://www.dangdang.com/schema/ddframe/reg/reg.xsd
         http://www.dangdang.com/schema/ddframe/job
         http://www.dangdang.com/schema/ddframe/job/job.xsd">
-     <description>elastic-job配置</description>
+	<description>elastic-job配置</description>
 
 
 	<!-- 配置注册中心 ，任务的信息都会在zk中存储 -->
-	<reg:zookeeper id="regCenter" server-lists="127.0.0.1:2181"
-		namespace="test-job" base-sleep-time-milliseconds="1000"
-		max-sleep-time-milliseconds="3000" max-retries="3" />
-	
-	<!-- 
-		简单的单节点运行任务:
-		 1.分片为1，即不需要分片；
-		 2. 支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 
-	 -->
+	<reg:zookeeper id="regCenter" server-lists="${job.reg.serverList}"
+		namespace="${job.reg.namespace}" base-sleep-time-milliseconds="${job.reg.baseSleepTimeMilliseconds}"
+		max-sleep-time-milliseconds="${job.reg.maxSleepTimeMilliseconds}" max-retries="${job.reg.maxRetries}" />
+
+	<!-- 简单的单节点运行任务: 1.分片为1，即不需要分片； 2. 支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 -->
 	<job:simple id="standaloneSimpleTask" job-ref="StandaloneSimpleTask"
-		registry-center-ref="regCenter" cron="0 * * * * ?"
-		sharding-total-count="2" overwrite="true" description="简单的单节点运行任务">
+		registry-center-ref="regCenter" cron="0/15 * * * * ?"
+		sharding-total-count="1" overwrite="true" description="简单的单节点运行任务">
+		<job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener>
 	</job:simple>
 
-	<!--<job:dataflow registry-center-ref="regCenter" sharding-total-count="2" overwrite="true" description="简单的单节点运行任务">
 
-	</job:dataflow>-->
+	<!-- streaming-process:是否流式处理数据, 如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 
+		则处理数据完成后作业结束 -->
+	<!-- <job:dataflow id="simpleDataflowTask" job-ref="SimpleDataflowTask"
+		registry-center-ref="regCenter" cron="0/15 * * * * ?"
+		streaming-process="false" sharding-total-count="2" overwrite="true"
+		description="简单的数据流运行任务">
+
+	</job:dataflow> -->
 
 </beans>

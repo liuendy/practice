@@ -22,8 +22,10 @@
 			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	
-	<!-- <context:property-placeholder location="classpath:conn.properties"/> -->
+	<context:property-placeholder location="classpath*:application.properties"/>
 	
 	<bean id="StandaloneSimpleTask" class="com.ybwh.elasticjoblite.task.StandaloneSimpleTask"></bean>
+	<bean id="SimpleDataflowTask" class="com.ybwh.elasticjoblite.task.SimpleDataflowTask"></bean>
+	
 	
 </beans>
