@@ -26,6 +26,8 @@
 	
 	<bean id="StandaloneSimpleTask" class="com.ybwh.elasticjoblite.task.StandaloneSimpleTask"></bean>
 	<bean id="SimpleDataflowTask" class="com.ybwh.elasticjoblite.task.SimpleDataflowTask"></bean>
+	<bean id="FailoverSimpleTask" class="com.ybwh.elasticjoblite.task.FailoverSimpleTask"></bean>
+	
 	
 	
 </beans>
