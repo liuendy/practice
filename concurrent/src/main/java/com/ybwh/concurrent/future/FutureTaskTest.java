@@ -5,10 +5,8 @@ import java.util.concurrent.*;
 /**
  * FutureTaskTest
  * 
- * 回调
+ *  实现一个带回调的future
  *
- * @author Aaric, created on 2017-06-15T16:29.
- * @since 1.0-SNAPSHOT
  */
 public class FutureTaskTest {
 
@@ -37,7 +35,7 @@ public class FutureTaskTest {
         }
 
         @Override
-        protected void done() {
+        protected void done() {//回调
             try {
                 System.err.println("The " + get() + " finished.");
 
