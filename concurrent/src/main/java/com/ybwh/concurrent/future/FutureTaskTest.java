@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 /**
  * FutureTaskTest
  * 
- *  实现一个带回调的future
+ *  覆盖FutureTask的done方法实现一个带回调的future
  *
  */
 public class FutureTaskTest {

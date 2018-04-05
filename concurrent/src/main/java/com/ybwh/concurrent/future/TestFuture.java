@@ -4,7 +4,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -61,30 +60,18 @@ public class TestFuture {
 
 	/**
 	 * Future模式 中断功能
+	 * <p>
+	 * 从FutureTask源码看future.cancel(mayInterruptIfRunning)
+	 * 线程状态是NEW(还没运行时候)直接打个标记，返回true，同时mayInterruptIfRunning为true时还调用
+	 * Thread.interrupt()来中断线程。 最后做清理工作。
+	 * </p>
 	 * 
-	 * 任务没运行则可以取消返回true，已结束、已取消或其他原因不能中断则返回false
-	 * 
-	 * 线程sleep是可以被Future.cacel()中断的 线程中的IO阻塞时，线程无法被Future.cancel()中断
-	 * 线程中的synchronized锁阻塞时，线程无法被Future.cancel()方法中断（Lock是可以被中断的）
-	 * 
-	 * 【好奇】
-	 * 
-	 * （1）future.cancel(mayInterruptIfRunning)的内部实现会是什么样子的？可以中断一个线程池里正在执行着的“那一个”任务。
-	 * 
-	 * 可猜想，必定记录着具体线程标识，且发了一个中断信号。
-	 * 
-	 * （2）猜测，应该只是发一个中断信号，可以中断阻塞中的操作。而如果是while(true);
-	 * 这样的占用CPU的非阻塞式操作，是中断不掉的，也即线程依旧在跑，占用着线程池资源。
-	 * 
-	 * 【注意】
-	 * 
-	 * a).
-	 * 线程池资源有限，有些任务会submit()不进去，抛异常：java.util.concurrent.RejectedExecutionException
-	 * 
-	 * b).只要submit()成功的，无论是线程正在执行，或是在BlockingQueue中等待执行，future.cancel()操作均可中断掉线程。也即，与其真正执行并无关系，阻塞中或等待被调度执行中，都将被中断。
-	 * 
-	 * 查看FutureTask的cancel是用Thread.interrupt()方法实现的，猜想Thread.interrupt()能中断的情况cancle都能中断
-	 * 
+	 * <p>
+	 * 总结： 
+	 * 1.任务没运行则可以取消返回true;
+	 * 2.任务已运行，mayInterruptIfRunning为false时不能取消而且返回flase;
+	 * 3.任务已运行，mayInterruptIfRunning为true时，返回true,产生效果和Thread.interrupt()一样
+	 * </p>
 	 * 
 	 */
 	@Test
@@ -97,7 +84,7 @@ public class TestFuture {
 			public String call() throws Exception {
 
 				System.out.println("11111111");
-				Thread.currentThread().sleep(5000);
+				Thread.sleep(5000);
 				System.out.println("11111111-----");
 
 				return "fdsfsfsfsf";
@@ -124,7 +111,7 @@ public class TestFuture {
 		});
 
 		try {
-			Thread.currentThread().sleep(1000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 		}
 
