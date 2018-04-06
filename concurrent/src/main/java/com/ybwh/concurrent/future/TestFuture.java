@@ -125,5 +125,14 @@ public class TestFuture {
 		 */
 		System.out.println(future2.cancel(true));
 	}
+	
+	
+	@Test
+	public void testAQSInterrupt(){
+		
+	}
+	
+	
+	
 
 }
