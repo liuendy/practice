@@ -47,8 +47,8 @@ public class TestInterrupt {
 	 * 	Thread.currentThread().interrupt();
 	 * }
 	 * </pre>
-	 * 
-	 * 所以说对于AQS锁需要线程自己判断是否锁定和捕获InterruptedException处理中断逻辑
+	 * 因此，AQS锁抛出InterruptedException的锁定是能被interrupt()触发InterruptedException的，其他锁定只能被interrupt()打个标记。
+	 * 所以说对于AQS锁需要线程自己判断是否锁定和捕获InterruptedException处理中断逻辑。
 	 * 
 	 * </p>
 	 * 
@@ -238,7 +238,7 @@ public class TestInterrupt {
 						System.out.println("*********aqsThread1  interrupt");
 					}
 					
-
+					Thread.sleep(3000);
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
@@ -250,9 +250,36 @@ public class TestInterrupt {
 		});
 		
 		aqsThread1.start();
-		aqsThread1.interrupt();
+//		aqsThread1.interrupt();
 
 		System.out.println("^^^^" + aqsThread1.isInterrupted());
+		
+		
+		Thread aqsThread2 = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					System.out.println("*********aqsThread2 ");
+
+					Thread.sleep(1000);
+					
+					lock.lockInterruptibly();
+					
+
+				} catch (InterruptedException e) {
+					System.out.println("*********aqsThread2  InterruptedException");
+					Thread.currentThread().interrupt();
+				} finally {
+//					lock.unlock();
+				}
+
+			}
+
+		});
+		
+		aqsThread2.start();
+		aqsThread2.interrupt();
 
 	}
 
