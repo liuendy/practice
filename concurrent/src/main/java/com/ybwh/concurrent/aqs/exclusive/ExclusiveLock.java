@@ -1,4 +1,4 @@
-package com.ybwh.concurrent.aqs;
+package com.ybwh.concurrent.aqs.exclusive;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
@@ -14,16 +14,15 @@ import java.util.concurrent.locks.Lock;
  * @author fanbeibei
  *
  */
-public class ExclusiveLock implements Lock{
+public class ExclusiveLock implements Lock {
 
 	/**
 	 * 实现一个排他锁实现父类tryAcquire(得到锁)、tryRelease(释放锁)和isHeldExclusively(是否的到锁)
 	 * 
-	 * 然后调用acquire(int arg) 实现阻塞的lock方法，
-	 * 调用acquireInterruptibly(int arg)实现可中断的lockInterruptibly方法，
-	 * 调用tryAcquire实现tryLock(int arg)方法
-	 * 调用tryAcquireNanos(int arg, long nanosTimeout)实现tryLock(long timeout, TimeUnit unit)方法
-	 * 调用release实现unLock方法 
+	 * 然后调用acquire(int arg) 实现阻塞的lock方法， 调用acquireInterruptibly(int
+	 * arg)实现可中断的lockInterruptibly方法， 调用tryAcquire实现tryLock(int arg)方法
+	 * 调用tryAcquireNanos(int arg, long nanosTimeout)实现tryLock(long timeout,
+	 * TimeUnit unit)方法 调用release实现unLock方法
 	 * 
 	 * @author fanbeibei
 	 *
@@ -35,7 +34,6 @@ public class ExclusiveLock implements Lock{
 		 */
 		private static final long serialVersionUID = -4525872546642180350L;
 
-
 		@Override
 		protected boolean tryAcquire(int acquires) {
 			/**
@@ -43,7 +41,7 @@ public class ExclusiveLock implements Lock{
 			 */
 			assert acquires == 1; // Otherwise unused
 			if (compareAndSetState(0, 1)) {
-				setExclusiveOwnerThread(Thread.currentThread());//设置排他锁的拥有者
+				setExclusiveOwnerThread(Thread.currentThread());// 设置排他锁的拥有者
 				return true;
 			}
 			return false;
@@ -55,7 +53,7 @@ public class ExclusiveLock implements Lock{
 			 * 成功将state由1设为0则成功释放锁，否则释放锁失败
 			 */
 			assert releases == 1; // Otherwise unused
-			if (getState() == 0)//没获得锁就释放（没调用lock()就unLock()）
+			if (getState() == 0)// 没获得锁就释放（没调用lock()就unLock()）
 				throw new IllegalMonitorStateException();
 			setExclusiveOwnerThread(null);
 			setState(0);
@@ -63,12 +61,17 @@ public class ExclusiveLock implements Lock{
 		}
 
 		
+		//-----------实现condition还需下面两个方法--------------------------------
 		@Override
 		protected boolean isHeldExclusively() {
 			/**
-			 * 判断当前线程是否获得了排他锁
+			 * 判断当前线程是否获得了排他锁,只有用到condition才需要去实现它。
 			 */
 			return getExclusiveOwnerThread() == Thread.currentThread();
+		}
+
+		final ConditionObject newCondition() {
+			return new ConditionObject();
 		}
 	}
 
@@ -77,59 +80,57 @@ public class ExclusiveLock implements Lock{
 	public ExclusiveLock() {
 		sync = new Sync();
 	}
-	
+
 	protected boolean tryRelease(int unused) {
 		return sync.tryRelease(unused);
 	}
 
 	@Override
 	public void lock() {
-		//支持重入
-		if(!sync.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+		// 支持重入
+		if (!sync.isHeldExclusively()) {// 如果当前线程没有获得这把排他锁，则调用acquire去获取
 			sync.acquire(1);
 		}
-		
+
 	}
-	
+
 	@Override
 	public boolean tryLock() {
-		//支持重入
-		if(!sync.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+		// 支持重入
+		if (!sync.isHeldExclusively()) {// 如果当前线程没有获得这把排他锁，则调用acquire去获取
 			return sync.tryAcquire(1);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
-		if(!sync.isHeldExclusively()){//如果当前线程没有获得这把排他锁，则调用acquire去获取
+		if (!sync.isHeldExclusively()) {// 如果当前线程没有获得这把排他锁，则调用acquire去获取
 			return sync.tryAcquireNanos(1, unit.toNanos(timeout));
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void unlock() {
 		sync.release(1);
 	}
 
-	
 	@Override
 	public void lockInterruptibly() throws InterruptedException {
 		sync.acquireInterruptibly(1);
 	}
-	
+
 	public boolean isLocked() {
 		return sync.isHeldExclusively();
 	}
 
 	@Override
 	public Condition newCondition() {
-		// TODO Auto-generated method stub
-		return null;
+		return sync.newCondition();
 	}
-	
+
 	public static void main(String[] args) {
 		ExclusiveLock lock = new ExclusiveLock();
 
@@ -143,8 +144,9 @@ public class ExclusiveLock implements Lock{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+
 				System.out.println("to lock");
+				lock.lock();
 				lock.lock();
 
 				System.out.println("444444444444444");
@@ -160,6 +162,7 @@ public class ExclusiveLock implements Lock{
 			public void run() {
 				lock.lock();
 				System.out.println("233333333333333");
+				lock.lock();
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
@@ -167,7 +170,7 @@ public class ExclusiveLock implements Lock{
 				}
 
 				lock.lock();
-				
+
 				System.out.println("unlock");
 
 				lock.unlock();

@@ -1,4 +1,4 @@
-package com.ybwh.concurrent.aqs.my;
+package com.ybwh.concurrent.aqs.shared;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 

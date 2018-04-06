@@ -1,4 +1,4 @@
-package com.ybwh.concurrent.aqs;
+package com.ybwh.concurrent.aqs.exclusive;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
