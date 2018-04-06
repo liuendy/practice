@@ -1,5 +1,8 @@
 package com.ybwh.concurrent.interrupt;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.junit.Test;
 
 /**
@@ -17,8 +20,36 @@ public class TestInterrupt {
 	 * </p>
 	 * 
 	 * <p>
-	 * 如果线程被LockSupport.park()暂停，线程回继续运行不会抛出异常，这也是AQS框架经常用Thread.isInterrupted()
-	 * 判断线程是否被终止的原因.
+	 * 如果线程被LockSupport.park()暂停，线程回继续运行不会抛出异常.
+	 * </p>
+	 * 
+	 * <p>
+	 * AQS中提供了支持中断的方法
+	 * <ul>
+	 * <li>private void doAcquireInterruptibly(int arg) throws
+	 * InterruptedException;</li>
+	 * <li>private void doAcquireSharedInterruptibly(int arg) throws
+	 * InterruptedException;</li>
+	 * <li>private boolean doAcquireSharedNanos(int arg, long nanosTimeout)
+	 * throws InterruptedException;</li>
+	 * </ul>
+	 * 这几个方法都抛出了InterruptedException，这些方法都会先出处中断异常，处理的代码如下：
+	 * 
+	 * <pre>
+	 * if (Thread.interrupted())
+	 * 	throw new InterruptedException();
+	 * </pre>
+	 * 
+	 * 我们还看到有些方法并没有申请抛出InterruptedException,当它被中断时，设置了线程的中断位。
+	 * 
+	 * <pre>
+	 * private static void selfInterrupt() {
+	 * 	Thread.currentThread().interrupt();
+	 * }
+	 * </pre>
+	 * 
+	 * 所以说对于AQS锁需要线程自己判断是否锁定和捕获InterruptedException处理中断逻辑
+	 * 
 	 * </p>
 	 * 
 	 */
@@ -109,7 +140,7 @@ public class TestInterrupt {
 	}
 
 	/**
-	 * 运行中线程是不能被中断的
+	 * 运行中线程是不能被中断的,正确中断方式是线程自己在内部isInterrupted()判断有没有中断标记从而实现中断逻辑。
 	 */
 	@Test
 	public void testInterruptOnActive() {
@@ -119,28 +150,33 @@ public class TestInterrupt {
 			@Override
 			public void run() {
 				int i = 0;
-				for (; i < 1000000000; i++) {
+				for (; i < 1000000000 && !Thread.currentThread().isInterrupted(); i++) {
 				}
 
 				System.out.println("****activeThread:" + i);
-
+				if (Thread.currentThread().isInterrupted()) {
+					System.out.println("****activeThread exit by interrupt");
+				} else {
+					System.out.println("****activeThread exit normally");
+				}
 			}
 		});
 		activeThread.start();
+		try {
+			Thread.sleep(100);// 避免刚启动就被中断
+		} catch (InterruptedException e) {
+		}
 		activeThread.interrupt();
 		System.out.println(activeThread.isInterrupted());
 
-		
-		/**
-		 * 正确中断线程方式是在run方法内isInterrupted()判断
-		 */
 		Thread activeThread2 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				int i = 0;
-				for (; i < 1000000000 && Thread.currentThread().isInterrupted(); i++) {
-					System.out.println("####activeThread2:" + i + "," + Thread.currentThread().isAlive() + ","
-							+ Thread.currentThread().isDaemon());
+				for (; i < 1000000000; i++) {
+					// System.out.println("####activeThread2:" + i + "," +
+					// Thread.currentThread().isAlive() + ","
+					// + Thread.currentThread().isDaemon());
 				}
 
 				System.out.println("****activeThread2:" + i);
@@ -148,6 +184,10 @@ public class TestInterrupt {
 			}
 		});
 		activeThread2.start();
+		try {
+			Thread.sleep(100);// 避免刚启动就被中断
+		} catch (InterruptedException e) {
+		}
 		activeThread2.interrupt();
 		System.out.println(activeThread2.isInterrupted());
 
@@ -164,7 +204,7 @@ public class TestInterrupt {
 			public void run() {
 				int i = 0;
 				for (; i < 1000000000; i++) {
-					//处理了InterruptedIOException，并中断当前线程
+					// 处理了InterruptedIOException，并中断当前线程
 					System.out.println("####activeThread3:" + i + "," + Thread.currentThread().isAlive() + ","
 							+ Thread.currentThread().isDaemon());
 				}
@@ -176,6 +216,43 @@ public class TestInterrupt {
 		activeThread3.start();
 		activeThread3.interrupt();
 		System.out.println(activeThread3.isInterrupted());
+
+	}
+
+	/**
+	 * AQS的中断需要自己处理
+	 */
+	@Test
+	public void testAQSInterrupt() {
+		Lock lock = new ReentrantLock();
+
+		Thread aqsThread1 = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					System.out.println("*********aqsThread1 ");
+
+					lock.lock();
+					if(Thread.currentThread().isInterrupted()){
+						System.out.println("*********aqsThread1  interrupt");
+					}
+					
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					lock.unlock();
+				}
+
+			}
+
+		});
+		
+		aqsThread1.start();
+		aqsThread1.interrupt();
+
+		System.out.println("^^^^" + aqsThread1.isInterrupted());
 
 	}
 
