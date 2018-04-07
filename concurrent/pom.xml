@@ -15,11 +15,17 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>22.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jdeferred</groupId>
+			<artifactId>jdeferred-core</artifactId>
+			<version>1.2.6</version>
 		</dependency>
 
 		<dependency>
