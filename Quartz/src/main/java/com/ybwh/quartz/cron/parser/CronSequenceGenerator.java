@@ -59,32 +59,32 @@ public class CronSequenceGenerator {
 	private final TimeZone timeZone;
 
 	/**
-	 * 12Î»±íÊ¾Ò»ÄêµÄ12¸öÔÂ
+	 * 12ä½è¡¨ç¤ºä¸€å¹´çš„12ä¸ªæœˆ
 	 */
 	private final BitSet months = new BitSet(12);
 
 	/**
-	 * 31Î»±íÊ¾Ò»¸öÔÂ×î¶àµÄ31Ìì
+	 * 31ä½è¡¨ç¤ºä¸€ä¸ªæœˆæœ€å¤šçš„31å¤©
 	 */
 	private final BitSet daysOfMonth = new BitSet(31);
 
 	/**
-	 * 7Î»±íÊ¾Ò»ÖÜ7Ìì
+	 * 7ä½è¡¨ç¤ºä¸€å‘¨7å¤©
 	 */
 	private final BitSet daysOfWeek = new BitSet(7);
 
 	/**
-	 * 24Î»±íÊ¾Ò»ÌìµÄ24¸öĞ¡Ê±
+	 * 24ä½è¡¨ç¤ºä¸€å¤©çš„24ä¸ªå°æ—¶
 	 */
 	private final BitSet hours = new BitSet(24);
 
 	/**
-	 * 60Î»±íÊ¾Ò»¸öĞ¡Ê±µÄ60¸ö·ÖÖÓ
+	 * 60ä½è¡¨ç¤ºä¸€ä¸ªå°æ—¶çš„60ä¸ªåˆ†é’Ÿ
 	 */
 	private final BitSet minutes = new BitSet(60);
 
 	/**
-	 * 60Î»±íÊ¾Ò»ÃëÖÓµÄ60¸öÃëÖÓ
+	 * 60ä½è¡¨ç¤ºä¸€ç§’é’Ÿçš„60ä¸ªç§’é’Ÿ
 	 */
 	private final BitSet seconds = new BitSet(60);
 
@@ -168,11 +168,11 @@ public class CronSequenceGenerator {
 	}
 
 	/**
-	 * ÑØ×ÅÃë¡ú·Ö¡úÊ±¡úÈÕ¡úÔÂÖğ²½¼ì²éÖ¸¶¨Ê±¼äµÄÖµ¡£Èç¹ûËùÓĞÓòÉÏµÄÖµ¶¼ÒÑ¾­·ûºÏ¹æÔòÄÇÃ´Ö¸¶¨Ê±¼ä·ûºÏcron±í´ïÊ½£¬
-	 * Ëã·¨½áÊø¡£Èç¹ûÓĞÄ³¸öÓòµÄÖµ²»·ûºÏ¹æÔò£¬µ÷Õû¸ÃÓòµ½ÏÂÒ»¸ö·ûºÏ¹æÔòµÄÖµ(Èç¹ûµ±Ç°ÒÑ¾­³¬¹ı×î´ó¸ººÉ¹æÔòµÄÖµ£¬
-	 * Ôò×ÔÉíÉèÎª0£¬µİ¹éµ÷Õû¸ü¸ßµÄÓòµ½ÏÂÒ»¸ö¸ººÉ¹æÔòµÄÖµ)£¬²¢½«½ÏµÍÓòµÄÖµµ÷Õûµ½×îĞ¡¸ººÉ¹æÔòµÄÖµ£¬È»ºó´ÓÃë¿ªÊ¼ÖØĞÂ¼ì²éºÍµ÷Õû¡£
+	 * æ²¿ç€ç§’â†’åˆ†â†’æ—¶â†’æ—¥â†’æœˆé€æ­¥æ£€æŸ¥æŒ‡å®šæ—¶é—´çš„å€¼ã€‚å¦‚æœæ‰€æœ‰åŸŸä¸Šçš„å€¼éƒ½å·²ç»ç¬¦åˆè§„åˆ™é‚£ä¹ˆæŒ‡å®šæ—¶é—´ç¬¦åˆcronè¡¨è¾¾å¼ï¼Œ
+	 * ç®—æ³•ç»“æŸã€‚å¦‚æœæœ‰æŸä¸ªåŸŸçš„å€¼ä¸ç¬¦åˆè§„åˆ™ï¼Œè°ƒæ•´è¯¥åŸŸåˆ°ä¸‹ä¸€ä¸ªç¬¦åˆè§„åˆ™çš„å€¼(å¦‚æœå½“å‰å·²ç»è¶…è¿‡æœ€å¤§è´Ÿè·è§„åˆ™çš„å€¼ï¼Œ
+	 * åˆ™è‡ªèº«è®¾ä¸º0ï¼Œé€’å½’è°ƒæ•´æ›´é«˜çš„åŸŸåˆ°ä¸‹ä¸€ä¸ªè´Ÿè·è§„åˆ™çš„å€¼)ï¼Œå¹¶å°†è¾ƒä½åŸŸçš„å€¼è°ƒæ•´åˆ°æœ€å°è´Ÿè·è§„åˆ™çš„å€¼ï¼Œç„¶åä»ç§’å¼€å§‹é‡æ–°æ£€æŸ¥å’Œè°ƒæ•´ã€‚
 	 * 
-	 * @param calendar Ê±¼ä
+	 * @param calendar æ—¶é—´
 	 * @param dot
 	 */
 	private void doNext(Calendar calendar, int dot) {
@@ -285,7 +285,7 @@ public class CronSequenceGenerator {
 
 	/**
 	 * Parse the given pattern expression.
-	 * Âß¼­ÊÇ½«¸÷¸öÓòµÄ±í´ïÊ½½âÎö³ÉBitSet
+	 * é€»è¾‘æ˜¯å°†å„ä¸ªåŸŸçš„è¡¨è¾¾å¼è§£ææˆBitSet
 	 */
 	private void parse(String expression) throws IllegalArgumentException {
 		String[] fields = StringUtils.tokenizeToStringArray(expression, " ");
@@ -297,9 +297,9 @@ public class CronSequenceGenerator {
 		setNumberHits(this.minutes, fields[1], 0, 60);
 		setNumberHits(this.hours, fields[2], 0, 24);
 		
-		setDaysOfMonth(this.daysOfMonth, fields[3]);//Ììº¬ÓĞ"?"ĞèÒªµ¥¶À½âÎö
-		setMonths(this.months, fields[4]);//ÔÂº¬ÓĞÓ¢ÎÄÃ¶¾ÙÖµĞèÒªµ¥¶À´¦Àí
-		setDays(this.daysOfWeek, replaceOrdinals(fields[5], "SUN,MON,TUE,WED,THU,FRI,SAT"), 8);//ÖÜº¬ÓĞ"?"ºÍÓ¢ÎÄÃ¶¾ÙÖµĞèÒªµ¥¶À½âÎö
+		setDaysOfMonth(this.daysOfMonth, fields[3]);//å¤©å«æœ‰"?"éœ€è¦å•ç‹¬è§£æ
+		setMonths(this.months, fields[4]);//æœˆå«æœ‰è‹±æ–‡æšä¸¾å€¼éœ€è¦å•ç‹¬å¤„ç†
+		setDays(this.daysOfWeek, replaceOrdinals(fields[5], "SUN,MON,TUE,WED,THU,FRI,SAT"), 8);//å‘¨å«æœ‰"?"å’Œè‹±æ–‡æšä¸¾å€¼éœ€è¦å•ç‹¬è§£æ
 		
 		if (this.daysOfWeek.get(7)) {
 			// Sunday can be represented as 0 or 7
@@ -309,7 +309,7 @@ public class CronSequenceGenerator {
 	}
 
 	/**
-	 * ¾ÍÊÇ½«Ó¢ÎÄÃ¶¾ÙÖµÌæ»»³ÉÊı×Ö£¨0¿ªÊ¼£©£¬Ìæ»»ºó¾Í¿ÉÒÔ¸´ÓÃsetNumberHitsµÄÂß¼­
+	 * å°±æ˜¯å°†è‹±æ–‡æšä¸¾å€¼æ›¿æ¢æˆæ•°å­—ï¼ˆ0å¼€å§‹ï¼‰ï¼Œæ›¿æ¢åå°±å¯ä»¥å¤ç”¨setNumberHitsçš„é€»è¾‘
 	 * 
 	 * Replace the values in the comma-separated list (case insensitive)
 	 * with their index in the list.
@@ -317,7 +317,7 @@ public class CronSequenceGenerator {
 	 */
 	private String replaceOrdinals(String value, String commaSeparatedList) {
 		
-		String[] list = StringUtils.commaDelimitedListToStringArray(commaSeparatedList);//¶ººÅ·Ö¸ô³ÉÊı×é
+		String[] list = StringUtils.commaDelimitedListToStringArray(commaSeparatedList);//é€—å·åˆ†éš”æˆæ•°ç»„
 		for (int i = 0; i < list.length; i++) {
 			String item = list[i].toUpperCase();
 			value = StringUtils.replace(value.toUpperCase(), item, "" + i);
@@ -326,7 +326,7 @@ public class CronSequenceGenerator {
 	}
 
 	/**
-	 * ´¦ÀíÌìµÄÂß¼­
+	 * å¤„ç†å¤©çš„é€»è¾‘
 	 * @param bits
 	 * @param field
 	 */
@@ -339,14 +339,14 @@ public class CronSequenceGenerator {
 	}
 
 	private void setDays(BitSet bits, String field, int max) {
-		if (field.contains("?")) {//"?"£ºÖ»ÄÜÔÚÈÕºÍÖÜÓòÊ¹ÓÃ£¬±íÊ¾·ÇÃ÷È·µÄÖµ£¬Êµ¼Ê×÷ÓÃµÈÍ¬"*"£¬¼´Æ¥ÅäÈÎÒâÖµ¡£ËùÒÔÖ±½Ó»»³É"*"
+		if (field.contains("?")) {//"?"ï¼šåªèƒ½åœ¨æ—¥å’Œå‘¨åŸŸä½¿ç”¨ï¼Œè¡¨ç¤ºéæ˜ç¡®çš„å€¼ï¼Œå®é™…ä½œç”¨ç­‰åŒ"*"ï¼Œå³åŒ¹é…ä»»æ„å€¼ã€‚æ‰€ä»¥ç›´æ¥æ¢æˆ"*"
 			field = "*";
 		}
 		setNumberHits(bits, field, 0, max);
 	}
 
 	/**
-	 * ´¦ÀíÔÂ·İµÄÂß¼­
+	 * å¤„ç†æœˆä»½çš„é€»è¾‘
 	 * 
 	 * @param bits
 	 * @param value
@@ -354,14 +354,14 @@ public class CronSequenceGenerator {
 	private void setMonths(BitSet bits, String value) {
 		int max = 12;
 		/**
-		 * ½«Ó¢ÎÄÃ¶¾ÙÖµÌæ»»³ÉÊı×Ö£¨0¿ªÊ¼£©£¬Ìæ»»ºó¾Í¿ÉÒÔ¸´ÓÃsetNumberHitsµÄÂß¼­
+		 * å°†è‹±æ–‡æšä¸¾å€¼æ›¿æ¢æˆæ•°å­—ï¼ˆ0å¼€å§‹ï¼‰ï¼Œæ›¿æ¢åå°±å¯ä»¥å¤ç”¨setNumberHitsçš„é€»è¾‘
 		 */
 		value = replaceOrdinals(value, "FOO,JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC");
 		BitSet months = new BitSet(13);
 		
 		
 		/**
-		 * cron±í´ïÊ½ÖĞÅäÖÃµÄÔÂ·İ·¶Î§ÊÇ1-12£¬CalendarÖĞµÄÔÂ·İ·¶Î§ÊÇ0-11,ËùÒÔ½«monthsÎ»Êı×éÕûÌå×óÒÆ1Î»¡£
+		 * cronè¡¨è¾¾å¼ä¸­é…ç½®çš„æœˆä»½èŒƒå›´æ˜¯1-12ï¼ŒCalendarä¸­çš„æœˆä»½èŒƒå›´æ˜¯0-11,æ‰€ä»¥å°†monthsä½æ•°ç»„æ•´ä½“å·¦ç§»1ä½ã€‚
 		 */
 		// Months start with 1 in Cron and 0 in Calendar, so push the values first into a longer bit set
 		setNumberHits(months, value, 1, max + 1);
@@ -374,25 +374,25 @@ public class CronSequenceGenerator {
 	}
 
 	/**
-	 * ½âÎöÊ±·ÖÃëµÄÂß¼­
+	 * è§£ææ—¶åˆ†ç§’çš„é€»è¾‘
 	 * 
 	 * @param bits 
-	 * @param value ±í´ïÊ½
-	 * @param min ÓĞĞ§Î»ÖÃ¿ªÊ¼
-	 * @param max ÓĞĞ§Î»ÖÃ½áÊø
+	 * @param value è¡¨è¾¾å¼
+	 * @param min æœ‰æ•ˆä½ç½®å¼€å§‹
+	 * @param max æœ‰æ•ˆä½ç½®ç»“æŸ
 	 */
 	private void setNumberHits(BitSet bits, String value, int min, int max) {
 		/**
-		 * Ê×ÏÈº¬ÓĞ¶ººÅ£¬±íÊ¾Õâ¸ö±í´ïÊ½ÊÇ¸ö×éºÏ±í´ïÊ½£¬ÏÈ·Ö¸î³É×Ó±í´ïÊ½Ò»¸ö¸ö½âÎö
+		 * é¦–å…ˆå«æœ‰é€—å·ï¼Œè¡¨ç¤ºè¿™ä¸ªè¡¨è¾¾å¼æ˜¯ä¸ªç»„åˆè¡¨è¾¾å¼ï¼Œå…ˆåˆ†å‰²æˆå­è¡¨è¾¾å¼ä¸€ä¸ªä¸ªè§£æ
 		 */
 		String[] fields = StringUtils.delimitedListToStringArray(value, ",");
 		
 		for (String field : fields) {
 			
 			/**
-			 * cron±í´ïÊ½½âÎö·½Ê½·ÖÁ½²½£º1.È·¶¨ÒªÉèÖÃ±ÈÌØÎ»µÄ·¶Î§£»2.ÉèÖÃ±ÈÌØÎ»Öµ
+			 * cronè¡¨è¾¾å¼è§£ææ–¹å¼åˆ†ä¸¤æ­¥ï¼š1.ç¡®å®šè¦è®¾ç½®æ¯”ç‰¹ä½çš„èŒƒå›´ï¼›2.è®¾ç½®æ¯”ç‰¹ä½å€¼
 			 */
-			if (!field.contains("/")) {//²»º¬"/"µÄÂß¼­
+			if (!field.contains("/")) {//ä¸å«"/"çš„é€»è¾‘
 				// Not an incrementer so it must be a range (possibly empty)
 				int[] range = getRange(field, min, max);
 				
@@ -400,31 +400,31 @@ public class CronSequenceGenerator {
 				
 				bits.set(range[0], range[1] + 1);
 			}
-			else {//  "/"£º¼ä¸ô´¥·¢£¬ÆğÊ¼Ê±¼ä´¥·¢Ò»´Î£¬È»ºóÃ¿¸ô¹Ì¶¨Ê±¼ä´¥·¢Ò»´Î£¬Ö±µ½½áÊøÊ±¼ä¡£
+			else {//  "/"ï¼šé—´éš”è§¦å‘ï¼Œèµ·å§‹æ—¶é—´è§¦å‘ä¸€æ¬¡ï¼Œç„¶åæ¯éš”å›ºå®šæ—¶é—´è§¦å‘ä¸€æ¬¡ï¼Œç›´åˆ°ç»“æŸæ—¶é—´ã€‚
 				/**
-				 * º¬"/"±í´ïÊ½¹æÔò£º
-				 * 1. "/"Ç°ÃæµÄ±í´ïÊ½Ö¸¶¨¿ªÊ¼Ê±¼äºÍ½áÊøÊ±¼ä£¬¶şÕßÓÃ"-"¸ô¿ª£»Ò²¿ÉÒÔ²»´ø"-"£¬Ö»Ö¸¶¨¿ªÊ¼Ê±¼ä
-				 * 2. "/"ºóÃæµÄ±í´ïÊ½±íÊ¾¼ä¸ôµÄÊ±¼ä
+				 * å«"/"è¡¨è¾¾å¼è§„åˆ™ï¼š
+				 * 1. "/"å‰é¢çš„è¡¨è¾¾å¼æŒ‡å®šå¼€å§‹æ—¶é—´å’Œç»“æŸæ—¶é—´ï¼ŒäºŒè€…ç”¨"-"éš”å¼€ï¼›ä¹Ÿå¯ä»¥ä¸å¸¦"-"ï¼ŒåªæŒ‡å®šå¼€å§‹æ—¶é—´
+				 * 2. "/"åé¢çš„è¡¨è¾¾å¼è¡¨ç¤ºé—´éš”çš„æ—¶é—´
 				 */
 				String[] split = StringUtils.delimitedListToStringArray(field, "/");
 				
 				
-				//"/"Ç°µÄ±í´ïÊ½µÄ½âÎö
+				//"/"å‰çš„è¡¨è¾¾å¼çš„è§£æ
 				if (split.length > 2) {
 					throw new IllegalArgumentException("Incrementer has more than two fields: '" +
 							field + "' in expression \"" + this.expression + "\"");
 				}
 				
-				// ÀıÈçÔÚ·ÖÖÓÓòÊ¹ÓÃ"10-30/2"±íÊ¾´ÓĞ¡Ê±µÄ10·ÖÖÓ¿ªÊ¼Ã¿¸ô2·ÖÖÓ´¥·¢Ò»´Î£¬Ö±µ½Ã¿Ğ¡Ê±µÄ30·ÖÖÓ½áÊø¡£
+				// ä¾‹å¦‚åœ¨åˆ†é’ŸåŸŸä½¿ç”¨"10-30/2"è¡¨ç¤ºä»å°æ—¶çš„10åˆ†é’Ÿå¼€å§‹æ¯éš”2åˆ†é’Ÿè§¦å‘ä¸€æ¬¡ï¼Œç›´åˆ°æ¯å°æ—¶çš„30åˆ†é’Ÿç»“æŸã€‚
 				int[] range = getRange(split[0], min, max);
 				
-				if (!split[0].contains("-")) {//²»º¬"-"µÄ½âÎö
+				if (!split[0].contains("-")) {//ä¸å«"-"çš„è§£æ
 					range[1] = max - 1;
 				}
 				
 				
 				
-				//"/"ºóÃæµÄ±í´ïÊ½µÄ½âÎö
+				//"/"åé¢çš„è¡¨è¾¾å¼çš„è§£æ
 				int delta = Integer.valueOf(split[1]);
 				if (delta <= 0) {
 					throw new IllegalArgumentException("Incrementer delta must be 1 or higher: '" +
@@ -441,15 +441,15 @@ public class CronSequenceGenerator {
 	}
 
 	/**
-	 * ½âÎö²»º¬","ºÍ"/"µÄ±í´ïÊ½
+	 * è§£æä¸å«","å’Œ"/"çš„è¡¨è¾¾å¼
 	 * @param field
 	 * @param min
 	 * @param max
-	 * @return ÒªÉèÖÃÎª1µÄBitSetµÄÆğÊ¼ºÍÖÕÖ¹µÄindex
+	 * @return è¦è®¾ç½®ä¸º1çš„BitSetçš„èµ·å§‹å’Œç»ˆæ­¢çš„index
 	 */
 	private int[] getRange(String field, int min, int max) {
 		int[] result = new int[2];
-		if (field.contains("*")) {//"*"±íÊ¾Æ¥Åä¸ÃÓòµÄËùÓĞÖµ
+		if (field.contains("*")) {//"*"è¡¨ç¤ºåŒ¹é…è¯¥åŸŸçš„æ‰€æœ‰å€¼
 			result[0] = min;
 			result[1] = max - 1;
 			return result;
@@ -457,7 +457,7 @@ public class CronSequenceGenerator {
 		if (!field.contains("-")) {//
 			result[0] = result[1] = Integer.valueOf(field);
 		}
-		else {//"-"±íÊ¾·¶Î§ÄÚµÄËùÓĞÖµ£¬È¡µÃÊ×Î²Öµ×öÆğÊ¼Î»ÖÃ¼´¿É
+		else {//"-"è¡¨ç¤ºèŒƒå›´å†…çš„æ‰€æœ‰å€¼ï¼Œå–å¾—é¦–å°¾å€¼åšèµ·å§‹ä½ç½®å³å¯
 			String[] split = StringUtils.delimitedListToStringArray(field, "-");
 			if (split.length > 2) {
 				throw new IllegalArgumentException("Range has more than two fields: '" +
@@ -468,7 +468,7 @@ public class CronSequenceGenerator {
 		}
 		
 		
-		//Ğ£Ñé±í´ïÊ½ºÏ·¨ĞÔ
+		//æ ¡éªŒè¡¨è¾¾å¼åˆæ³•æ€§
 		if (result[0] >= max || result[1] >= max) {
 			throw new IllegalArgumentException("Range exceeds maximum (" + max + "): '" +
 					field + "' in expression \"" + this.expression + "\"");

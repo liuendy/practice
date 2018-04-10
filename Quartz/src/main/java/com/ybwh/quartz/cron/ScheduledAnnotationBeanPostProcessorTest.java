@@ -6,15 +6,15 @@ public class ScheduledAnnotationBeanPostProcessorTest {
 
 	public static void main(String[] args) {
 		/**
-		 * ScheduledAnnotationBeanPostProcessorµÄprocessScheduled·½·¨ÖĞº¬ÓĞÖ´ĞĞ¶¨Ê±ÈÎÎñµÄÂß¼­
+		 * ScheduledAnnotationBeanPostProcessorçš„processScheduledæ–¹æ³•ä¸­å«æœ‰æ‰§è¡Œå®šæ—¶ä»»åŠ¡çš„é€»è¾‘
 		 */
 		ScheduledAnnotationBeanPostProcessor processor = null;
 
 		/**
-		 * cron±í´ïÊ½×îÖÕÖ´ĞĞÕßÊÇReschedulingRunnableµÄschedule·½·¨µ÷ÓÃCronTriggerµÄnextExecutionTime£¬
-		 * CronTriggerµÄnextExecutionTimeÓÖµ÷ÓÃCronSequenceGeneratorµÄnext·½·¨»ñÈ¡ÏÂ´ÎÖ´ĞĞÊ±¼ä£¬
-		 * È»ºó½»¸øScheduledExecutorServiceµÄscheduleÖ´ĞĞ¡£
-		 * ÖÁ´Ë½øÈëScheduledExecutorService(Êµ¼ÊÉÏÊÇ×ÓÀàScheduledThreadPoolExecutor)µÄÑÓ³ÙÖ´ĞĞÒ»´ÎĞÔÈÎÎñµÄÂß¼­¡£
+		 * cronè¡¨è¾¾å¼æœ€ç»ˆæ‰§è¡Œè€…æ˜¯ReschedulingRunnableçš„scheduleæ–¹æ³•è°ƒç”¨CronTriggerçš„nextExecutionTimeï¼Œ
+		 * CronTriggerçš„nextExecutionTimeåˆè°ƒç”¨CronSequenceGeneratorçš„nextæ–¹æ³•è·å–ä¸‹æ¬¡æ‰§è¡Œæ—¶é—´ï¼Œ
+		 * ç„¶åäº¤ç»™ScheduledExecutorServiceçš„scheduleæ‰§è¡Œã€‚
+		 * è‡³æ­¤è¿›å…¥ScheduledExecutorService(å®é™…ä¸Šæ˜¯å­ç±»ScheduledThreadPoolExecutor)çš„å»¶è¿Ÿæ‰§è¡Œä¸€æ¬¡æ€§ä»»åŠ¡çš„é€»è¾‘ã€‚
 		 * ReschedulingRunnable rr =null;
 		 * 
 		 */
