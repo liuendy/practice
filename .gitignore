@@ -22,3 +22,5 @@
 .settings
 /springMvc/.project
 /springMvc/.classpath
+/elastic-job-lite/.classpath
+/elastic-job-lite/.project

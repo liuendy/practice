@@ -22,13 +22,30 @@
 	<job:simple id="standaloneSimpleTask" job-ref="StandaloneSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		sharding-total-count="3" overwrite="true" description="简单的单节点运行任务" sharding-item-parameters="0=A,1=B,2=C">
-		<job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener>
+		<!-- <job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener> -->
 	</job:simple>
+	
+	<!-- 程序启动时禁止启动的任务，由控制台去启动 -->
+	<job:simple id="disableSimpleTask" job-ref="DisableSimpleTask"
+		registry-center-ref="regCenter" cron="0/15 * * * * ?"
+		sharding-total-count="1" overwrite="true" disabled="true" description="禁止运行的任务">
+	</job:simple>
+	
 
 	<!-- 失效转移任务 -->
 	<job:simple id="failoverSimpleTask" job-ref="FailoverSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		sharding-total-count="3" overwrite="true" description="简单的失效转移任务" failover="true">
+	</job:simple>
+	
+	
+	
+	<!-- 程序启动时禁止启动的任务，由控制台去启动 -->
+	<job:simple id="exceptionSimpleTask" job-ref="ExceptionSimpleTask"
+		registry-center-ref="regCenter" cron="0/15 * * * * ?"
+		sharding-total-count="1" overwrite="true" disabled="true" 
+		job-exception-handler="com.ybwh.elasticjoblite.handler.MyJobExceptionHandler"
+		description="任务的异常处理"> 
 	</job:simple>
 	
 	
