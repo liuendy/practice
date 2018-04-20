@@ -2,10 +2,11 @@ package com.ybwh.quartz.cron;
 
 import java.util.Date;
 
-import org.springframework.scheduling.support.CronSequenceGenerator;
+import com.ybwh.quartz.cron.parser.CronSequenceGenerator;
+
 
 /**
- * ²âÊÔcron±í´ïÊ½
+ * ï¿½ï¿½ï¿½ï¿½cronï¿½ï¿½ï¿½Ê½
  * @author fan79
  *
  */
@@ -13,7 +14,7 @@ public class CronSequenceGeneratorTest {
   
     public static void main(String[] args) {  
   
-        String cron = "* */5 * * * ?"; //Ã¿¸öÎå·ÖÖÓÖ´ÐÐÒ»´Î  
+        String cron = "* */5 * * * ?"; //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ò»ï¿½ï¿½  
   
         CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(cron);  
   
@@ -21,7 +22,7 @@ public class CronSequenceGeneratorTest {
   
         System.out.println("currentTime: " + currentTime);  
   
-        Date nextTimePoint = cronSequenceGenerator.next(currentTime); // currentTimeÎª¼ÆËãÏÂ´ÎÊ±¼äµãµÄ¿ªÊ¼Ê±¼ä  
+        Date nextTimePoint = cronSequenceGenerator.next(currentTime); // currentTimeÎªï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½Ê±ï¿½ï¿½ï¿½Ä¿ï¿½Ê¼Ê±ï¿½ï¿½  
         System.out.println("nextTimePoint:     " + nextTimePoint.getTime());  
   
         Date nextNextTimePoint = cronSequenceGenerator.next(nextTimePoint);  
