@@ -20,6 +20,8 @@ public class QuartzTest {
 			 * 任务调度器，是实际执行任务调度的控制器。在spring中通过SchedulerFactoryBean封装起来。
 			 */
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+			
+			
 			/**
 			 * 触发器，用于定义任务调度的时间规则，有SimpleTrigger,CronTrigger,DateIntervalTrigger
 			 * 和NthIncludedDayTrigger，其中CronTrigger用的比较多，本文主要介绍这种方式。
@@ -27,6 +29,11 @@ public class QuartzTest {
 			 */
 
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger1", "group1") // 定义name/group
+					.startNow()// 一旦加入scheduler，立即生效
+					.withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * * * ?")) // 使用cronTrigger
+					.build();
+			
+			Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("trigger2", "group2") // 定义name/group
 					.startNow()// 一旦加入scheduler，立即生效
 					.withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * * * ?")) // 使用cronTrigger
 					.build();
@@ -42,9 +49,11 @@ public class QuartzTest {
 			 * 用来描述Job实现类及其它相关的静态信息，如Job名字、关联监听器等信息。
 			 */
 			JobDetail jobDetail = JobBuilder.newJob(MyJob.class).withIdentity("myJob").build();
+			JobDetail jobDetail2 = JobBuilder.newJob(MyJob.class).withIdentity("myJob2").build();
 			
 
 			scheduler.scheduleJob(jobDetail, trigger);
+			scheduler.scheduleJob(jobDetail2, trigger2);
 
 			// and start it off
 			scheduler.start();
