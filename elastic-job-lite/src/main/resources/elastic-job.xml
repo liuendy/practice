@@ -18,36 +18,51 @@
 
 	<!-- 简单的单节点运行任务: 1.分片为1，即不需要分片； 2. 支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 .
 		分片参数主要是指定各分片代表的逻辑意义
-	 -->
+	 
 	<job:simple id="standaloneSimpleTask" job-ref="StandaloneSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		sharding-total-count="3" overwrite="true" description="简单的单节点运行任务" sharding-item-parameters="0=A,1=B,2=C">
-		<!-- <job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener> -->
+		<job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener> 
 	</job:simple>
+	-->
 	
-	<!-- 程序启动时禁止启动的任务，由控制台去启动 -->
+	
+	<!-- 手动触发任务演示
+	<job:simple id="consoleTriggerTask" job-ref="ConsoleTriggerTask"
+		registry-center-ref="regCenter" cron="0 0 0 * * ?"
+		sharding-total-count="1" overwrite="true" description="手动触发任务演示">
+	</job:simple>
+	 -->
+	
+	<!-- 程序启动时禁止启动的任务，由控制台去启动 
 	<job:simple id="disableSimpleTask" job-ref="DisableSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		sharding-total-count="1" overwrite="true" disabled="true" description="禁止运行的任务">
 	</job:simple>
-	
+	-->
 
-	<!-- 失效转移任务 -->
+	<!-- 失效转移任务
 	<job:simple id="failoverSimpleTask" job-ref="FailoverSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		sharding-total-count="3" overwrite="true" description="简单的失效转移任务" failover="true">
 	</job:simple>
+	 -->
 	
 	
-	
-	<!-- 程序启动时禁止启动的任务，由控制台去启动 -->
+	<!-- 任务的异常处理
 	<job:simple id="exceptionSimpleTask" job-ref="ExceptionSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		sharding-total-count="1" overwrite="true" disabled="true" 
 		job-exception-handler="com.ybwh.elasticjoblite.handler.MyJobExceptionHandler"
 		description="任务的异常处理"> 
 	</job:simple>
-	
+	 -->
+	 
+	 <!-- 自定义任务参数 -->
+	 <job:simple id="customShardingParamTask" job-ref="CustomShardingParamTask"
+		registry-center-ref="regCenter" cron="0 0 0 * * ?"
+		sharding-total-count="1" overwrite="true" description="自定义任务参数">
+	</job:simple>
 	
 
 	<!-- streaming-process:是否流式处理数据, 如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 

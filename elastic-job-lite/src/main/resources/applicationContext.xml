@@ -30,6 +30,9 @@
 	<bean id="FailoverSimpleTask" class="com.ybwh.elasticjoblite.task.FailoverSimpleTask"></bean>
 	
 	<bean id="ExceptionSimpleTask" class="com.ybwh.elasticjoblite.task.ExceptionSimpleTask"></bean>
+	<bean id="ConsoleTriggerTask" class="com.ybwh.elasticjoblite.task.ConsoleTriggerTask"></bean>
+	<bean id="CustomShardingParamTask" class="com.ybwh.elasticjoblite.task.CustomShardingParamTask"></bean>
+	
 	
 	
 	

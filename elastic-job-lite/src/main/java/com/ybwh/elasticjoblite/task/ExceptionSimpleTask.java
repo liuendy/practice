@@ -14,8 +14,7 @@ public class ExceptionSimpleTask implements SimpleJob {
 	@Override
 	public void execute(ShardingContext context) {
 		
-		throw new IllegalArgumentException("抛出异常");
-		
+		throw new RuntimeException("抛出异常");
 	}
 
 }
