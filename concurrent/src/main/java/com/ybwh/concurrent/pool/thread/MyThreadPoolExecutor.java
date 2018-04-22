@@ -1,4 +1,4 @@
-package com.ybwh.concurrent.pool;
+package com.ybwh.concurrent.pool.thread;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
