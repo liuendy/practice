@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ybwh.springboot2.demo.dao.AreaDao" >
+  <resultMap id="BaseResultMap" type="com.ybwh.springboot2.demo.entity.Area" >
+    <id column="id" property="id" />
+    <result column="area_name" property="areaName"/>
+    <result column="parent_id" property="parentId" />
+    <result column="short_name" property="shortName"/>
+    <result column="area_code" property="areaCode" />
+    <result column="level" property="level" />
+    <result column="sort" property="sort" />
+    <result column="id_path" property="idPath"/>
+    <result column="name_path" property="namePath"/>
+    <result column="is_leaf" property="isLeaf" />
+    <result column="is_del" property="isDel" />
+    <result column="create_time" property="createTime" />
+    <result column="create_id" property="createId" />
+    <result column="update_time" property="updateTime" />
+    <result column="update_id" property="updateId" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, area_name, parent_id, short_name, area_code, level, sort, id_path, name_path, 
+    is_leaf, is_del, create_time, create_id, update_time, update_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from area
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from area
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com.ybwh.springboot2.demo.entity.Area" >
+    insert into area (id, area_name, parent_id, 
+      short_name, area_code, level, 
+      sort, id_path, name_path, 
+      is_leaf, is_del, create_time, 
+      create_id, update_time, update_id
+      )
+    values (#{id}, #{areaName}, #{parentId}, 
+      #{shortName}, #{areaCode}, #{level}, 
+      #{sort}, #{idPath}, #{namePath}, 
+      #{isLeaf}, #{isDel}, #{createTime}, 
+      #{createId}, #{updateTime}, #{updateId}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ybwh.springboot2.demo.entity.Area" >
+    insert into area
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="areaName != null" >
+        area_name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="shortName != null" >
+        short_name,
+      </if>
+      <if test="areaCode != null" >
+        area_code,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="idPath != null" >
+        id_path,
+      </if>
+      <if test="namePath != null" >
+        name_path,
+      </if>
+      <if test="isLeaf != null" >
+        is_leaf,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createId != null" >
+        create_id,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateId != null" >
+        update_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="areaName != null" >
+        #{areaName},
+      </if>
+      <if test="parentId != null" >
+        #{parentId},
+      </if>
+      <if test="shortName != null" >
+        #{shortName},
+      </if>
+      <if test="areaCode != null" >
+        #{areaCode},
+      </if>
+      <if test="level != null" >
+        #{level},
+      </if>
+      <if test="sort != null" >
+        #{sort},
+      </if>
+      <if test="idPath != null" >
+        #{idPath},
+      </if>
+      <if test="namePath != null" >
+        #{namePath},
+      </if>
+      <if test="isLeaf != null" >
+        #{isLeaf},
+      </if>
+      <if test="isDel != null" >
+        #{isDel},
+      </if>
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+      <if test="createId != null" >
+        #{createId},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime},
+      </if>
+      <if test="updateId != null" >
+        #{updateId},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ybwh.springboot2.demo.entity.Area" >
+    update area
+    <set >
+      <if test="areaName != null" >
+        area_name = #{areaName},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId},
+      </if>
+      <if test="shortName != null" >
+        short_name = #{shortName},
+      </if>
+      <if test="areaCode != null" >
+        area_code = #{areaCode},
+      </if>
+      <if test="level != null" >
+        level = #{level},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort},
+      </if>
+      <if test="idPath != null" >
+        id_path = #{idPath},
+      </if>
+      <if test="namePath != null" >
+        name_path = #{namePath},
+      </if>
+      <if test="isLeaf != null" >
+        is_leaf = #{isLeaf},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime},
+      </if>
+      <if test="updateId != null" >
+        update_id = #{updateId},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ybwh.springboot2.demo.entity.Area" >
+    update area
+    set area_name = #{areaName},
+      parent_id = #{parentId},
+      short_name = #{shortName},
+      area_code = #{areaCode},
+      level = #{level},
+      sort = #{sort},
+      id_path = #{idPath},
+      name_path = #{namePath},
+      is_leaf = #{isLeaf},
+      is_del = #{isDel},
+      create_time = #{createTime},
+      create_id = #{createId},
+      update_time = #{updateTime},
+      update_id = #{updateId}
+    where id = #{id}
+  </update>
+</mapper>

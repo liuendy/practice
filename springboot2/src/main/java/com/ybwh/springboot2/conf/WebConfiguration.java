@@ -9,6 +9,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.ybwh.springboot2.common.utils.GsonFactory;
+
 @Configuration
 @EnableWebMvc
 public class WebConfiguration implements WebMvcConfigurer {
@@ -17,6 +19,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters
 				.removeIf(httpMessageConverter -> httpMessageConverter instanceof MappingJackson2HttpMessageConverter); // 删除MappingJackson2HttpMessageConverter
-		converters.add(new GsonHttpMessageConverter()); // 添加GsonHttpMessageConverter
+		
+		converters.add(new GsonHttpMessageConverter(GsonFactory.newInstance(GsonFactory.yyyy_MM_dd_HH_mm_ss).createGson())); // 添加GsonHttpMessageConverter
 	}
 }

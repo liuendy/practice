@@ -1,0 +1,52 @@
+# Tomcat settings
+server:
+    servlet:
+      port: 8080
+      context-path: /
+      compression:
+          enabled: true
+      tomcat:
+          uri-encoding: UTF-8
+
+# Spring settings
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/member?useSSL=false&characterEncoding=utf8&useUnicode=true&zeroDateTimeBehavior=convertToNull
+        username: root
+        password: fan1988
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+            initial-size: 5
+            max-active: 20
+            min-idle: 5
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            max-open-prepared-statements: 20
+            validation-query: SELECT 1 FROM DUAL
+            test-on-borrow: false
+            test-on-return: false
+            test-while-idle: true
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            filters: stat,wall
+#    profiles:
+#        active: dev
+#    jackson:
+#        date-format: yyyy-MM-dd HH:mm:ss
+#        joda-date-time-format: yyyy-MM-dd HH:mm:ss
+#        time-zone: GMT+08
+
+# MyBatis settings
+mybatis:
+    config: classpath:mybatis/mybatis-config.xml
+    mapper-locations: classpath:mybatis/mapper/*.xml
+    #type-aliases-package: com.incar.monitor.model.entity;com.incar.monitor.model.vo
+
+# Redis settings
+#redis:
+#    hostName: {host}
+#    port: 6379
+#    dataBase: 0
+#    timeout: 3000
