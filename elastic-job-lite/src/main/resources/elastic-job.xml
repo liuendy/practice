@@ -60,7 +60,7 @@
 	 
 	 <!-- 自定义任务参数 -->
 	 <job:simple id="customShardingParamTask" job-ref="CustomShardingParamTask"
-		registry-center-ref="regCenter" cron="0 0 0 * * ?"
+		registry-center-ref="regCenter" cron="0 * * * * ?"
 		sharding-total-count="1" overwrite="true" description="自定义任务参数">
 	</job:simple>
 	
