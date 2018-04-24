@@ -1,5 +1,6 @@
 package com.ybwh.elasticjoblite.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,24 +21,26 @@ public class SimpleDataflowTask implements DataflowJob<User> {
 	
 	private static final Logger LOGGER = Logger.getLogger(SimpleDataflowTask.class);
 
-	public List<User> fetchData(ShardingContext shardingContext) {// 抓取数据逻辑
-		switch (shardingContext.getShardingItem()) {
-		case 0:
-			List<User> data = null;// get data from database by sharding item 0
-			return data;
-		case 1:
-			List<User> data1 = null;// get data from database by sharding item 1
-			return data1;
-		case 2:
-			List<User> data2 = null;// get data from database by sharding item 2
-			return data2;
-		// case n: ...
+	// 抓取数据逻辑
+	public List<User> fetchData(ShardingContext shardingContext) {
+		LOGGER.info("抓取数据开始");
+		List<User> list = new ArrayList<>(10);
+		for (int i = 0; i < 10; i++) {
+			list.add(new User((long)i,"u"+i,"p"+i));
 		}
+		LOGGER.info("抓取数据结束");
 
-		return null;
+		return list;
 	}
 
-	public void processData(ShardingContext shardingContext, List<User> data) {// 处理数据逻辑,data是fetchData抓取得数据
+	// 处理数据逻辑,data是fetchData抓取得数据
+	public void processData(ShardingContext shardingContext, List<User> data) {
+		LOGGER.info("处理数据");
+		for (User user : data) {
+			System.out.println(user);
+			
+		}
+		
 
 	}
 }

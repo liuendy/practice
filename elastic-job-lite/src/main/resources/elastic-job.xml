@@ -44,7 +44,7 @@
 	<!-- 失效转移任务
 	<job:simple id="failoverSimpleTask" job-ref="FailoverSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
-		sharding-total-count="3" overwrite="true" description="简单的失效转移任务" failover="true">
+		sharding-total-count="1" overwrite="true" description="简单的失效转移任务" failover="true">
 	</job:simple>
 	 -->
 	
@@ -58,20 +58,20 @@
 	</job:simple>
 	 -->
 	 
-	 <!-- 自定义任务参数 -->
+	 <!-- 自定义任务参数
 	 <job:simple id="customShardingParamTask" job-ref="CustomShardingParamTask"
 		registry-center-ref="regCenter" cron="0 * * * * ?"
 		sharding-total-count="1" overwrite="true" description="自定义任务参数">
 	</job:simple>
-	
+	 -->
 
 	<!-- streaming-process:是否流式处理数据, 如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 
 		则处理数据完成后作业结束 -->
-	<!-- <job:dataflow id="simpleDataflowTask" job-ref="SimpleDataflowTask"
+	<job:dataflow id="simpleDataflowTask" job-ref="SimpleDataflowTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
-		streaming-process="false" sharding-total-count="2" overwrite="true"
+		streaming-process="false" sharding-total-count="1" overwrite="true"
 		description="简单的数据流运行任务">
 
-	</job:dataflow> -->
+	</job:dataflow>
 
 </beans>

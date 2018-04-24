@@ -26,15 +26,15 @@
 	
 	<bean id="StandaloneSimpleTask" class="com.ybwh.elasticjoblite.task.StandaloneSimpleTask"></bean>
 	<bean id="DisableSimpleTask" class="com.ybwh.elasticjoblite.task.DisableSimpleTask"></bean>
-	<bean id="SimpleDataflowTask" class="com.ybwh.elasticjoblite.task.SimpleDataflowTask"></bean>
 	<bean id="FailoverSimpleTask" class="com.ybwh.elasticjoblite.task.FailoverSimpleTask"></bean>
-	
 	<bean id="ExceptionSimpleTask" class="com.ybwh.elasticjoblite.task.ExceptionSimpleTask"></bean>
 	<bean id="ConsoleTriggerTask" class="com.ybwh.elasticjoblite.task.ConsoleTriggerTask"></bean>
 	<bean id="CustomShardingParamTask" class="com.ybwh.elasticjoblite.task.CustomShardingParamTask"></bean>
 	
 	
+	<bean id="SimpleDataflowTask" class="com.ybwh.elasticjoblite.task.SimpleDataflowTask">
 	
+	</bean>
 	
 	
 </beans>

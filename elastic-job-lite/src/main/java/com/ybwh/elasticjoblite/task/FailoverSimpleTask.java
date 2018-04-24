@@ -1,5 +1,8 @@
 package com.ybwh.elasticjoblite.task;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+
 import org.apache.log4j.Logger;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
@@ -16,7 +19,17 @@ public class FailoverSimpleTask  implements SimpleJob {
 
 	@Override
 	public void execute(ShardingContext shardingContext) {//需要保证幂等性
-		LOGGER.info("失效转移任务");
+		LOGGER.info("失效转移任务开始,pid="+getProcessID());
+		
+		LOGGER.info("失效转移任务结束,pid="+getProcessID());
 	}
+	
+	
+	public static final int getProcessID() { 
+	    RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+	    return Integer.valueOf(runtimeMXBean.getName().split("@")[0]) 
+	        .intValue(); 
+	  } 
+
 
 }
