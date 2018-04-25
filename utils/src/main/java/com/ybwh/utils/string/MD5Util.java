@@ -41,6 +41,7 @@ public class MD5Util {
 	public static void main(String[] args) {
 		System.out.println(calcMd5("{\"userId\":\"1000089999\"}"));
 		System.out.println(calcMd5("{\"employeeId\":\"66053\"}"));
+		System.out.println(calcMd5("[{\"account\":\"Fan\",\"pageKey\":\"test_page_ 1\",\"actionKey\":\"test_action_1\",\"actionId\":\"1\",\"actionTime\":\"2018-04-09 15:42:02\",\"appVersion\":\"5.0\",\"channel\":\"百度分享\",\"osVersion\":\"android 8.0\",\"deviceType\":1,\"deviceId\":\"wetw24223424\",\"deviceModel\":\"红米 note 5A\",\"networkType\":\"4G\",\"userId\":\"12142\",\"userState\":1,\"province\":\"湖北省\",\"city\":\"武汉市\"}]"));
 		
 	}
 }
