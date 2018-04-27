@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 自己优先加载的加载器
+ * 自己优先加载的加载器,破坏双亲加载机制一种方式， 不推荐使用，推荐用线程上下文加载器来破坏双亲加载机制
  * 
  * @author fanbeibei
  *
@@ -16,7 +16,9 @@ public class MySelfDoClassLoader extends ClassLoader {
 	private String rootDir;
 
 	public MySelfDoClassLoader(String rootDir) {
+		super(Thread.currentThread().getContextClassLoader());// 将线程上下文加载器设置为父加载器
 		this.rootDir = rootDir;
+
 	}
 
 	/*
@@ -25,17 +27,23 @@ public class MySelfDoClassLoader extends ClassLoader {
 	@Override
 	protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 
-		Class<?> c = findClass(name);
-		if (resolve) {
-			resolveClass(c);
+		if (name.startsWith("java.")) {// 如果是jdk的类则由父类加载器加载
+			return getParent().loadClass(name);
 		}
-		
+
+		Class<?> c = null;
+		try {
+			c = findClass(name);
+			if (resolve) {
+				resolveClass(c);
+			}
+		} catch (Throwable e) {
+			c = getParent().loadClass(name);// 自己加载出错则由父类加载器加载
+		}
+
 		return c;
 	}
 
-	/*
-	 * 父加载器都加载不了才会走到这里
-	 */
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		byte[] classData = getClassData(name); // 获取类的字节数组
