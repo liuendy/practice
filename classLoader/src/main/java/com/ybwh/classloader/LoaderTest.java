@@ -16,6 +16,15 @@ public class LoaderTest {
 		每个ClassLoader都维护了一份自己的名称空间， 同一个名称空间里不能出现两个同名的类。
 	 * </pre>
 	 * 
+	 * <pre>
+	 * defineClass()：这个方法用来完成从Java字节代码的字节数组到java.lang.Class的转换。这个方法是不能被覆写的，一般是用原生代码来实现的。
+		findLoadedClass()：这个方法用来根据名称查找已经加载过的Java类。一个类加载器不会重复加载同一名称的类。
+		findClass()：这个方法用来根据名称查找并加载Java类。
+		loadClass()：这个方法用来根据名称加载Java类。
+		resolveClass()：这个方法用来链接一个Java类。
+	 * 
+	 * </pre>
+	 * 
 	 */
 
 	public static void main(String[] args) {
@@ -24,9 +33,9 @@ public class LoaderTest {
 			System.out.println("String  classLoader:" + String.class.getClassLoader());
 
 			System.out.println("默认的线程上下文加载器：" + Thread.currentThread().getContextClassLoader());
-			System.out.println("系统类加载器 :"+ClassLoader.getSystemClassLoader());
-			System.out.println("系统类加载器的父加载器 :"+ClassLoader.getSystemClassLoader().getParent());
-			System.out.println("扩展类加载器的父类  :"+ClassLoader.getSystemClassLoader().getParent().getParent());
+			System.out.println("系统类加载器 :" + ClassLoader.getSystemClassLoader());
+			System.out.println("系统类加载器的父加载器 :" + ClassLoader.getSystemClassLoader().getParent());
+			System.out.println("扩展类加载器的父类  :" + ClassLoader.getSystemClassLoader().getParent().getParent());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
