@@ -16,10 +16,14 @@ import javassist.bytecode.annotation.IntegerMemberValue;
 /**
  * 测试使用javassist生成一个新的类
  */
-public class Demo01 {
+public class MakeNewClass {
 	public static void main(String[] args) throws CannotCompileException, Exception {
 		ClassPool pool = ClassPool.getDefault();
 		CtClass cc = pool.makeClass("com.test.bean.Emp");
+		
+		
+		//设置父类
+//        cc.setSuperclass(pool.get("com.ricky.codelab.javassist.domain.Person"));
 
 		// 创建属性
 		CtField f1 = CtField.make("private int empno;", cc);
