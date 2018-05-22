@@ -16,8 +16,11 @@
         </commentGenerator>  
   
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://127.0.0.1:3306/member" userId="root" password="fan1988">  
-        </jdbcConnection>  
+            connectionURL="jdbc:mysql://127.0.0.1:3306/ehr-message" userId="root" password="fan1988">  
+        </jdbcConnection> 
+        <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
+            connectionURL="jdbc:mysql://172.16.101.130:39876 /ehr" userId="root" password="SdBhu87ujm9ijn,;@1~_pl,<ki8">  
+        </jdbcConnection>  -->
   
         <javaTypeResolver type="com.ybwh.mybaitsGen.MyJavaTypeResolver">  
             <property name="forceBigDecimals" value="false" />
@@ -39,12 +42,21 @@
             <property name="enableSubPackages" value="true" />  
         </javaClientGenerator>  
   
-        <table  tableName="area" domainObjectName="Area"
+        <table  tableName="t_work_message" domainObjectName="WorkMessage"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
 		</table>
-  
+  		<table  tableName="t_work_message_template" domainObjectName="WorkMessageTemplate"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
+		<table  tableName="t_timer_work_message_conf" domainObjectName="TimerWorkMessageConf"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table>
   
     </context>  
 </generatorConfiguration>  
