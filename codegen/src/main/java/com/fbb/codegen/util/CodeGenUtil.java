@@ -9,19 +9,34 @@ public class CodeGenUtil {
 	 * @param tableName
 	 * @return
 	 */
-	public static String tableName2ClassName(String tableName){
+	public static String tableName2ClassName(final String tableName){
 		if (StringUtils.isBlank(tableName)) {
 			throw new IllegalArgumentException("tableName  can not be null!!");
 		}
 		
-		if (-1 == tableName.indexOf("_")) {
-			return tableName.substring(0,1).toUpperCase() + tableName.substring(1).toLowerCase();
+		
+		String tableName0 = tableName;
+		
+		if (-1 == tableName0.indexOf("_")) {
+			return tableName0.substring(0,1).toUpperCase() + tableName0.substring(1).toLowerCase();
+		}
+		
+		
+		while("_".startsWith(tableName0)) {
+			tableName0 = tableName0.substring(1);
+		}
+		
+		if("t_".startsWith(tableName0)) {
+			tableName0 = tableName0.substring(1);
 		}
 		
 		String [] splitArr = tableName.split("_");
 		StringBuilder className = new StringBuilder();
 		for (String s : splitArr) {
-			className.append(s.substring(0,1).toUpperCase()).append(s.substring(1).toLowerCase());
+			if(null != s && !"".equals(s)) {
+				className.append(s.substring(0,1).toUpperCase()).append(s.substring(1).toLowerCase());
+			}
+			
 		}
 		return className.toString();
 	}
@@ -32,7 +47,7 @@ public class CodeGenUtil {
 	 * @param columnName
 	 * @return
 	 */
-	public static String columnName2PropName(String columnName){
+	public static String columnName2PropName(final String columnName){
 		if (StringUtils.isBlank(columnName)) {
 			throw new IllegalArgumentException("columnName  can not be null!!");
 		}

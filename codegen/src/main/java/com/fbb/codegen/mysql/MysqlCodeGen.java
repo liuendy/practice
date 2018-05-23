@@ -48,14 +48,15 @@ public class MysqlCodeGen extends CodeGen {
 	public void createAllTableEntityFile(String fileOutPath, String packageName) {
 		try {
 			File fileOutPathFile = new File(fileOutPath);
-			
-			if (!fileOutPathFile.exists()) {//不存在则创建目录
+
+			if (!fileOutPathFile.exists()) {// 不存在则创建目录
 				fileOutPathFile.mkdirs();
 			}
-			
+
 			if (!fileOutPathFile.isDirectory()) {
-				throw new IOException(fileOutPath+" is not a directory path");
+				throw new IOException(fileOutPath + " is not a directory path");
 			}
+
 			
 			List<EntityCodeInfo> eciList = getAllEntityCodeInfo(packageName);
 			for (EntityCodeInfo eci : eciList) {
@@ -128,6 +129,9 @@ public class MysqlCodeGen extends CodeGen {
 		ResultSet resultSet = dbmd.getTables(null, "%", "%", new String[] { "TABLE" });
 		List<EntityCodeInfo> eciList = new ArrayList<EntityCodeInfo>();
 
+		
+		
+		
 		while (resultSet.next()) {
 			// 获取表名
 			String tableName = resultSet.getString("TABLE_NAME");
@@ -135,14 +139,17 @@ public class MysqlCodeGen extends CodeGen {
 			// System.out.println(resultSet.getString("REMARKS"));
 			// System.out.println("*******************************");
 
-			logger.debug("表名：" + tableName + "\t\n表字段信息：");
+			logger.info("表名：" + tableName);
 
 			Set<String> pkNameSet = getPkName(dbmd, tableName);
+			logger.info("主键名：" + pkNameSet);
 
 			EntityCodeInfo eci = new EntityCodeInfo();
-			eci.setClassName(CodeGenUtil.tableName2ClassName(tableName));
-			eci.setTableName(tableName);
 
+			String clazzName = CodeGenUtil.tableName2ClassName(tableName);
+			logger.info("类名：" + clazzName);
+			eci.setClassName(clazzName);
+			eci.setTableName(tableName);
 			// 设置包名
 			eci.setPackageDeeclaration(packageName);
 
@@ -164,22 +171,23 @@ public class MysqlCodeGen extends CodeGen {
 					pvi.setIsId(false);
 				}
 
-				
 				pvi.setType(columJavaType.substring(columJavaType.lastIndexOf(".") + 1));
-				
+
 				if (!columJavaType.startsWith("java.lang.")) {
 					importList.add(columJavaType);
 				}
-				
+
 				pvi.setColumnName(columName);
 				pvi.setComment(rs.getString("REMARKS"));
-				pvi.setVarName(CodeGenUtil.columnName2PropName(columName));
 
-				
+				String varName = CodeGenUtil.columnName2PropName(columName);
+				pvi.setVarName(varName);
+
+				logger.info("列名:" + columName + " -> 属性名：" + varName);
 
 				varsList.add(pvi);
 
-				logger.debug("字段名：" + rs.getString("COLUMN_NAME") + "\t字段注释：" + rs.getString("REMARKS") + "\t字段数据类型："
+				logger.info("字段名：" + rs.getString("COLUMN_NAME") + "\t字段注释：" + rs.getString("REMARKS") + "\t字段数据类型："
 						+ rs.getString("TYPE_NAME").toLowerCase());
 			}
 
@@ -187,7 +195,7 @@ public class MysqlCodeGen extends CodeGen {
 			eci.setVarsList(varsList);
 			eciList.add(eci);
 
-			logger.debug("生成成功！");
+			logger.info("-------------------------------------------"+clazzName + "生成成功！-----------------------------------------------");
 		}
 
 		if (0 == eciList.size()) {

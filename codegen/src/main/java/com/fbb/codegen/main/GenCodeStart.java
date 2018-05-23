@@ -21,17 +21,19 @@ public class GenCodeStart {
 	}
 	
 	public static void main(String[] args) {
-		final String url = "jdbc:mysql://localhost:3306/iov?characterEncoding=utf-8&useUnicode=true&zeroDateTimeBehavior=convertToNull";
+		final String url = "jdbc:mysql://172.16.101.130:3306/ehr_message?characterEncoding=utf-8&useUnicode=true&zeroDateTimeBehavior=convertToNull";
 		final String driver = "com.mysql.jdbc.Driver";
-		final String user = "root";
-		final String pwd = "fan1988";
-		final String fileOutPath = "D:/tmp";
+		final String user = "eHRAdmin";
+		final String pwd = "shangde_wings";
+		final String fileOutPath = "E:/tmp";
 		final String packageName = "com.fbb.book.model";
 		
 		try {
+			System.out.println("start gen code .....");
 			Connection conn = getConnections(driver, url, user, pwd);
 			CodeGen codeGen = new MysqlCodeGen(conn);
 			codeGen.createAllTableEntityFile(fileOutPath,packageName);
+			System.out.println("gen code  success!!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
