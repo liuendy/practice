@@ -45,7 +45,7 @@ public class MysqlCodeGen extends CodeGen {
 	}
 
 	@Override
-	public void createAllTableEntityFile(String fileOutPath, String packageName) {
+	public void createAllTableEntityFile(final String fileOutPath, final String packageName) {
 		try {
 			File fileOutPathFile = new File(fileOutPath);
 
@@ -57,7 +57,6 @@ public class MysqlCodeGen extends CodeGen {
 				throw new IOException(fileOutPath + " is not a directory path");
 			}
 
-			
 			List<EntityCodeInfo> eciList = getAllEntityCodeInfo(packageName);
 			for (EntityCodeInfo eci : eciList) {
 				createEntityFile(fileOutPath, eci);
@@ -123,15 +122,12 @@ public class MysqlCodeGen extends CodeGen {
 		pw.close();
 	}
 
-	private List<EntityCodeInfo> getAllEntityCodeInfo(String packageName) throws Exception {
+	private List<EntityCodeInfo> getAllEntityCodeInfo(final String packageName) throws Exception {
 
 		DatabaseMetaData dbmd = conn.getMetaData();
 		ResultSet resultSet = dbmd.getTables(null, "%", "%", new String[] { "TABLE" });
 		List<EntityCodeInfo> eciList = new ArrayList<EntityCodeInfo>();
 
-		
-		
-		
 		while (resultSet.next()) {
 			// 获取表名
 			String tableName = resultSet.getString("TABLE_NAME");
@@ -195,7 +191,8 @@ public class MysqlCodeGen extends CodeGen {
 			eci.setVarsList(varsList);
 			eciList.add(eci);
 
-			logger.info("-------------------------------------------"+clazzName + "生成成功！-----------------------------------------------");
+			logger.info("-------------------------------------------" + clazzName
+					+ "生成成功！-----------------------------------------------");
 		}
 
 		if (0 == eciList.size()) {

@@ -96,11 +96,11 @@ public abstract class CodeGen {
 	 * @param packageName 包名
 	 * @return
 	 */
-	public String createPackageDeclaration(String packageName){
+	public String createPackageDeclaration(final String packageName){
 		return PACKAGE_DECLARATION.replaceAll("\\{\\{packageName\\}\\}", packageName);
 	}
 	
-	public String createImportDeclaration(String className){
+	public String createImportDeclaration(final String className){
 		return IMPORT_DECLARATION.replaceAll("\\{\\{className\\}\\}", className);
 	}
 	
@@ -113,7 +113,7 @@ public abstract class CodeGen {
 	 * @param className 类名
 	 * @return
 	 */
-	public String createClassDeclaration(String tableName, String idName, String className) {
+	public String createClassDeclaration(final String tableName, final String idName, final String className) {
 		return CLASS_DECLARATION.replaceAll("\\{\\{tableName\\}\\}", tableName).replaceAll("\\{\\{idName\\}\\}", idName)
 				.replaceAll("\\{\\{className\\}\\}", className);
 	}
@@ -128,7 +128,7 @@ public abstract class CodeGen {
 	 * @param idPropName id属性名
 	 * @return
 	 */
-	public String createIdVarDeclaration(String comment, String tableName, String idName, String type,
+	public String createIdVarDeclaration(final String comment, final String tableName,final  String idName, final String type,
 			String idPropName) {
 		return ID_VAR_DECLARATION.replaceAll("\\{\\{comment\\}\\}", comment).replaceAll("\\{\\{tableName\\}\\}", tableName)
 				.replaceAll("\\{\\{idName\\}\\}", idName).replaceAll("\\{\\{type\\}\\}", type)
@@ -145,7 +145,7 @@ public abstract class CodeGen {
 	 * @param varName 变量名
 	 * @return
 	 */
-	public String createVarDeclaration(String comment, String columName, String type, String varName) {
+	public String createVarDeclaration(final String comment, final String columName, final String type,final  String varName) {
 		
 		return VAR_DECLARATION.replaceAll("\\{\\{comment\\}\\}", comment).replaceAll("\\{\\{columName\\}\\}", columName)
 				.replaceAll("\\{\\{type\\}\\}", type).replaceAll("\\{\\{varName\\}\\}", varName);
@@ -159,7 +159,7 @@ public abstract class CodeGen {
 	 * @param varType 变量类型
 	 * @return
 	 */
-	public String createSetter(String comment, String varName, String varType) {
+	public String createSetter(final String comment, final String varName, final String varType) {
 		String VarName = varName.substring(0,1).toUpperCase()+varName.substring(1);
 		return SETTER.replaceAll("\\{\\{comment\\}\\}", comment).replaceAll("\\{\\{varName\\}\\}", varName)
 				.replaceAll("\\{\\{varType\\}\\}", varType).replaceAll("\\{\\{VarName\\}\\}", VarName);
@@ -173,7 +173,7 @@ public abstract class CodeGen {
 	 * @param varType 变量类型
 	 * @return
 	 */
-	public String createGetter(String comment, String varName, String varType) {
+	public String createGetter(final String comment,final  String varName, final String varType) {
 		String VarName = varName.substring(0,1).toUpperCase()+varName.substring(1);
 		return GETTER.replaceAll("\\{\\{comment\\}\\}", comment).replaceAll("\\{\\{varName\\}\\}", varName)
 				.replaceAll("\\{\\{varType\\}\\}", varType).replaceAll("\\{\\{VarName\\}\\}", VarName);
@@ -184,11 +184,11 @@ public abstract class CodeGen {
 	 * @param fileOutPath 
 	 * @param packageName
 	 */
-	public abstract void createAllTableEntityFile( String fileOutPath,String packageName);
+	public abstract void createAllTableEntityFile(final String fileOutPath,final String packageName);
 	
 	/** 
 	 * 设置 数据库连接 
 	 * @param conn 数据库连接 
 	 */
-	public abstract void setConn(Connection conn);
+	public abstract void setConn(final Connection conn);
 }
