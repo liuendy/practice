@@ -35,7 +35,7 @@ public class Application {
 		String tomcatPort = context.getEnvironment().getProperty("server.port");
 		System.out.println(configPath + "," + tomcatPort);
 
-		testLog4j2();
+//		testLog4j2();
 
 	}
 

@@ -20,8 +20,10 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -32,9 +34,12 @@ import org.springframework.jdbc.support.KeyHolder;
  * @since 2014-7-4 12:10:30
  * @version 0.10a
  */
-public abstract class BaseDao extends JdbcDaoSupport {
+public abstract class BaseDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseDao.class);
+
+	@Autowired
+	protected JdbcTemplate jdbcTemplate;
 
 	/**
 	 * 获取实体对应数据表名
@@ -115,9 +120,9 @@ public abstract class BaseDao extends JdbcDaoSupport {
 	 */
 	protected Object getSequenceGeneratorId(String tableName_Seq) throws SQLException {
 		String schema = null;
-		Connection conn = this.getConnection();
+		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
 		String url = conn.getMetaData().getURL();
-		this.releaseConnection(conn);
+		DataSourceUtils.releaseConnection(conn, jdbcTemplate.getDataSource());
 		if (url != null && url.length() > 0) {
 			String[] strs = url.split("[?]")[0].split("/");
 			schema = strs[strs.length - 1];
@@ -128,7 +133,7 @@ public abstract class BaseDao extends JdbcDaoSupport {
 		sql.append(tableName_Seq);
 		sql.append("' limit 1");
 		logger.debug("sql=" + sql.toString());
-		return getJdbcTemplate().queryForObject(sql.toString(), new Object[] {}, Long.class);
+		return jdbcTemplate.queryForObject(sql.toString(), new Object[] {}, Long.class);
 
 	}
 
@@ -262,7 +267,7 @@ public abstract class BaseDao extends JdbcDaoSupport {
 		logger.debug("param:" + objList);
 
 		KeyHolder key = new GeneratedKeyHolder();
-		getJdbcTemplate().update(new PreparedStatementCreator() {
+		jdbcTemplate.update(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -326,10 +331,10 @@ public abstract class BaseDao extends JdbcDaoSupport {
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + objList);
-			updateRows = getJdbcTemplate().update(sql.toString(), objList.toArray());
+			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw getExceptionTranslator().translate(null, null, new SQLException(e));
+			throw jdbcTemplate.getExceptionTranslator().translate(null, null, new SQLException(e));
 		}
 		return updateRows;
 	}
@@ -406,10 +411,10 @@ public abstract class BaseDao extends JdbcDaoSupport {
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + objList);
-			updateRows = getJdbcTemplate().update(sql.toString(), objList.toArray());
+			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw getExceptionTranslator().translate(null, null, new SQLException(e));
+			throw jdbcTemplate.getExceptionTranslator().translate(null, null, new SQLException(e));
 		}
 		return updateRows;
 	}
@@ -466,10 +471,10 @@ public abstract class BaseDao extends JdbcDaoSupport {
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + objList.toArray());
-			updateRows = getJdbcTemplate().update(sql.toString(), objList.toArray());
+			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
-			getExceptionTranslator().translate(null, null, new SQLException(e));
+			jdbcTemplate.getExceptionTranslator().translate(null, null, new SQLException(e));
 		}
 		return updateRows;
 	}
@@ -489,24 +494,25 @@ public abstract class BaseDao extends JdbcDaoSupport {
 			throw new IllegalAccessException("the entityClass or id for find can not be null!!");
 		}
 
-		T entity = null;
 		try {
 			String idName = entityClass.getAnnotation(Table.class).uniqueConstraints()[0].columnNames()[0];
-			StringBuilder sql = new StringBuilder("select ");
+			StringBuilder sql = new StringBuilder("SELECT ");
 			sql.append(getEntityColumnSql(entityClass));
-			sql.append(" from ");
+			sql.append(" FROM ");
 			sql.append(entityClass.getAnnotation(Table.class).name());
-			sql.append(" where ").append(idName).append("=? limit 1");
+			sql.append(" WHERE ").append(idName).append("=? LIMIT 1");
 
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + id);
 
-			entity = (T) getJdbcTemplate().queryForObject(sql.toString(), new Object[] { id },
-					new EntityMapper(entityClass));
+			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id }, new EntityMapper(entityClass));
+			if (null != list && list.size() > 0) {
+				return list.get(0);
+			}
 		} catch (Exception e) {
-			throw getExceptionTranslator().translate(null, null, new SQLException(e));
+			throw jdbcTemplate.getExceptionTranslator().translate(null, null, new SQLException(e));
 		}
-		return entity;
+		return null;
 	}
 
 	/**
@@ -526,14 +532,14 @@ public abstract class BaseDao extends JdbcDaoSupport {
 
 		int deleteRows = 0;
 		String idName = entityClass.getAnnotation(Table.class).uniqueConstraints()[0].columnNames()[0];
-		StringBuffer sql = new StringBuffer("delete from ");
+		StringBuffer sql = new StringBuffer("DELETE FROM ");
 		sql.append(entityClass.getAnnotation(Table.class).name());
-		sql.append(" where ").append(idName).append("=?");
+		sql.append(" WHERE ").append(idName).append("=?");
 
 		logger.debug("sql:" + sql);
 		logger.debug("param:" + id);
 
-		deleteRows = getJdbcTemplate().update(sql.toString(), new Object[] { id });
+		deleteRows = jdbcTemplate.update(sql.toString(), new Object[] { id });
 		return deleteRows;
 	}
 
@@ -563,16 +569,16 @@ public abstract class BaseDao extends JdbcDaoSupport {
 				idsSb.deleteCharAt(idsSb.lastIndexOf(","));
 			}
 
-			StringBuilder sql = new StringBuilder("delete from ");
+			StringBuilder sql = new StringBuilder("DELETE FROM ");
 			sql.append(entityClass.getAnnotation(Table.class).name());
-			sql.append(" where ").append(idName).append(" in (").append(idsSb).append(")");// in子集不能超过1000
+			sql.append(" WHERE ").append(idName).append(" IN (").append(idsSb).append(")");// in子集不能超过1000
 
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + idsSb);
 
-			deleteRows = getJdbcTemplate().update(sql.toString());
+			deleteRows = jdbcTemplate.update(sql.toString());
 		} catch (Exception e) {
-			getExceptionTranslator().translate(null, null, new SQLException(e));
+			jdbcTemplate.getExceptionTranslator().translate(null, null, new SQLException(e));
 		}
 		return deleteRows;
 	}
@@ -595,7 +601,7 @@ public abstract class BaseDao extends JdbcDaoSupport {
 	public PageVo queryPagination(int pageNo, int pageSize, String selectRecordSql, Class<?> entityClass,
 			List<Object> paramList) {
 		selectRecordSql = selectRecordSql.trim();
-		String selectCountSql = selectRecordSql.substring(0, 6) + " count(1) "
+		String selectCountSql = selectRecordSql.substring(0, 6) + " COUNT(1) "
 				+ selectRecordSql.substring(selectRecordSql.indexOf("from"));
 
 		return queryPagination(pageNo, pageSize, selectCountSql, selectRecordSql, entityClass, paramList);
@@ -631,7 +637,7 @@ public abstract class BaseDao extends JdbcDaoSupport {
 					"the selectCountSql or selectRecordSql or entityClass can not be null!!");
 		}
 
-		int count = getJdbcTemplate().queryForObject(selectCountSql, paramList.toArray(), Integer.class);
+		int count = jdbcTemplate.queryForObject(selectCountSql, paramList.toArray(), Integer.class);
 		PageVo pageVo = new PageVo();
 		pageVo.setTotalRecords(count);
 		pageVo.setPageSize(pageSize);
@@ -652,14 +658,11 @@ public abstract class BaseDao extends JdbcDaoSupport {
 
 		paramList.add((pageNo - 1) * pageSize);
 		paramList.add(pageSize);
-		List<?> list = getJdbcTemplate().query(selectRecordSql + " limit ?,?",
-				paramList.toArray(), new EntityMapper(entityClass));
+		List<?> list = jdbcTemplate.query(selectRecordSql + " LIMIT ?,?", paramList.toArray(),
+				new EntityMapper(entityClass));
 		pageVo.setList(list);
 
 		return pageVo;
 	}
-	
-	
-	
 
 }
