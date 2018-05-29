@@ -15,12 +15,12 @@
             <property name="suppressAllComments" value="false"/> 
         </commentGenerator>  
   
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://127.0.0.1:3306/ehr-message" userId="root" password="fan1988">  
-        </jdbcConnection> 
         <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://172.16.101.130:39876 /ehr" userId="root" password="SdBhu87ujm9ijn,;@1~_pl,<ki8">  
+            connectionURL="jdbc:mysql://127.0.0.1:3306/ehr-message" userId="root" password="fan1988">  
         </jdbcConnection>  -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
+            connectionURL="jdbc:mysql://172.16.101.130:3306/ehr" userId="eHRAdmin" password="shangde_wings">  
+        </jdbcConnection>
   
         <javaTypeResolver type="com.ybwh.mybaitsGen.MyJavaTypeResolver">  
             <property name="forceBigDecimals" value="false" />
@@ -42,7 +42,7 @@
             <property name="enableSubPackages" value="true" />  
         </javaClientGenerator>  
   
-        <table  tableName="t_work_message" domainObjectName="WorkMessage"
+        <!-- <table  tableName="t_work_message" domainObjectName="WorkMessage"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
@@ -53,6 +53,12 @@
 			selectByExampleQueryId="false">
 		</table>
 		<table  tableName="t_timer_work_message_conf" domainObjectName="TimerWorkMessageConf"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table> -->
+		
+		<table  tableName="t_employeeid_regid" domainObjectName="EmployeeRegid"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
