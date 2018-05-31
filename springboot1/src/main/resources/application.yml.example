@@ -1,0 +1,73 @@
+# Tomcat settings
+server:
+    port: 8080
+    context-path: /
+    compression:
+        enabled: true
+    tomcat:
+        uri-encoding: UTF-8
+        
+#logging: 
+#    config: E:/log4j2.xml
+
+# Spring settings
+spring:
+    datasource:
+        url: jdbc:mysql://172.16.101.130:3306/ehr_message?useSSL=false&characterEncoding=utf8&useUnicode=true&zeroDateTimeBehavior=convertToNull
+        username: eHRAdmin
+        password: shangde_wings
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+            initial-size: 5
+            max-active: 20
+            min-idle: 5
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            max-open-prepared-statements: 20
+            validation-query: SELECT 1 FROM DUAL
+            test-on-borrow: false
+            test-on-return: false
+            test-while-idle: true
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            filters: stat,wall
+#    profiles:
+#        active: dev
+#    jackson:
+#        date-format: yyyy-MM-dd HH:mm:ss
+#        joda-date-time-format: yyyy-MM-dd HH:mm:ss
+#        time-zone: GMT+08
+
+# MyBatis settings
+mybatis:
+    config: classpath:mybatis/mybatis-config.xml
+    mapper-locations: classpath:mybatis/mapper/*.xml
+    type-aliases-package: com.shangde.ehr.message.model.po
+
+# Redis settings
+redis:
+    hostName: 172.16.101.130
+    port: 6636
+    dataBase: 0
+    timeout: 3000
+    password: redisUsed@2018
+    pool: 
+        max-idle: 500
+        min-idle: 50
+        max-active: 2000
+        max-wait: 10000
+
+#小米推送
+push: 
+      xiaomi:
+        andriodAppSecretKey: 0G+EXDznoPPe4a6khHqKzg==
+        iosAppSecretKey: ZyuVX2C/XbadVRfOlBxmog==
+        pushPackageName: com.sunland.staffapp
+        pushCallBackUrl: http://ffg6fj.natappfree.cc/mobile-web/attendance/remind/mipushCallback.do
+      xinge: 
+        andriodAccessId: 2100282076
+        andriodSecretKey: 037d7726f01dac949ebeff1d9dc39b50
+
+

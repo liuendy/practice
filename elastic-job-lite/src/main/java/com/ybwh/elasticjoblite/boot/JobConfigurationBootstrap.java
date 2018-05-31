@@ -16,7 +16,7 @@ public class JobConfigurationBootstrap {
 
 	private static CoordinatorRegistryCenter createRegistryCenter() {
 		CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(
-				new ZookeeperConfiguration("127.0.0.1:2181", "test-job"));
+				new ZookeeperConfiguration("127.0.0.1:2181", "ehr-message"));
 		regCenter.init();
 		return regCenter;
 	}

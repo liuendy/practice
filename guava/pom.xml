@@ -28,12 +28,5 @@
 		</dependency>
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://s1:8081/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
+
 </project>

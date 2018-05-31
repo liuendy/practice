@@ -17,14 +17,20 @@
 		max-sleep-time-milliseconds="${job.reg.maxSleepTimeMilliseconds}" max-retries="${job.reg.maxRetries}" />
 
 	<!-- 简单的单节点运行任务: 1.分片为1，即不需要分片； 2. 支持覆盖，即会用本次的配置覆盖缓存在zk中的配置 .
-		分片参数主要是指定各分片代表的逻辑意义
+		分片参数主要是指定各分片代表的逻辑意义 -->
 	 
 	<job:simple id="standaloneSimpleTask" job-ref="StandaloneSimpleTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
-		sharding-total-count="3" overwrite="true" description="简单的单节点运行任务" sharding-item-parameters="0=A,1=B,2=C">
+		sharding-total-count="1" overwrite="true" description="简单的单节点运行任务" sharding-item-parameters="0=A,1=B,2=C">
 		<job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener> 
 	</job:simple>
-	-->
+	
+	<job:simple id="standaloneSimpleTask2" job-ref="StandaloneSimpleTask"
+		registry-center-ref="regCenter" cron="0/15 * * * * ?"
+		sharding-total-count="1" overwrite="true" description="简单的单节点运行任务" sharding-item-parameters="0=A,1=B,2=C">
+		<job:listener class="com.ybwh.elasticjoblite.listener.LocalTaskListener"></job:listener> 
+	</job:simple>
+	
 	
 	
 	<!-- 手动触发任务演示
@@ -67,11 +73,11 @@
 
 	<!-- streaming-process:是否流式处理数据, 如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 
 		则处理数据完成后作业结束 -->
-	<job:dataflow id="simpleDataflowTask" job-ref="SimpleDataflowTask"
+	<!-- <job:dataflow id="simpleDataflowTask" job-ref="SimpleDataflowTask"
 		registry-center-ref="regCenter" cron="0/15 * * * * ?"
 		streaming-process="false" sharding-total-count="1" overwrite="true"
 		description="简单的数据流运行任务">
 
-	</job:dataflow>
+	</job:dataflow> -->
 
 </beans>
