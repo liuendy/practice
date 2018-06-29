@@ -3,7 +3,7 @@
 <mapper namespace="com.ybwh.springboot2.demo.dao.AreaDao" >
   <resultMap id="BaseResultMap" type="com.ybwh.springboot2.demo.entity.Area" >
     <id column="id" property="id" />
-    <result column="area_name" property="areaName"/>
+    <result column="areaName" property="areaName"/>
     <result column="parent_id" property="parentId" />
     <result column="short_name" property="shortName"/>
     <result column="area_code" property="areaCode" />
@@ -19,7 +19,7 @@
     <result column="update_id" property="updateId" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, area_name  a1, parent_id, short_name, area_code, level, sort, id_path, name_path, 
+    id, area_name  areaName, parent_id, short_name, area_code, level, sort, id_path, name_path, 
     is_leaf, is_del, create_time, create_id, update_time, update_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

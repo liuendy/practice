@@ -1,23 +1,19 @@
 package com.ybwh.springboot2.common.mybatis.plugin;
 
-import java.sql.Connection;
+import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
+import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
-
-import com.alibaba.druid.util.jdbc.ResultSetBase;
 
 @Intercepts({ @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = { Statement.class }) })
 public class ResultSetInterceptor implements Interceptor {
@@ -30,6 +26,10 @@ public class ResultSetInterceptor implements Interceptor {
 		// 通过Statement获得当前结果集
 		ResultSet rs0 = stmt.getResultSet();
 		ResultSetMetaData meta = rs0.getMetaData();
+		
+		
+		
+		
 
 		String areaNameColum = "area_name";
 		int areaNameIndex = -1;
@@ -46,6 +46,9 @@ public class ResultSetInterceptor implements Interceptor {
 		}
 
 		if (-1 != areaNameIndex) {
+			//mybatis里 ResultSetHandler只有 DefaultResultSetHandler一个实现类   
+			DefaultResultSetHandler  resultSetHandler= (DefaultResultSetHandler) invocation.getTarget();         
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$sqlId="+getSqlId(resultSetHandler));
 
 			DelegateStatement sd = new DelegateStatement(stmt);
 
@@ -63,6 +66,14 @@ public class ResultSetInterceptor implements Interceptor {
 		}
 
 		return invocation.proceed();
+	}
+
+	private String getSqlId(DefaultResultSetHandler resultSetHandler) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		
+		Field mappedStatementField = DefaultResultSetHandler.class.getDeclaredField("mappedStatement");
+		mappedStatementField.setAccessible(true);
+		MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(resultSetHandler);
+		return mappedStatement.getId();
 	}
 
 	@Override
