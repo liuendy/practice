@@ -36,7 +36,7 @@ public class ResultSetInterceptor implements Interceptor {
 
 		// 找到目标列的索引
 		for (int i = 0; i < meta.getColumnCount(); i++) {
-			if (areaNameColum.equals(meta.getColumnLabel(i + 1).toLowerCase())) {
+			if (areaNameColum.equals(meta.getColumnName(i + 1).toLowerCase())) {
 				areaNameIndex = i + 1;
 			}
 

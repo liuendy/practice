@@ -19,7 +19,7 @@
     <result column="update_id" property="updateId" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, area_name, parent_id, short_name, area_code, level, sort, id_path, name_path, 
+    id, area_name  a1, parent_id, short_name, area_code, level, sort, id_path, name_path, 
     is_leaf, is_del, create_time, create_id, update_time, update_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
