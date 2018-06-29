@@ -317,4 +317,12 @@ public class Area {
     public void setUpdateId(Integer updateId) {
         this.updateId = updateId;
     }
+
+	@Override
+	public String toString() {
+		return "Area [id=" + id + ", areaName=" + areaName + ", parentId=" + parentId + ", shortName=" + shortName
+				+ ", areaCode=" + areaCode + ", level=" + level + ", sort=" + sort + ", idPath=" + idPath
+				+ ", namePath=" + namePath + ", isLeaf=" + isLeaf + ", isDel=" + isDel + ", createTime=" + createTime
+				+ ", createId=" + createId + ", updateTime=" + updateTime + ", updateId=" + updateId + "]";
+	}
 }
