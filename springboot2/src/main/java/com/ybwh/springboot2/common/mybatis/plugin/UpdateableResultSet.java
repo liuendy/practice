@@ -20,6 +20,9 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -29,6 +32,10 @@ import java.util.Map;
 /**
  * 可改变值的ResultSet，
  * 该类仅给ResultSetInterceptor使用
+ *
+ * @author: Fan Beibei
+ * @date: 2018/7/3 10:49
+ * @Modified By:
  */
 class UpdateableResultSet implements ResultSet {
     protected boolean closed = false;
@@ -45,8 +52,8 @@ class UpdateableResultSet implements ResultSet {
             , Integer/** columnIndex */
             > columnLableTable = new HashMap<String, Integer>();
     protected Map<String/** ColumnName */
-            , Integer/** columnIndex */
-            > columnNameTable = new HashMap<String, Integer>();
+            , String/** columnLabel */
+            > columnNameTable = new HashMap<String, String>();
 
     /**
      * 存储当前数据行是否被修改过
@@ -62,6 +69,25 @@ class UpdateableResultSet implements ResultSet {
         super();
         this.statement = statement;
         initFrom(statement.getResultSet());
+    }
+
+
+    /**
+     * 结果集中是否包含列名为columnName的列
+     * @param columnName
+     * @return
+     */
+    public boolean hasColmunName(String columnName){
+        return  columnNameTable.containsKey(columnName);
+    }
+
+    /**
+     * 结果集中是否包含别名为columnLabel的列
+     * @param columnLabel
+     * @return
+     */
+    public boolean hasColmunLable(String columnLabel){
+        return  columnLableTable.containsKey(columnLabel);
     }
 
     /**
@@ -85,7 +111,7 @@ class UpdateableResultSet implements ResultSet {
         metaData = rs.getMetaData();
         for (int i = 1; i < metaData.getColumnCount() + 1; i++) {// 缓存列标签和列索引号对应关系，提高findColumn的效率
             columnLableTable.put(metaData.getColumnLabel(i).toLowerCase(), i);
-            columnNameTable.put(metaData.getColumnName(i).toLowerCase(), i);
+            columnNameTable.put(metaData.getColumnName(i).toLowerCase(), metaData.getColumnLabel(i).toLowerCase());
 //            System.out.println("*******" + metaData.getColumnLabel(i) + "->" + metaData.getColumnName(i)+":"+i);
         }
 
@@ -96,15 +122,19 @@ class UpdateableResultSet implements ResultSet {
 
             for (int i = 0; i < totalCol; i++) {
                 row[i] = rs.getObject(i + 1);
-
             }
 
             rows.add(row);
             rowUpdateds.add(false);
         }
 
-        while (rs.previous()) {// 将rs游标还原
+        try {
+            while (rs.previous()) {// 将rs游标还原
+            }
+        }catch (SQLException e){
         }
+
+
     }
 
     @Override
@@ -431,11 +461,32 @@ class UpdateableResultSet implements ResultSet {
          */
         Integer columIndex = columnLableTable.get(columnLabel.toLowerCase());
         if (null == columIndex) {
-            return columnNameTable.get(columnLabel);
+            throw new SQLException("no such columnLabel,columnLabel="+columnLabel);
         }
 
         return columIndex;
     }
+
+
+    /**
+     * 与{@link #findColumn}功能相似,根据列名称查找列的索引
+     * @param columnName
+     * @return
+     * @throws SQLException
+     */
+    public int findColumnName(String columnName) throws SQLException {
+        /**
+         * 参数columnLabel有时候传入的是columnName而不是columnLabel
+         */
+        Integer columIndex = columnLableTable.get(columnNameTable.get(columnName.toLowerCase()));
+        if (null == columIndex) {
+            throw new SQLException("no such columnName,columnName="+columnName);
+        }
+
+        return columIndex;
+    }
+
+
 
     @Override
     public Reader getCharacterStream(int columnIndex) throws SQLException {
@@ -1066,9 +1117,50 @@ class UpdateableResultSet implements ResultSet {
         return (byte[]) getObject(columnIndex);
     }
 
+
+    DateFormat yyyy_MM_dd_HH_mm_ss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    DateFormat yyyy_MM_dd = new SimpleDateFormat("yyyy-MM-dd");
+    DateFormat yyyy_MM_dd_HH_mm_ss_ = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
     @Override
     public Date getDate(int columnIndex) throws SQLException {
-        return (Date) getObject(columnIndex);
+        Object obj = getObject(columnIndex);
+        if (null != obj) {
+            if (String.class.equals(obj.getClass())) {
+                Date date = null;
+                try {
+                    date = new Date(yyyy_MM_dd_HH_mm_ss.parse((String) obj).getTime());
+                } catch (ParseException e) {
+                }
+
+                if(null == date){
+                    try {
+                        date = new Date(yyyy_MM_dd.parse((String) obj).getTime());
+                    } catch (ParseException e) {
+                    }
+                }
+
+                if(null == date){
+                    try {
+                        date = new Date(yyyy_MM_dd_HH_mm_ss_.parse((String) obj).getTime());
+                    } catch (ParseException e) {
+                    }
+                }
+
+                return date;
+            }
+
+            if (obj.getClass().equals(Long.class) || obj.getClass().equals(long.class)) {
+                return new Date((long) obj);
+            }
+
+            if (obj.getClass().equals(Integer.class) || obj.getClass().equals(int.class)) {
+                return new Date((int) obj);
+            }
+
+        }
+
+        return null;
     }
 
     @Override
@@ -1078,7 +1170,23 @@ class UpdateableResultSet implements ResultSet {
 
     @Override
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
-        return (Timestamp) getObject(columnIndex);
+        Object obj = getObject(columnIndex);
+        if (null != obj) {
+            if (String.class.equals(obj.getClass())) {
+                return Timestamp.valueOf((String) obj);
+            }
+
+            if (obj.getClass().equals(Long.class) || obj.getClass().equals(long.class)) {
+                return new Timestamp((long) obj);
+            }
+
+            if (obj.getClass().equals(Integer.class) || obj.getClass().equals(int.class)) {
+                return new Timestamp((int) obj);
+            }
+
+        }
+
+        return null;
     }
 
     @Override

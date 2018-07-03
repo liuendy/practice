@@ -6,10 +6,13 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
-
 /**
- * 委托类，仅仅改变了getResultSet的动作
+ * 委托类，仅仅改变了getResultSet的动作,
+ * 该类仅给ResultSetInterceptor使用
  *
+ * @author: Fan Beibei
+ * @date: 2018/7/3 10:49
+ * @Modified By:
  */
 class DelegateStatement  implements Statement{
 	private Statement stmt;
