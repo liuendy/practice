@@ -13,7 +13,7 @@ import com.ybwh.springboot1.model.po.WorkMessage;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TestRedis {
+public class TestDao {
 	public static final String MESSAGE_TOKEN_KEY_PREFIX = "message:token:";
 
 	@Autowired

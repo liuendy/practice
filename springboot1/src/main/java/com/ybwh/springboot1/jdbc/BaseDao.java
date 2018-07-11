@@ -16,13 +16,16 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -39,7 +42,7 @@ public abstract class BaseDao {
 	private static final Logger logger = LoggerFactory.getLogger(BaseDao.class);
 
 	@Autowired
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 	/**
 	 * 获取实体对应数据表名
@@ -174,7 +177,7 @@ public abstract class BaseDao {
 	 * @param size
 	 * @return
 	 */
-	private String getQuestionStr(int size) {
+	protected String getQuestionStr(int size) {
 		StringBuilder b = new StringBuilder();
 		for (int i = 0; i < size; i++) {
 			b.append(",?");
@@ -210,7 +213,7 @@ public abstract class BaseDao {
 	 */
 	public Object insert(Object obj, boolean nullIdValue) throws Exception {
 		if (null == obj) {
-			throw new IllegalAccessException("the object for insert can not be null!!");
+			throw new IllegalArgumentException("the object for insert can not be null!!");
 		}
 
 		Class<?> entityClass = obj.getClass();
@@ -231,6 +234,7 @@ public abstract class BaseDao {
 					Column column = field.getAnnotation(Column.class);
 					String getMethodName = "get" + field.getName().substring(0, 1).toUpperCase()
 							+ field.getName().substring(1);
+					
 					Method getMethod = entityClass.getMethod(getMethodName, null);
 
 					if (column != null && column.insertable() && getMethod != null) {
@@ -289,10 +293,10 @@ public abstract class BaseDao {
 	 * @throws IllegalAccessException
 	 * @throws Exception
 	 */
-	public int updateAllFields(Object obj) throws IllegalAccessException {
+	public int updateAllFields(Object obj) {
 
 		if (null == obj) {
-			throw new IllegalAccessException("the object for updateAllFields can not be null!!");
+			throw new IllegalArgumentException("the object for updateAllFields can not be null!!");
 		}
 
 		int updateRows = 0;
@@ -348,7 +352,7 @@ public abstract class BaseDao {
 	 */
 	public int updateAllFieldWithNull(Object obj) throws IllegalAccessException {
 		if (null == obj) {
-			throw new IllegalAccessException("the object for updateAllFieldWithNull can not be null!!");
+			throw new IllegalArgumentException("the object for updateAllFieldWithNull can not be null!!");
 		}
 		// Assert.notNull(obj, this.getClass() + "updateAllFieldWithNull method
 		// obj param can not be null");
@@ -426,10 +430,10 @@ public abstract class BaseDao {
 	 * @return
 	 * @throws IllegalAccessException
 	 */
-	public int update(Object obj) throws IllegalAccessException {
+	public int update(Object obj) {
 
 		if (null == obj) {
-			throw new IllegalAccessException("the object for update can not be null!!");
+			throw new IllegalArgumentException("the object for update can not be null!!");
 		}
 
 		int updateRows = 0;
@@ -488,10 +492,9 @@ public abstract class BaseDao {
 	 * @return
 	 * @throws IllegalAccessException
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> T findById(Class<T> entityClass, Object id) throws IllegalAccessException {
+	public <T> T findById(Class<T> entityClass, Object id) {
 		if (null == entityClass || null == id) {
-			throw new IllegalAccessException("the entityClass or id for find can not be null!!");
+			throw new IllegalArgumentException("the entityClass or id for find can not be null!!");
 		}
 
 		try {
@@ -505,7 +508,7 @@ public abstract class BaseDao {
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + id);
 
-			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id }, new EntityMapper(entityClass));
+			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id }, RowMapperFactory.newRowMapper(entityClass));
 			if (null != list && list.size() > 0) {
 				return list.get(0);
 			}
@@ -524,10 +527,10 @@ public abstract class BaseDao {
 	 * @return
 	 * @throws IllegalAccessException
 	 */
-	public int delete(Class<?> entityClass, Object id) throws IllegalAccessException {
+	public int delete(Class<?> entityClass, Object id) {
 
 		if (null == entityClass || null == id) {
-			throw new IllegalAccessException("the entityClass or id for delete can not be null!!");
+			throw new IllegalArgumentException("the entityClass or id for delete can not be null!!");
 		}
 
 		int deleteRows = 0;
@@ -552,10 +555,10 @@ public abstract class BaseDao {
 	 * @return
 	 * @throws IllegalAccessException
 	 */
-	public int batchDelete(Class<?> entityClass, Object[] ids) throws IllegalAccessException {
+	public int batchDelete(Class<?> entityClass, Object[] ids) {
 
 		if (null == entityClass || null == ids) {
-			throw new IllegalAccessException("the entityClass or ids for batchDelete can not be null!!");
+			throw new IllegalArgumentException("the entityClass or ids for batchDelete can not be null!!");
 		}
 
 		int deleteRows = 0;
@@ -599,9 +602,9 @@ public abstract class BaseDao {
 	 * @return
 	 */
 	public PageVo queryPagination(int pageNo, int pageSize, String selectRecordSql, Class<?> entityClass,
-			List<Object> paramList) {
+			List<Object> paramList){
 		selectRecordSql = selectRecordSql.trim();
-		String selectCountSql = selectRecordSql.substring(0, 6) + " COUNT(1) "
+		String selectCountSql = selectRecordSql.substring(0, 6) + " COUNT(*) "
 				+ selectRecordSql.substring(selectRecordSql.indexOf("from"));
 
 		return queryPagination(pageNo, pageSize, selectCountSql, selectRecordSql, entityClass, paramList);
@@ -659,10 +662,32 @@ public abstract class BaseDao {
 		paramList.add((pageNo - 1) * pageSize);
 		paramList.add(pageSize);
 		List<?> list = jdbcTemplate.query(selectRecordSql + " LIMIT ?,?", paramList.toArray(),
-				new EntityMapper(entityClass));
+				RowMapperFactory.newRowMapper(entityClass));
 		pageVo.setList(list);
 
 		return pageVo;
 	}
+	
+	
+	/**
+	 * 
+	 * @param sql 查询语句
+	 * @param args 参数
+	 * @param entityClass 实体类的对象
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public <T> List<T> query(String sql, Object[] args, Class<T> entityClass) {
+		return jdbcTemplate.query(sql, args, new RowMapperResultSetExtractor<T>(RowMapperFactory.newRowMapper(entityClass)));
+	}
 
+	
+	/**
+	 * 获取DataSource
+	 * 
+	 * @return
+	 */
+	public DataSource getDataSource() {
+		return jdbcTemplate.getDataSource();
+	}
 }
