@@ -16,7 +16,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  */
 @SpringBootApplication
-@ServletComponentScan(basePackages = { "com.shangde.ehr.message" })
+@ServletComponentScan(basePackages = { "com.ybwh.springboot1" })
 public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 

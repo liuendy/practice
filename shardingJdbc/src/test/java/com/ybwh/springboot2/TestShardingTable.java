@@ -25,9 +25,9 @@ public class TestShardingTable {
 		Assert.assertNotNull(orderDao);
 		
 		Order o = new Order();
-		o.setOrderId(1L);
+		o.setOrderId(2L);
 		o.setOrderTime(new Date());
-		o.setUserId(5L);
+		o.setUserId(6L);
 		
 		try {
 			orderDao.insert(o);
