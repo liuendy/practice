@@ -65,4 +65,11 @@ public class Order {
     public void setOrderTime(Date orderTime) {
         this.orderTime = orderTime;
     }
+
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", userId=" + userId + ", orderTime=" + orderTime + "]";
+	}
+    
+    
 }

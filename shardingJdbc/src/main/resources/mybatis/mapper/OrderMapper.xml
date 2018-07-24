@@ -15,14 +15,22 @@
     from t_order
     where order_id = #{orderId}
   </select>
+  
+  
+  <select id="selectByUserId" resultMap="orderResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="order_col" />
+    from t_order
+    where user_id = #{userId}
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_order
     where order_id = #{orderId}
   </delete>
-  <insert id="insert" parameterType="order" >
-    insert into t_order (order_id, user_id, order_time)
-    values (#{orderId}, #{userId}, #{orderTime})
-  </insert>
+
+
   <insert id="insertSelective" parameterType="order" >
     insert into t_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -60,10 +68,6 @@
     </set>
     where order_id = #{orderId}
   </update>
-  <update id="updateByPrimaryKey" parameterType="order" >
-    update t_order
-    set user_id = #{userId},
-      order_time = #{orderTime}
-    where order_id = #{orderId}
-  </update>
+
+
 </mapper>
