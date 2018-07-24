@@ -25,12 +25,12 @@ public class TestShardingTable {
 		Assert.assertNotNull(orderDao);
 		
 		Order o = new Order();
-		o.setOrderId(2L);
+//		o.setOrderId(2L);
 		o.setOrderTime(new Date());
-		o.setUserId(6L);
+		o.setUserId(7L);
 		
 		try {
-			orderDao.insert(o);
+			orderDao.insertSelective(o);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
