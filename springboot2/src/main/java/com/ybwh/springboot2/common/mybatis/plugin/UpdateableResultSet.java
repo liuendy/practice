@@ -70,7 +70,43 @@ class UpdateableResultSet implements ResultSet {
         this.statement = statement;
         initFrom(statement.getResultSet());
     }
+    
+    
+    
+    
+    /**
+     * Gets the designated column's table name.
+     *
+     * @param column the first column is 1, the second is 2, ...
+     * @return table name or "" if not applicable
+     * @exception SQLException if a database access error occurs
+     */
+    public String getTableName(int column) throws SQLException{
+        return metaData.getTableName(column);
+    }
 
+
+    /**
+     * 根据列的别名获取所在表名称
+     *
+     * @param columnLabel  别名
+     * @return
+     * @throws SQLException
+     */
+    public String getTableName(String columnLabel) throws SQLException{
+        return metaData.getTableName(findColumn(columnLabel));
+    }
+
+    /**
+     * 根据列的名称获取所在表名称
+     *
+     * @param columnName  列名
+     * @return
+     * @throws SQLException
+     */
+    public String getTableNameByColumnName(String columnName) throws SQLException{
+        return metaData.getTableName(findColumnName(columnName));
+    }
 
     /**
      * 结果集中是否包含列名为columnName的列

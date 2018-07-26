@@ -87,6 +87,7 @@ public class ResultSetInterceptor implements Interceptor {
         Object[] args = invocation.getArgs();
         // 获取到当前的Statement
         Statement stmt = (Statement) args[0];
+       
 
         DelegateStatement sd = new DelegateStatement(stmt);
         UpdateableResultSet rs1 = (UpdateableResultSet) sd.getResultSet();
