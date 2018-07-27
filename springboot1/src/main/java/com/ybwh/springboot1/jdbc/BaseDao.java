@@ -23,9 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapperResultSetExtractor;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -234,7 +236,7 @@ public abstract class BaseDao {
 					Column column = field.getAnnotation(Column.class);
 					String getMethodName = "get" + field.getName().substring(0, 1).toUpperCase()
 							+ field.getName().substring(1);
-					
+
 					Method getMethod = entityClass.getMethod(getMethodName, null);
 
 					if (column != null && column.insertable() && getMethod != null) {
@@ -508,7 +510,8 @@ public abstract class BaseDao {
 			logger.debug("sql:" + sql);
 			logger.debug("param:" + id);
 
-			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id }, RowMapperFactory.newRowMapper(entityClass));
+			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id },
+					RowMapperFactory.newRowMapper(entityClass));
 			if (null != list && list.size() > 0) {
 				return list.get(0);
 			}
@@ -602,7 +605,7 @@ public abstract class BaseDao {
 	 * @return
 	 */
 	public PageVo queryPagination(int pageNo, int pageSize, String selectRecordSql, Class<?> entityClass,
-			List<Object> paramList){
+			List<Object> paramList) {
 		selectRecordSql = selectRecordSql.trim();
 		String selectCountSql = selectRecordSql.substring(0, 6) + " COUNT(*) "
 				+ selectRecordSql.substring(selectRecordSql.indexOf("from"));
@@ -667,21 +670,59 @@ public abstract class BaseDao {
 
 		return pageVo;
 	}
-	
-	
+
 	/**
+	 * 查询多行数据
 	 * 
-	 * @param sql 查询语句
-	 * @param args 参数
-	 * @param entityClass 实体类的对象
+	 * 
+	 * @param sql
+	 *            查询语句
+	 * @param args
+	 *            参数
+	 * @param entityClass
+	 *            结果类的对象
 	 * @return
-	 * @throws DataAccessException
 	 */
 	public <T> List<T> query(String sql, Object[] args, Class<T> entityClass) {
-		return jdbcTemplate.query(sql, args, new RowMapperResultSetExtractor<T>(RowMapperFactory.newRowMapper(entityClass)));
+
+		if (entityClass.isPrimitive() || isWrapClass(entityClass)) {// 如果是基本类型或对应的原生类
+			return jdbcTemplate.query(sql, args,
+					new RowMapperResultSetExtractor<T>(new SingleColumnRowMapper<T>(entityClass), 1));
+		} else {
+			return jdbcTemplate.query(sql, args,
+					new RowMapperResultSetExtractor<T>(RowMapperFactory.newRowMapper(entityClass)));
+		}
 	}
 
-	
+	/**
+	 * 查询单行数据
+	 * 
+	 * @param sql
+	 *            查询语句
+	 * @param args
+	 *            参数
+	 * @param entityClass
+	 *            结果类的对象
+	 * @return
+	 * @throws IncorrectResultSizeDataAccessException
+	 *             结果集有多行时
+	 */
+	public <T> T queryForObject(String sql, Object[] args, Class<T> entityClass)
+			throws IncorrectResultSizeDataAccessException {
+		List<T> results = jdbcTemplate.query(sql, args,
+				new RowMapperResultSetExtractor<T>(new SingleColumnRowMapper<T>(entityClass), 1));
+		if (null == results || 0 == results.size()) {
+			return null;
+		}
+
+		if (results.size() > 1) {
+			throw new IncorrectResultSizeDataAccessException(1, results.size());
+		}
+
+		return results.get(0);
+
+	}
+
 	/**
 	 * 获取DataSource
 	 * 
@@ -689,5 +730,19 @@ public abstract class BaseDao {
 	 */
 	public DataSource getDataSource() {
 		return jdbcTemplate.getDataSource();
+	}
+
+	/**
+	 * 判断类是否基本类型的包装类
+	 * 
+	 * @param clz
+	 * @return
+	 */
+	public static boolean isWrapClass(Class<?> clz) {
+		try {
+			return ((Class<?>) clz.getField("TYPE").get(null)).isPrimitive();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }
