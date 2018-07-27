@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -33,9 +32,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 /**
- * 继承JdbcDaoSupport,加上insert, update, find, delete对实体的映谢（对应数据库为mysql）
+ * 提供了基本的增删查改操作、分页查询(仅支持mysql)和两个通用的查询方法(query和queryForObject),
+ * 不建议使用insert或update*方法进行大规模批量更新操作，大规模批量更新操作请用原生的jdbc（通过getDataSource()获取DataSource进而获取jdbc连接）。
  * 
- * @author
+ * @author Fan Beibei
  * @since 2014-7-4 12:10:30
  * @version 0.10a
  */
@@ -116,7 +116,7 @@ public abstract class BaseDao {
 	}
 
 	/**
-	 * 生成ID
+	 * 生成ID(仅支持mysql)
 	 * 
 	 * @param tableName_Seq
 	 *            数据库表名
@@ -137,7 +137,7 @@ public abstract class BaseDao {
 						+ "' AND table_name='");
 		sql.append(tableName_Seq);
 		sql.append("' limit 1");
-		logger.debug("sql=" + sql.toString());
+		logger.debug("sql={}" , sql.toString());
 		return jdbcTemplate.queryForObject(sql.toString(), new Object[] {}, Long.class);
 
 	}
@@ -256,7 +256,7 @@ public abstract class BaseDao {
 					}
 				} catch (Exception e) {
 					logger.debug(e.getMessage(), e);
-					logger.error("读取" + entityClass.getName() + " " + field.getName() + " 异常 ");
+					logger.error("读取   {}  {}  异常 ", entityClass.getName() ,field.getName());
 					throw e;
 				}
 			}
@@ -269,8 +269,8 @@ public abstract class BaseDao {
 		sql.append(") values ");
 		sql.append(getQuestionStr(colNamelist.size()));
 
-		logger.debug("sql:" + sql);
-		logger.debug("param:" + objList);
+		logger.debug("sql={}" , sql);
+		logger.debug("param:{}", objList.toString());
 
 		KeyHolder key = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
@@ -335,8 +335,8 @@ public abstract class BaseDao {
 			sql.append(" set ").append(colNamelist.toString().replace("[", "").replace("]", ""));
 			sql.append(" where ")
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
-			logger.debug("sql:" + sql);
-			logger.debug("param:" + objList);
+			logger.debug("sql={}" , sql);
+			logger.debug("param:{}" , objList.toString());
 			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -415,8 +415,8 @@ public abstract class BaseDao {
 			sql.append(" set ").append(colNamelist.toString().replace("[", "").replace("]", ""));
 			sql.append(" where ")
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
-			logger.debug("sql:" + sql);
-			logger.debug("param:" + objList);
+			logger.debug("sql={}" , sql);
+			logger.debug("param:{}" , objList.toString());
 			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -475,8 +475,8 @@ public abstract class BaseDao {
 			sql.append(" set ").append(colNamelist.toString().replace("[", "").replace("]", ""));
 			sql.append(" where ")
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
-			logger.debug("sql:" + sql);
-			logger.debug("param:" + objList.toArray());
+			logger.debug("sql={}" , sql);
+			logger.debug("param:{}" , objList.toString());
 			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -507,8 +507,8 @@ public abstract class BaseDao {
 			sql.append(entityClass.getAnnotation(Table.class).name());
 			sql.append(" WHERE ").append(idName).append("=? LIMIT 1");
 
-			logger.debug("sql:" + sql);
-			logger.debug("param:" + id);
+			logger.debug("sql={}" , sql);
+			logger.debug("param:{}" , id);
 
 			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id },
 					RowMapperFactory.newRowMapper(entityClass));
@@ -542,8 +542,8 @@ public abstract class BaseDao {
 		sql.append(entityClass.getAnnotation(Table.class).name());
 		sql.append(" WHERE ").append(idName).append("=?");
 
-		logger.debug("sql:" + sql);
-		logger.debug("param:" + id);
+		logger.debug("sql={}" , sql);
+		logger.debug("param:{}" , id);
 
 		deleteRows = jdbcTemplate.update(sql.toString(), new Object[] { id });
 		return deleteRows;
@@ -579,8 +579,8 @@ public abstract class BaseDao {
 			sql.append(entityClass.getAnnotation(Table.class).name());
 			sql.append(" WHERE ").append(idName).append(" IN (").append(idsSb).append(")");// in子集不能超过1000
 
-			logger.debug("sql:" + sql);
-			logger.debug("param:" + idsSb);
+			logger.debug("sql={}" , sql);
+			logger.debug("param:{}" , idsSb);
 
 			deleteRows = jdbcTemplate.update(sql.toString());
 		} catch (Exception e) {
@@ -724,7 +724,8 @@ public abstract class BaseDao {
 	}
 
 	/**
-	 * 获取DataSource
+	 * 获取DataSource,大规模批量更新操作请用原生的jdbc
+	 * 
 	 * 
 	 * @return
 	 */
