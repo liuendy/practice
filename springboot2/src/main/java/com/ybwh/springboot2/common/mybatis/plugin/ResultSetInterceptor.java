@@ -3,12 +3,12 @@ package com.ybwh.springboot2.common.mybatis.plugin;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+
 
 import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -30,13 +30,42 @@ import org.slf4j.LoggerFactory;
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
 public class ResultSetInterceptor implements Interceptor {
 
-    public static Logger logger = LoggerFactory
+    private static Logger logger = LoggerFactory
             .getLogger(ResultSetInterceptor.class);
 
 
+
+
+    /**
+     * 不需要处理的sql语句ID
+     */
+    private static final Set<String> notProcessSqlId = new HashSet<>();
+
+    static {
+        notProcessSqlId.add("com.shangde.ehr.staffachive.dao.EmployeeInfoNewDAO.selectPersonBaseInfo");//个人中心我的档案查看
+    }
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        return proccessIdnumAndTel(invocation);
+        DefaultResultSetHandler resultSetHandler = (DefaultResultSetHandler) invocation.getTarget();//mybatis中ResultSetHandler只有一个实现类DefaultResultSetHandler
+        /**
+         * 判断该sql是否是不需要进行字段完整性权限过滤的
+         */
+        String sqlId = getSqlId(resultSetHandler);
+        if (notProcessSqlId.contains(sqlId)) {
+            return invocation.proceed();
+        }
+
+
+        /**
+         * 不包含要过滤的表
+         */
+        String sql = getRawSql(resultSetHandler);
+        if (!sql.contains(EMPLOYEE_TABLE) && !sql.contains(EMPLOYEE_TABLE_BK)) {
+            return invocation.proceed();
+        }
+
+        return proccessFullFieldAuth(invocation);
     }
 
 
@@ -68,54 +97,37 @@ public class ResultSetInterceptor implements Interceptor {
      * 员工信息数据表
      */
     private static final String EMPLOYEE_TABLE = "t_employee_base_info";
+    /**
+     * 历史记录的处理
+     */
+    private static final String EMPLOYEE_TABLE_BK = "t_employee_base_info_bk";
 
     /**
-     * 不需要处理的sql语句ID
+     * 字段完整性权限处理
+     * <p>
+     * 1.对员工的证件号、手机号、紧急联系人打码进行处理,即对t_employee_base_info表的id_num、tel、emergency_tel三个字段验证权限打码
+     * 2.对员工历史记录的证件号、手机号、紧急联系人打码进行处理,即对表t_employee_base_info_bk* 的id_num、tel、emergency_tel三个字段验证权限打码
      */
-    private static final Set<String> notProcessSqlId = new HashSet<>();
-    static {
-        notProcessSqlId.add("com.shangde.ehr.staffachive.dao.EmployeeInfoNewDAO.selectPersonBaseInfo");//个人中心我的档案查看
-    }
-
-    /**
-     * 对员工的证件号和手机号打码进行处理
-     */
-    private Object proccessIdnumAndTel(Invocation invocation) throws Throwable {
-        //mybatis里 ResultSetHandler只有 DefaultResultSetHandler一个实现类
-        DefaultResultSetHandler  resultSetHandler= (DefaultResultSetHandler) invocation.getTarget();
-
-        Object[] args = invocation.getArgs();
-        // 获取到当前的Statement
-        Statement stmt = (Statement) args[0];
-       
-
-        DelegateStatement sd = new DelegateStatement(stmt);
+    private Object proccessFullFieldAuth(Invocation invocation) throws Throwable {
+        DelegateStatement sd = new DelegateStatement((Statement) invocation.getArgs()[0]);
         UpdateableResultSet rs1 = (UpdateableResultSet) sd.getResultSet();
 
-        int idNumIndex = getColumnIndex(rs1,EMPLOYEE_IDNUM);
-        int id_numIndex = getColumnIndex(rs1,EMPLOYEE_ID_NUM);
-        int telIndex = getColumnIndex(rs1,EMPLOYEE_TEL);
-        int emergencyTelIndex = getColumnIndex(rs1,EMERGENCY_TEL);
+        int idNumIndex = getColumnIndex(rs1, EMPLOYEE_IDNUM);
+        int id_numIndex = getColumnIndex(rs1, EMPLOYEE_ID_NUM);
+        int telIndex = getColumnIndex(rs1, EMPLOYEE_TEL);
+        int emergencyTelIndex = getColumnIndex(rs1, EMERGENCY_TEL);
 
-        if ((-1 != idNumIndex || -1 != id_numIndex || -1 != telIndex ) || -1 != emergencyTelIndex) {//查询中有列id_num或tel
-            String sqlId = getSqlId(resultSetHandler);
-            logger.debug("proccessIdnumAndTel,idNumIndex={}，id_numIndex={},telIndex={},emergencyTelIndex={},sqlId={}",
-                    idNumIndex,id_numIndex,telIndex,emergencyTelIndex,sqlId);
+        if ((-1 != idNumIndex || -1 != id_numIndex || -1 != telIndex) || -1 != emergencyTelIndex) {//查询中有列id_num或tel
 
-            if(notProcessSqlId.contains(sqlId)){
-                return invocation.proceed();
-            }
+            
 
-
-            //TODO 判断员工有无权限访问两个字段
-            if(hasFullColumnAuth()){
-                return invocation.proceed();
-            }
-
+            //查询出当前用户拥有完整性字段权限的列表
+            Set<String> fullColumnAuthFields = new HashSet<>();//TODO 
+           
 
 
             while (rs1.next()) {
-                if(-1 != idNumIndex){//把身份证号打码
+                if (-1 != idNumIndex && !fullColumnAuthFields.contains(EMPLOYEE_TABLE + "." + EMPLOYEE_ID_NUM)) {//把身份证号打码
                     String idNum = rs1.getString(idNumIndex);
 
                     if (null != idNum && !"".equals(idNum.trim())) {
@@ -123,7 +135,7 @@ public class ResultSetInterceptor implements Interceptor {
                     }
                 }
 
-                if(-1 != id_numIndex){//把身份证号打码
+                if (-1 != id_numIndex && !fullColumnAuthFields.contains(EMPLOYEE_TABLE + "." + EMPLOYEE_ID_NUM)) {//把身份证号打码
                     String id_num = rs1.getString(id_numIndex);
 
                     if (null != id_num && !"".equals(id_num.trim())) {
@@ -132,7 +144,7 @@ public class ResultSetInterceptor implements Interceptor {
                 }
 
 
-                if(-1 != telIndex){//把手机号打码
+                if (-1 != telIndex && !fullColumnAuthFields.contains(EMPLOYEE_TABLE + "." + EMPLOYEE_TEL)) {//把手机号打码
                     String tel = rs1.getString(telIndex);
                     if (null != tel && !"".equals(tel.trim())) {
                         rs1.updateString(telIndex, EmployeeInfoMarkUtils.markTel(tel));
@@ -140,10 +152,10 @@ public class ResultSetInterceptor implements Interceptor {
                 }
 
 
-                if(-1 != emergencyTelIndex){//给紧急联系人手机号打码
+                if (-1 != emergencyTelIndex && !fullColumnAuthFields.contains(EMPLOYEE_TABLE + "." + EMPLOYEE_TEL)) {//给紧急联系人手机号打码
                     String emergencyTel = rs1.getString(emergencyTelIndex);
                     if (null != emergencyTel && !"".equals(emergencyTel.trim())) {
-                        rs1.updateString(telIndex, EmployeeInfoMarkUtils.markTel(emergencyTel));
+                        rs1.updateString(emergencyTelIndex, EmployeeInfoMarkUtils.markTel(emergencyTel));
                     }
                 }
 
@@ -157,11 +169,6 @@ public class ResultSetInterceptor implements Interceptor {
         return invocation.proceed();
     }
 
-    private boolean hasFullColumnAuth() {
-        //TODO
-        return false;
-    }
-
 
     /**
      * 根据列名找列的索引号，索引号从1开始
@@ -170,11 +177,11 @@ public class ResultSetInterceptor implements Interceptor {
      * @param columnName 数据表列的名称，不是sql语句中的别名
      * @return
      */
-    private int getColumnIndex(UpdateableResultSet rs,String columnName) {
+    private int getColumnIndex(UpdateableResultSet rs, String columnName) {
         int index = -1;
         try {
             index = rs.findColumnName(columnName);
-        }catch (SQLException e){//找不到就抛异常
+        } catch (SQLException e) {//找不到就抛异常
         }
 
         return index;
@@ -197,6 +204,24 @@ public class ResultSetInterceptor implements Interceptor {
         mappedStatementField.setAccessible(true);
         MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(resultSetHandler);
         return mappedStatement.getId();
+    }
+
+
+    /**
+     * 获取原始的sql
+     *
+     * @param resultSetHandler
+     * @return
+     * @throws NoSuchFieldException
+     * @throws SecurityException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     */
+    private String getRawSql(DefaultResultSetHandler resultSetHandler) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        Field boundSqlField = DefaultResultSetHandler.class.getDeclaredField("boundSql");
+        boundSqlField.setAccessible(true);
+        BoundSql boundSql = (BoundSql) boundSqlField.get(resultSetHandler);
+        return boundSql.getSql();
     }
 
 }

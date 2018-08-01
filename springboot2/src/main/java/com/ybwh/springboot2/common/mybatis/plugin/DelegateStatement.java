@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 /**
  * 委托类，仅仅改变了getResultSet的动作,
- * 该类仅给ResultSetInterceptor使用
+ * 该类仅给{@link ResultSetInterceptor}使用
  *
  * @author: Fan Beibei
  * @date: 2018/7/3 10:49

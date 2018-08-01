@@ -23,15 +23,11 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * 可改变值的ResultSet，
- * 该类仅给ResultSetInterceptor使用
+ * 可改变值的ResultSet，改变结果集字段值后不会更新数据库对应字段
+ * 该类仅给{@link ResultSetInterceptor}使用
  *
  * @author: Fan Beibei
  * @date: 2018/7/3 10:49
@@ -70,43 +66,7 @@ class UpdateableResultSet implements ResultSet {
         this.statement = statement;
         initFrom(statement.getResultSet());
     }
-    
-    
-    
-    
-    /**
-     * Gets the designated column's table name.
-     *
-     * @param column the first column is 1, the second is 2, ...
-     * @return table name or "" if not applicable
-     * @exception SQLException if a database access error occurs
-     */
-    public String getTableName(int column) throws SQLException{
-        return metaData.getTableName(column);
-    }
 
-
-    /**
-     * 根据列的别名获取所在表名称
-     *
-     * @param columnLabel  别名
-     * @return
-     * @throws SQLException
-     */
-    public String getTableName(String columnLabel) throws SQLException{
-        return metaData.getTableName(findColumn(columnLabel));
-    }
-
-    /**
-     * 根据列的名称获取所在表名称
-     *
-     * @param columnName  列名
-     * @return
-     * @throws SQLException
-     */
-    public String getTableNameByColumnName(String columnName) throws SQLException{
-        return metaData.getTableName(findColumnName(columnName));
-    }
 
     /**
      * 结果集中是否包含列名为columnName的列
@@ -133,6 +93,43 @@ class UpdateableResultSet implements ResultSet {
         rowIndex = -1;
     }
 
+
+    /**
+     * Gets the designated column's table name.
+     *
+     * @param column the first column is 1, the second is 2, ...
+     * @return table name or "" if not applicable
+     * @exception SQLException if a database access error occurs
+     */
+    public String getTableName(int column) throws SQLException{
+        return metaData.getTableName(column);
+    }
+
+
+    /**
+     * 根据列的别名获取所在表名称
+     *
+     * @param columnLabel  别名
+     * @return
+     * @throws SQLException
+     */
+    public String getTableName(String columnLabel) throws SQLException{
+        return metaData.getTableName(findColumn(columnLabel));
+    }
+
+
+
+    /**
+     * 根据列的名称获取所在表名称
+     *
+     * @param columnName  列名
+     * @return
+     * @throws SQLException
+     */
+    public String getTableNameByColumnName(String columnName) throws SQLException{
+        return metaData.getTableName(findColumnName(columnName));
+    }
+
     /**
      * 将rs中数据拷贝到自身
      *
@@ -148,7 +145,7 @@ class UpdateableResultSet implements ResultSet {
         for (int i = 1; i < metaData.getColumnCount() + 1; i++) {// 缓存列标签和列索引号对应关系，提高findColumn的效率
             columnLableTable.put(metaData.getColumnLabel(i).toLowerCase(), i);
             columnNameTable.put(metaData.getColumnName(i).toLowerCase(), metaData.getColumnLabel(i).toLowerCase());
-//            System.out.println("*******" + metaData.getColumnLabel(i) + "->" + metaData.getColumnName(i)+":"+i);
+//            System.out.println("*******" + metaData.getColumnLabel(i) + "->" + metaData.getColumnName(i)+":"+i +","+getTableName(i));
         }
 
 
