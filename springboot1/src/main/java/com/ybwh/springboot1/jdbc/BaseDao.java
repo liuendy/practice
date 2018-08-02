@@ -150,7 +150,7 @@ public abstract class BaseDao {
 	 * @param getMethod
 	 * @return
 	 */
-	protected <T extends Annotation> T getAnnotation(Class<T> annotationClass, Field field, Method getMethod) {
+	protected static <T extends Annotation> T getAnnotation(Class<T> annotationClass, Field field, Method getMethod) {
 		T annotation = field.getAnnotation(annotationClass);
 		if (annotation == null) {
 			annotation = getMethod.getAnnotation(annotationClass);
@@ -169,7 +169,7 @@ public abstract class BaseDao {
 	 *            方法
 	 * @return
 	 */
-	protected <T extends Annotation> boolean hasAnnotation(Class<T> annotationClass, Field field, Method getMethod) {
+	protected static <T extends Annotation> boolean hasAnnotation(Class<T> annotationClass, Field field, Method getMethod) {
 		return field.isAnnotationPresent(annotationClass) || getMethod.isAnnotationPresent(annotationClass);
 	}
 
@@ -179,12 +179,27 @@ public abstract class BaseDao {
 	 * @param size
 	 * @return
 	 */
-	protected String getQuestionStr(int size) {
+	protected static String getQuestionStr(int size) {
 		StringBuilder b = new StringBuilder();
 		for (int i = 0; i < size; i++) {
 			b.append(",?");
 		}
 		return b.toString().replaceFirst(",", "(") + ")";
+	}
+	
+	
+	/**
+	 * 判断类是否基本类型的包装类
+	 * 
+	 * @param clz
+	 * @return
+	 */
+	protected static boolean isWrapClass(Class<?> clz) {
+		try {
+			return ((Class<?>) clz.getField("TYPE").get(null)).isPrimitive();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**
@@ -242,7 +257,7 @@ public abstract class BaseDao {
 					if (column != null && column.insertable() && getMethod != null) {
 						Object o = getMethod.invoke(obj);
 
-						if (this.hasAnnotation(Id.class, field, getMethod)) {// 对Id的处理
+						if (hasAnnotation(Id.class, field, getMethod)) {// 对Id的处理
 							if (!nullIdValue && null == o) {
 								throw new IllegalArgumentException("Id column can not be  null");
 							} else {
@@ -274,7 +289,6 @@ public abstract class BaseDao {
 
 		KeyHolder key = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
-
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement pstem = con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
@@ -733,17 +747,5 @@ public abstract class BaseDao {
 		return jdbcTemplate.getDataSource();
 	}
 
-	/**
-	 * 判断类是否基本类型的包装类
-	 * 
-	 * @param clz
-	 * @return
-	 */
-	public static boolean isWrapClass(Class<?> clz) {
-		try {
-			return ((Class<?>) clz.getField("TYPE").get(null)).isPrimitive();
-		} catch (Exception e) {
-			return false;
-		}
-	}
+	
 }

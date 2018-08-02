@@ -38,4 +38,10 @@ public interface AreaDao {
      * @mbggenerated
      */
     int updateByPrimaryKey(Area record);
+    
+    
+    
+    Area selectTest(Integer id);
+    
+    
 }

@@ -28,6 +28,14 @@
     from area
     where id = #{id}
   </select>
+  
+  <select id="selectTest" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    t1.id,t1.id, t1.area_name  areaName,t2.id
+    from area t1,dept t2
+    where t1.id = #{id} and t1.id =t2.id
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from area
     where id = #{id}

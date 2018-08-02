@@ -44,12 +44,17 @@ class UpdateableResultSet implements ResultSet {
     protected Statement statement;
 
     protected ResultSetMetaData metaData;
+
+
+    /**
+     * 实际查询中存在一个多个列名称相同或多个列的别名相同的情况
+     */
     protected Map<String/** columnLabel */
-            , Integer/** columnIndex */
-            > columnLableTable = new HashMap<String, Integer>();
+            , int[]/** columnIndex */
+            > columnLabelTable = new HashMap<String, int[]>();
     protected Map<String/** ColumnName */
-            , String/** columnLabel */
-            > columnNameTable = new HashMap<String, String>();
+            , int[]/** columnIndex */
+            > columnNameTable = new HashMap<String, int[]>();
 
     /**
      * 存储当前数据行是否被修改过
@@ -73,17 +78,18 @@ class UpdateableResultSet implements ResultSet {
      * @param columnName
      * @return
      */
-    public boolean hasColmunName(String columnName){
-        return  columnNameTable.containsKey(columnName);
+    public boolean hasColmunName(String columnName) {
+        return columnNameTable.containsKey(columnName);
     }
 
     /**
      * 结果集中是否包含别名为columnLabel的列
+     *
      * @param columnLabel
      * @return
      */
-    public boolean hasColmunLable(String columnLabel){
-        return  columnLableTable.containsKey(columnLabel);
+    public boolean hasColmunLable(String columnLabel) {
+        return columnLabelTable.containsKey(columnLabel);
     }
 
     /**
@@ -99,9 +105,9 @@ class UpdateableResultSet implements ResultSet {
      *
      * @param column the first column is 1, the second is 2, ...
      * @return table name or "" if not applicable
-     * @exception SQLException if a database access error occurs
+     * @throws SQLException if a database access error occurs
      */
-    public String getTableName(int column) throws SQLException{
+    public String getTableName(int column) throws SQLException {
         return metaData.getTableName(column);
     }
 
@@ -109,25 +115,32 @@ class UpdateableResultSet implements ResultSet {
     /**
      * 根据列的别名获取所在表名称
      *
-     * @param columnLabel  别名
+     * @param columnLabel 别名
      * @return
      * @throws SQLException
      */
-    public String getTableName(String columnLabel) throws SQLException{
+    public String getTableName(String columnLabel) throws SQLException {
         return metaData.getTableName(findColumn(columnLabel));
     }
-
 
 
     /**
      * 根据列的名称获取所在表名称
      *
-     * @param columnName  列名
-     * @return
+     * @param columnName 列名
+     * @return 多列同名情况
      * @throws SQLException
      */
-    public String getTableNameByColumnName(String columnName) throws SQLException{
-        return metaData.getTableName(findColumnName(columnName));
+    public String[] getTableNameByColumnName(String columnName) throws SQLException {
+
+        int[] indexes = findColumnName(columnName);
+
+        String[] tableNames = new String[indexes.length];
+        for (int i = 0; i < tableNames.length; i++) {
+            tableNames[i] = metaData.getTableName(indexes[i]);
+        }
+
+        return tableNames;
     }
 
     /**
@@ -136,15 +149,35 @@ class UpdateableResultSet implements ResultSet {
      * @param rs
      * @throws SQLException`
      */
-    private void initFrom(ResultSet rs) throws SQLException {
+    private synchronized void initFrom(ResultSet rs) throws SQLException {
         if (isInit) {
             throw new IllegalStateException("can not init again!!");
         }
 
+//        System.out.println("--------------------------------------------------------------------------------------------------------");
         metaData = rs.getMetaData();
         for (int i = 1; i < metaData.getColumnCount() + 1; i++) {// 缓存列标签和列索引号对应关系，提高findColumn的效率
-            columnLableTable.put(metaData.getColumnLabel(i).toLowerCase(), i);
-            columnNameTable.put(metaData.getColumnName(i).toLowerCase(), metaData.getColumnLabel(i).toLowerCase());
+            String columnLabel = metaData.getColumnLabel(i).toLowerCase();
+            int[] columnLabelIndexes = columnLabelTable.get(columnLabel);
+            if (null == columnLabelIndexes || 0 == columnLabelIndexes.length) {
+                columnLabelTable.put(columnLabel, new int[]{i});
+            } else {
+                int[] columnLabelIndexesNew = new int[columnLabelIndexes.length + 1];
+                System.arraycopy(columnLabelIndexes, 0, columnLabelIndexesNew, 0, columnLabelIndexes.length);
+                columnLabelTable.put(columnLabel, columnLabelIndexesNew);
+            }
+
+
+            String columnName = metaData.getColumnName(i).toLowerCase();
+            int[] columnNameIndexes = columnNameTable.get(columnName);
+            if (null == columnNameIndexes || 0 == columnNameIndexes.length) {
+                columnNameTable.put(columnName, new int[]{i});
+            } else {
+                int[] columnNameIndexesNew = new int[columnNameIndexes.length + 1];
+                System.arraycopy(columnNameIndexes, 0, columnNameIndexesNew, 0, columnNameIndexes.length);
+                columnNameTable.put(columnName, columnNameIndexesNew);
+            }
+
 //            System.out.println("*******" + metaData.getColumnLabel(i) + "->" + metaData.getColumnName(i)+":"+i +","+getTableName(i));
         }
 
@@ -164,7 +197,7 @@ class UpdateableResultSet implements ResultSet {
         try {
             while (rs.previous()) {// 将rs游标还原
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
         }
 
 
@@ -489,36 +522,35 @@ class UpdateableResultSet implements ResultSet {
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-        /**
-         * 参数columnLabel有时候传入的是columnName而不是columnLabel
-         */
-        Integer columIndex = columnLableTable.get(columnLabel.toLowerCase());
-        if (null == columIndex) {
-            throw new SQLException("no such columnLabel,columnLabel="+columnLabel);
+        int[] columIndexes = columnLabelTable.get(columnLabel.toLowerCase());
+        if (null == columIndexes) {
+            throw new SQLException("no such columnLabel,columnLabel=" + columnLabel);
         }
 
-        return columIndex;
+        /**
+         * 列的别名一般不会重复，重复了也一般取第一个
+         */
+        return columIndexes[0];
     }
 
 
     /**
-     * 与{@link #findColumn}功能相似,根据列名称查找列的索引
+     * 与{@link #findColumn}功能相似,根据列名称查找列的索引，但返回的是数组，某些sql会返回列名相同的结果集.
+     * 例如连接查询:select t1.id,t2.id from t1,t2 where t1.id=t2.id
+     *
      * @param columnName
      * @return
      * @throws SQLException
      */
-    public int findColumnName(String columnName) throws SQLException {
-        /**
-         * 参数columnLabel有时候传入的是columnName而不是columnLabel
-         */
-        Integer columIndex = columnLableTable.get(columnNameTable.get(columnName.toLowerCase()));
-        if (null == columIndex) {
-            throw new SQLException("no such columnName,columnName="+columnName);
+    public int[] findColumnName(String columnName) throws SQLException {
+
+        int[] columIndexes = columnNameTable.get(columnName.toLowerCase());
+        if (null == columIndexes) {
+            throw new SQLException("no such columnName,columnName=" + columnName);
         }
 
-        return columIndex;
+        return columIndexes;
     }
-
 
 
     @Override
@@ -1166,14 +1198,14 @@ class UpdateableResultSet implements ResultSet {
                 } catch (ParseException e) {
                 }
 
-                if(null == date){
+                if (null == date) {
                     try {
                         date = new Date(yyyy_MM_dd.parse((String) obj).getTime());
                     } catch (ParseException e) {
                     }
                 }
 
-                if(null == date){
+                if (null == date) {
                     try {
                         date = new Date(yyyy_MM_dd_HH_mm_ss_.parse((String) obj).getTime());
                     } catch (ParseException e) {

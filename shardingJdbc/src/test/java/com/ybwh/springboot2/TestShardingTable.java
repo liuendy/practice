@@ -42,9 +42,9 @@ public class TestShardingTable {
 	public void testSelect() {
 		Assert.assertNotNull(orderDao);
 		
-		List<Order> list = orderDao.selectByUserId(7L);
-		
-		System.out.println(list);
+//		List<Order> list = orderDao.selectByUserId(7L);
+//		
+//		System.out.println(list);
 		
 		Order o = orderDao.selectByPrimaryKey(228620718068203520L);
 		System.out.println(o);

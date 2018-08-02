@@ -15,12 +15,12 @@
             <property name="suppressAllComments" value="false"/> 
         </commentGenerator>  
   
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://127.0.0.1:3306/sj0" userId="root" password="fan1988">  
-        </jdbcConnection>  
         <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://172.16.101.130:3306/ehr" userId="eHRAdmin" password="shangde_wings">  
-        </jdbcConnection> -->
+            connectionURL="jdbc:mysql://127.0.0.1:3306/sj0" userId="root" password="fan1988">  
+        </jdbcConnection>   -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
+            connectionURL="jdbc:mysql://172.16.101.130:3306/ehr_message" userId="eHRAdmin" password="shangde_wings">  
+        </jdbcConnection>
   
         <javaTypeResolver type="com.ybwh.mybaitsGen.MyJavaTypeResolver">  
             <property name="forceBigDecimals" value="false" />
@@ -58,7 +58,7 @@
 			selectByExampleQueryId="false">
 		</table> -->
 		
-		<table  tableName="t_order0" domainObjectName="Order"
+		<table  tableName="t_work_message" domainObjectName="WorkMessage"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
