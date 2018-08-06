@@ -15,6 +15,7 @@ import com.ybwh.springboot1.dao.WorkMessageDao;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+//@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
 public class TestDao2 {
 	public static final String MESSAGE_TOKEN_KEY_PREFIX = "message:token:";
 

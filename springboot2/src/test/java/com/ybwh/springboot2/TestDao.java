@@ -9,6 +9,8 @@ import java.sql.Statement;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -18,12 +20,16 @@ import com.ybwh.springboot2.demo.dao.AreaDao;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+//@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
 public class TestDao {
+	Logger logger = LoggerFactory.getLogger("TTTTTTTTTTTTTTT");
 	@Autowired
 	AreaDao dao;
 
 	@Test
 	public void contextLoads() {
+		logger.info("**************************************************");
+		
 		try {
 			Assert.assertNotNull(dao);
 			

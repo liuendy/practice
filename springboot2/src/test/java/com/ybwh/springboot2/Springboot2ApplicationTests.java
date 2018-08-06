@@ -12,6 +12,7 @@ import com.ybwh.springboot2.demo.dao.AreaDao;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+//@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
 public class Springboot2ApplicationTests {
 	@Autowired
 	AreaDao dao;

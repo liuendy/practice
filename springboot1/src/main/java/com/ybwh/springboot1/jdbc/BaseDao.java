@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -562,6 +563,22 @@ public abstract class BaseDao {
 		deleteRows = jdbcTemplate.update(sql.toString(), new Object[] { id });
 		return deleteRows;
 	}
+	
+	
+	
+	
+	/**
+	 * 自定义update 操作
+	 * 
+	 * @param sql 带占位符的sql
+	 * @param args 参数列表
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public int update(String sql, Object... args) throws DataAccessException {
+		return jdbcTemplate.update(sql,args);
+	}
+	
 
 	/**
 	 * 根据ID批量删除
@@ -736,6 +753,11 @@ public abstract class BaseDao {
 		return results.get(0);
 
 	}
+	
+	
+	
+	
+	
 
 	/**
 	 * 获取DataSource,大规模批量更新操作请用原生的jdbc
