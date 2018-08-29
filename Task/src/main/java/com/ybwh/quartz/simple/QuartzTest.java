@@ -4,6 +4,7 @@ import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -53,10 +54,17 @@ public class QuartzTest {
 			
 
 			scheduler.scheduleJob(jobDetail, trigger);
-			scheduler.scheduleJob(jobDetail2, trigger2);
+			
 
 			// and start it off
 			scheduler.start();
+			
+			scheduler.scheduleJob(jobDetail2, trigger2);
+			scheduler.triggerJob(jobDetail2.getKey());
+//			scheduler.deleteJob(jobDetail2.getKey());
+			
+			scheduler.pauseJob(JobKey.jobKey("myJob2", "group2"));//暂停
+			scheduler.resumeJob(JobKey.jobKey("myJob2", "group2"));//恢复
 
 //			scheduler.shutdown();
 

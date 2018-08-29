@@ -1,18 +1,19 @@
-package com.ybwh.quartz.cron;
+package com.ybwh.cron;
 
 import java.text.ParseException;
 import java.util.Date;
 
-import com.ybwh.quartz.cron.parser.CronExpression;
+import org.quartz.CronExpression;
+
 
 
 /**
- * ²âÊÔcron±í´ïÊ½
+ * æµ‹è¯•quartzçš„cronè¡¨è¾¾å¼è§£æå™¨ã€‚
+ * 
  * @author fan79
  *
  */
 public class CronExpressionTest {
-	
 	public static void main(String[] args) {
 		Date curTime = new Date();  
 		System.out.println(curTime);  

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ybwh.quartz.cron.parser;
+package com.ybwh.cron.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ import org.springframework.util.StringUtils;
  * @since 3.0
  * @see CronTrigger
  */
-public class CronSequenceGenerator {
+public class CronSequenceGenerator {//spring-task
 
 	private final String expression;
 

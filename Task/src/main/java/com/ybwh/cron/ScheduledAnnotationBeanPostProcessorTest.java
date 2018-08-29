@@ -1,4 +1,4 @@
-package com.ybwh.quartz.cron;
+package com.ybwh.cron;
 
 import java.util.concurrent.ScheduledExecutorService;
 

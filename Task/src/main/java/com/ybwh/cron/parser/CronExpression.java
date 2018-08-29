@@ -15,7 +15,7 @@
  * 
  */
 
-package com.ybwh.quartz.cron.parser;
+package com.ybwh.cron.parser;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -196,7 +196,7 @@ import java.util.TreeSet;
  * @author Contributions from Mads Henderson
  * @author Refactoring from CronTrigger to CronExpression by Aaron Craven
  */
-public final class CronExpression implements Serializable, Cloneable {
+public final class CronExpression implements Serializable, Cloneable {//quartz
 
     private static final long serialVersionUID = 12423409423L;
     
