@@ -61,7 +61,7 @@ public class QuartzTest {
 			
 			scheduler.scheduleJob(jobDetail2, trigger2);
 			scheduler.triggerJob(jobDetail2.getKey());
-//			scheduler.deleteJob(jobDetail2.getKey());
+			scheduler.deleteJob(jobDetail2.getKey());
 			
 			scheduler.pauseJob(JobKey.jobKey("myJob2", "group2"));//暂停
 			scheduler.resumeJob(JobKey.jobKey("myJob2", "group2"));//恢复
