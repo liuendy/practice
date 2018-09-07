@@ -42,13 +42,26 @@ public class TestShardingTable {
 	public void testSelect() {
 		Assert.assertNotNull(orderDao);
 		
-//		List<Order> list = orderDao.selectByUserId(7L);
-//		
-//		System.out.println(list);
-		
-		Order o = orderDao.selectByPrimaryKey(228620718068203520L);
-		System.out.println(o);
-		
+		/**
+		 * 单列分表只要条件中带有分表列就可以查询成功，否则无法查询成功
+		 */
+		try {
+			List<Order> list = orderDao.selectByUserId(7L);
+			System.out.println("%%%%%%%%"+list.toString());
+			
+			
+			System.out.println("----------------------------------------------------------------------------------------------");
+			List<Order> list2 = orderDao.selectByUserIdAndOrderId(7L,228620718068203520L);
+			System.out.println("%%%%%%%%"+list2);
+			
+			Order o = orderDao.selectByPrimaryKey(228620718068203520L);
+			System.out.println("%%%%%%%%"+o);
+			
+			
+			System.out.println("----------------------------------------------------------------------------------------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 
