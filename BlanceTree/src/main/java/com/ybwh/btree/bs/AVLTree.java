@@ -1,14 +1,10 @@
 package com.ybwh.btree.bs;
 
 /**
- * 二叉搜索树
+ * 平衡二叉搜索树
  *
- * @param <K>
- *            特征值类型
- * @param <V>
- *            携带的数据类型
  */
-public class BSTree<K extends Comparable<K>, V> {
+public class AVLTree <K extends Comparable<K>, V>{
 	/**
 	 * 二叉搜索树的节点
 	 *
@@ -31,7 +27,8 @@ public class BSTree<K extends Comparable<K>, V> {
 	 * 根节点
 	 */
 	private Node<K, V> root;
-
+	
+	
 	/**
 	 * 插入数据
 	 * 
@@ -67,7 +64,7 @@ public class BSTree<K extends Comparable<K>, V> {
 			root = node;
 		}
 		
-		//如果是平衡二叉树的话还要进行整理;如果是红黑树的话还要进行着色和旋转处理
+		keepBalance(node);
 		
 	}
 
@@ -152,6 +149,9 @@ public class BSTree<K extends Comparable<K>, V> {
 	        	root = rMin;
 	        }
 	        
+	        
+	        
+	        
 	        return ;
 		}
 		
@@ -179,5 +179,16 @@ public class BSTree<K extends Comparable<K>, V> {
         	root = child;
         }
         
+	}
+	
+	
+	/**
+	 * 使得子树保持平衡
+	 * 
+	 * @param node  子树的根
+	 */
+	private void keepBalance(Node<K, V> node) {
+		
+		
 	}
 }

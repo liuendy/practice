@@ -8,7 +8,7 @@ package com.ybwh.btree.rb;
  * @param <V>
  *            携带的数据类型
  */
-public class RbTree<K, V> {
+public class RbTree<K extends Comparable<K>, V>{
 
 	private class Node<K, V> {
 		static final boolean RED = true;
