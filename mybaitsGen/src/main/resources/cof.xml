@@ -15,12 +15,12 @@
             <property name="suppressAllComments" value="false"/> 
         </commentGenerator>  
   
-        <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://127.0.0.1:3306/sj0" userId="root" password="fan1988">  
-        </jdbcConnection>   -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
+            connectionURL="jdbc:mysql://127.0.0.1:3306/sj0" userId="root" password="fan1988">  
+        </jdbcConnection>  
+        <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
             connectionURL="jdbc:mysql://172.16.101.130:3306/ehr_message" userId="eHRAdmin" password="shangde_wings">  
-        </jdbcConnection>
+        </jdbcConnection> -->
   
         <javaTypeResolver type="com.ybwh.mybaitsGen.MyJavaTypeResolver">  
             <property name="forceBigDecimals" value="false" />
@@ -42,11 +42,12 @@
             <property name="enableSubPackages" value="true" />  
         </javaClientGenerator>  
   
-        <!-- <table  tableName="t_work_message" domainObjectName="WorkMessage"
+        <table  tableName="t_report" domainObjectName="Report"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
 		</table>
+		<!-- 
   		<table  tableName="t_work_message_template" domainObjectName="WorkMessageTemplate"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
@@ -58,12 +59,23 @@
 			selectByExampleQueryId="false">
 		</table> -->
 		
-		<table  tableName="t_work_message" domainObjectName="WorkMessage"
+		<!-- <table  tableName="t_employee_organization_data_auth" domainObjectName="EmployeeOrganizationDataAuth"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">
-		</table>
-
+		</table> -->
+		
+		<!-- <table  tableName="t_employee_bpo_auth" domainObjectName="EmployeeBpoAuth"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table> -->
+		
+		<!-- <table  tableName="t_employee_access_field_auth" domainObjectName="EmployeeAccessFieldAuth"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+		</table> -->
   
     </context>  
 </generatorConfiguration>  
