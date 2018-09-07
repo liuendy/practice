@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 //@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
-public class TestShardingDB {
+public class TestShardingDBSingleColumn {
 	
 	@Test
 	public void test() {
