@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ybwh.springboot2.report.dao" >
+<mapper namespace="com.ybwh.springboot2.report.dao.ReportDao" >
   <resultMap id="BaseResultMap" type="com.ybwh.springboot2.report.model.Report" >
     <id column="id" property="id"  />
     <result column="sale_count" property="saleCount"/>
@@ -16,17 +16,27 @@
     from t_report
     where id = #{id}
   </select>
+  
+  
+  <select id="selectByCreateTime" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from t_report
+    where  create_time > #{createTime}
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_report
     where id = #{id}
   </delete>
-  <insert id="insert" parameterType="com.entity.Report" >
+  <insert id="insert" parameterType="com.ybwh.springboot2.report.model.Report" >
     insert into t_report (id, sale_count, sale_amount, 
       create_time)
     values (#{id}, #{saleCount}, #{saleAmount}, 
       #{createTime})
   </insert>
-  <insert id="insertSelective" parameterType="com.entity.Report" >
+  <insert id="insertSelective" parameterType="com.ybwh.springboot2.report.model.Report" >
     insert into t_report
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -57,7 +67,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.entity.Report" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.ybwh.springboot2.report.model.Report" >
     update t_report
     <set >
       <if test="saleCount != null" >
@@ -72,7 +82,7 @@
     </set>
     where id = #{id}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.entity.Report" >
+  <update id="updateByPrimaryKey" parameterType="com.ybwh.springboot2.report.model.Report" >
     update t_report
     set sale_count = #{saleCount},
       sale_amount = #{saleAmount},

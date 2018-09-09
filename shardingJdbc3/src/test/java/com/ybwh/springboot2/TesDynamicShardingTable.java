@@ -1,5 +1,8 @@
 package com.ybwh.springboot2;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -10,28 +13,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.ybwh.springboot2.order.dao.OrderDao;
-import com.ybwh.springboot2.order.model.Order;
+import com.ybwh.springboot2.report.dao.ReportDao;
+import com.ybwh.springboot2.report.model.Report;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 //@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
-public class TestShardingTableMultiColumn {
+public class TesDynamicShardingTable {
 	
 	@Autowired
-	private OrderDao orderDao;
+	private ReportDao dao;
 	
 	@Test
 	public void testInsert() {
-		Assert.assertNotNull(orderDao);
+		Assert.assertNotNull(dao);
 		
-		Order o = new Order();
-//		o.setOrderId(2L);
-		o.setOrderTime(new Date());
-		o.setUserId(8L);
+		Report report = new Report();
+		report.setCreateTime(new Date());
+		report.setSaleCount(555);
+		report.setSaleAmount(new BigDecimal(33333333.44D));
+
 		
 		try {
-			orderDao.insertSelective(o);
+			dao.insertSelective(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -40,22 +44,19 @@ public class TestShardingTableMultiColumn {
 	
 	@Test
 	public void testSelect() {
-		Assert.assertNotNull(orderDao);
+		Assert.assertNotNull(dao);
 		
 		/**
 		 * 单列分表只要条件中带有分表列就可以查询成功，否则无法查询成功
 		 */
 		try {
-			List<Order> list = orderDao.selectByUserId(7L);
-			System.out.println("%%%%%%%%"+list.toString());
+			
+			DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			
-			System.out.println("----------------------------------------------------------------------------------------------");
-			List<Order> list2 = orderDao.selectByUserIdAndOrderId(7L,228620718068203520L);
-			System.out.println("%%%%%%%%"+list2);
+			List<Report> list = dao.selectByCreateTime(dFormat.parse("2018-09-09 13:24:00"));
+			System.out.println(list);
 			
-			Order o = orderDao.selectByPrimaryKey(228620718068203520L);
-			System.out.println("%%%%%%%%"+o);
 			
 			
 			System.out.println("----------------------------------------------------------------------------------------------");
