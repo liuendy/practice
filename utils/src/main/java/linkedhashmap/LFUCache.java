@@ -7,6 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.OperationNotSupportedException;
+
 /**
  * LFU cache implementation based on http://dhruvbird.com/lfu.pdf, with some
  * notable differences:
@@ -164,12 +166,14 @@ public class LFUCache<K, V> implements Map<K, V> {
 
 	@Override
 	public Collection<V> values() {
-		return null; // To change body of implemented methods use File | Settings | File Templates.
+		// To change body of implemented methods use File | Settings | File Templates.
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Set<Entry<K, V>> entrySet() {
-		return null; // To change body of implemented methods use File | Settings | File Templates.
+		// To change body of implemented methods use File | Settings | File Templates.
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -189,7 +193,8 @@ public class LFUCache<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean containsValue(Object o) {
-		return false; // To change body of implemented methods use File | Settings | File Templates.
+		// To change body of implemented methods use File | Settings | File Templates.
+		throw new UnsupportedOperationException();
 	}
 
 	private void initFrequencyList() {
