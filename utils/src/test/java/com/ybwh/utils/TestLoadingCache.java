@@ -9,7 +9,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * @author fan79
+ * 谷歌的LoadingCache
  *
  */
 public class TestLoadingCache {

@@ -8,6 +8,10 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
+/**
+ * Caffeine缓存工具
+ *
+ */
 public class TestCaffeine {
 	@Test
 	public void test() {
