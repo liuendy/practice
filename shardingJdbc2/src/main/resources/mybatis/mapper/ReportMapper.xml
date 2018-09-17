@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ybwh.springboot2.report.dao.ReportDao" >
+  <resultMap id="BaseResultMap" type="com.ybwh.springboot2.report.model.Report" >
+    <id column="id" property="id"  />
+    <result column="sale_count" property="saleCount"/>
+    <result column="sale_amount" property="saleAmount" />
+    <result column="create_time" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, sale_count, sale_amount, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_report
+    where id = #{id}
+  </select>
+  
+  
+  <select id="selectEqCreateTime" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from t_report
+    where  create_time = #{createTime}
+  </select>
+  
+  <select id="selectInCreateTime" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from t_report
+    where  create_time in  
+    <foreach collection="createTimeList" item="createTime" open="(" separator="," close=")">#{createTime}</foreach>
+  </select>
+  
+  
+  <select id="selectBetweenCreateTime" resultMap="BaseResultMap"  >
+    SELECT 
+    <include refid="Base_Column_List" />
+    from t_report
+    WHERE  create_time BETWEEN #{start} AND  #{end}
+  </select>
+  
+  
+  
+  
+  <select id="selectCount" resultType="_int" >
+    SELECT 
+    COUNT(id)
+    from t_report
+    WHERE  create_time BETWEEN #{start} AND  #{end}
+  </select>
+  <select id="selectSum" resultType="_int"  >
+    SELECT 
+    SUM(id)
+    from t_report
+    WHERE  create_time BETWEEN #{start} AND  #{end}
+  </select>
+  
+  
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_report
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com.ybwh.springboot2.report.model.Report" >
+    insert into t_report (id, sale_count, sale_amount, 
+      create_time)
+    values (#{id}, #{saleCount}, #{saleAmount}, 
+      #{createTime})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ybwh.springboot2.report.model.Report" >
+    insert into t_report
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="saleCount != null" >
+        sale_count,
+      </if>
+      <if test="saleAmount != null" >
+        sale_amount,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="saleCount != null" >
+        #{saleCount},
+      </if>
+      <if test="saleAmount != null" >
+        #{saleAmount},
+      </if>
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ybwh.springboot2.report.model.Report" >
+    update t_report
+    <set >
+      <if test="saleCount != null" >
+        sale_count = #{saleCount},
+      </if>
+      <if test="saleAmount != null" >
+        sale_amount = #{saleAmount},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ybwh.springboot2.report.model.Report" >
+    update t_report
+    set sale_count = #{saleCount},
+      sale_amount = #{saleAmount},
+      create_time = #{createTime}
+    where id = #{id}
+  </update>
+</mapper>
