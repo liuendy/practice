@@ -116,6 +116,7 @@ public class ShardingJdbcConfig {
 		TableRule reportTableRule = TableRule.builder("t_report")
 //				 .actualTables(Arrays.asList("t_report201808","t_report201809"))
 				.dynamic(true)  //动态分表
+				.generateKeyColumn("id")
 				.dataSourceRule(dataSourceRule).databaseShardingStrategy(defalutDatabaseShardingStrategy)
 				.tableShardingStrategy(tableShardingStrategy).build();
 
