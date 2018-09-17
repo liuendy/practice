@@ -16,7 +16,7 @@ import com.ybwh.springboot2.order.model.Order;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 //@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
-public class TestShardingTableSingleColumn {
+public class TestUnShardingTableColumn {
 	
 	@Autowired
 	private OrderDao orderDao;
@@ -46,12 +46,12 @@ public class TestShardingTableSingleColumn {
 		 * 单列分表只要条件中带有分表列就可以查询成功，否则无法查询成功
 		 */
 		try {
-			List<Order> list = orderDao.selectByUserId(7L);
+			List<Order> list = orderDao.selectByUserId(6L);
 			System.out.println("%%%%%%%%"+list.toString());
 			
 			
 			System.out.println("----------------------------------------------------------------------------------------------");
-			List<Order> list2 = orderDao.selectByUserIdAndOrderId(7L,228620718068203520L);
+			List<Order> list2 = orderDao.selectByUserIdAndOrderId(6L,228620604381593600L);
 			System.out.println("%%%%%%%%"+list2);
 			
 			Order o = orderDao.selectByPrimaryKey(228620718068203520L);
