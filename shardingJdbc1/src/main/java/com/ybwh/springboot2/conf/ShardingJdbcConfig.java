@@ -1,21 +1,31 @@
 package com.ybwh.springboot2.conf;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.util.ClassUtils;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.dangdang.ddframe.rdb.sharding.api.ShardingDataSourceFactory;
@@ -69,8 +79,8 @@ public class ShardingJdbcConfig {
 	@Value("${datasource.druid.filters}")
 	String filters;
 
-//	@Bean(value = "ds0", initMethod = "init", destroyMethod = "close")
-	private DataSource ds0() throws SQLException {
+	@Bean(value = "ds0", initMethod = "init", destroyMethod = "close")
+	public DataSource ds0() throws SQLException {
 		DruidDataSource ds0 = new DruidDataSource();
 		ds0.setDriverClassName(driverClassName);
 		ds0.setUrl(url);
@@ -91,40 +101,89 @@ public class ShardingJdbcConfig {
 		ds0.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
 		ds0.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 		ds0.setFilters(filters);
-		ds0.init();
+
 		return ds0;
-
 	}
 
-	private Map<String, DataSource> createDataSourceMap() throws SQLException {
+	@Bean("dataSource")
+	public DataSource createDataSource(@Qualifier("ds0") @Autowired DataSource ds0) throws SQLException {
 		Map<String, DataSource> dataSourceMap = new HashMap<>();
+		dataSourceMap.put("ds0", ds0);
 
-		dataSourceMap.put("ds0", ds0());
-
-		return dataSourceMap;
-	}
-
-	@Bean
-	public DataSource createDataSource() throws SQLException {
-
-		DataSourceRule dataSourceRule = new DataSourceRule(createDataSourceMap());
+		DataSourceRule dataSourceRule = new DataSourceRule(dataSourceMap);
 		DatabaseShardingStrategy defalutDatabaseShardingStrategy = new DatabaseShardingStrategy("create_time",
 				new FixedDatabaseShardingAlgorithm("ds0"));
 		TableShardingStrategy tableShardingStrategy = new TableShardingStrategy("create_time",
 				new DatetimeSingleKeyTableShardingAlgorithm("t_report", new SimpleDateFormat("yyyyMM")));
 
 		TableRule reportTableRule = TableRule.builder("t_report")
-//				 .actualTables(Arrays.asList("t_report201808","t_report201809"))
-				.dynamic(true)  //动态分表
-				.generateKeyColumn("id")
-				.dataSourceRule(dataSourceRule).databaseShardingStrategy(defalutDatabaseShardingStrategy)
-				.tableShardingStrategy(tableShardingStrategy).build();
+				// .actualTables(Arrays.asList("t_report201808","t_report201809"))
+				.dynamic(true) // 动态分表
+				.generateKeyColumn("id").dataSourceRule(dataSourceRule)
+				.databaseShardingStrategy(defalutDatabaseShardingStrategy).tableShardingStrategy(tableShardingStrategy)
+				.build();
 
 		Collection<TableRule> tableRuleList = Arrays.asList(reportTableRule);
 		ShardingRule shardingRule = ShardingRule.builder().dataSourceRule(dataSourceRule).tableRules(tableRuleList)
 				.databaseShardingStrategy(defalutDatabaseShardingStrategy).tableShardingStrategy(tableShardingStrategy)
 				.build();
 		return ShardingDataSourceFactory.createDataSource(shardingRule);
+
+	}
+
+	@Bean("sqlSessionFactory")
+	public SqlSessionFactoryBean sqlSessionFactory(@Qualifier("dataSource") @Autowired DataSource dataSource)
+			throws IOException {
+		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+		sqlSessionFactoryBean.setDataSource(dataSource);
+		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:mybatis/mapper/*.xml"));
+//		sqlSessionFactoryBean
+//				.setTypeAliasesPackage("com.ybwh.springboot2.order.model;com.ybwh.springboot2.report.model");
+		
+		sqlSessionFactoryBean
+		.setTypeAliasesPackage(processTypeAliasesPackage("com.ybwh.springboot2.**.model"));
+
+		sqlSessionFactoryBean.setConfigLocation(resolver.getResources("classpath*:mybatis/mybatis-config.xml")[0]);
+		return sqlSessionFactoryBean;
+	}
+
+	private String processTypeAliasesPackage(String typeAliasesPackage) {
+		ResourcePatternResolver resolver = (ResourcePatternResolver) new PathMatchingResourcePatternResolver();  
+        MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resolver);  
+        typeAliasesPackage = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +  
+                ClassUtils.convertClassNameToResourcePath(typeAliasesPackage) + "/**/*.class";  
+  
+        //将加载多个绝对匹配的所有Resource  
+        //将首先通过ClassLoader.getResource("META-INF")加载非模式路径部分  
+        //然后进行遍历模式匹配  
+        try {  
+            List<String> result = new ArrayList<String>();  
+            Resource[] resources =  resolver.getResources(typeAliasesPackage);  
+            if(resources != null && resources.length > 0){  
+                MetadataReader metadataReader = null;  
+                for(Resource resource : resources){  
+                    if(resource.isReadable()){  
+                       metadataReader =  metadataReaderFactory.getMetadataReader(resource);  
+                        try {  
+                            result.add(Class.forName(metadataReader.getClassMetadata().getClassName()).getPackage().getName());  
+                        } catch (ClassNotFoundException e) {  
+                            e.printStackTrace();  
+                        }  
+                    }  
+                }  
+            }  
+            if(result.size() > 0) {  
+                return StringUtils.join(result.toArray(), ",");  
+            }
+            
+            return "";
+            //logger.info("d");  
+        } catch (IOException e) {  
+            e.printStackTrace(); 
+        }
+        
+        return null;
 
 	}
 
