@@ -54,7 +54,7 @@ public class TesDynamicShardingTable {
 			DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			
-			List<Report> list = dao.selectByCreateTime(dFormat.parse("2018-09-09 13:24:00"));
+			List<Report> list = dao.selectEqCreateTime(dFormat.parse("2018-09-09 13:24:00"));
 			System.out.println(list);
 			
 			

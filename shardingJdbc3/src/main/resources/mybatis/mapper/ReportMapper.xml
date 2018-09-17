@@ -18,12 +18,47 @@
   </select>
   
   
-  <select id="selectByCreateTime" resultMap="BaseResultMap"  >
+  <select id="selectEqCreateTime" resultMap="BaseResultMap"  >
     select 
     <include refid="Base_Column_List" />
     from t_report
-    where  create_time > #{createTime}
+    where  create_time = #{createTime}
   </select>
+  
+  <select id="selectInCreateTime" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from t_report
+    where  create_time in  
+    <foreach collection="createTimeList" item="createTime" open="(" separator="," close=")">#{createTime}</foreach>
+  </select>
+  
+  
+  <select id="selectBetweenCreateTime" resultMap="BaseResultMap"  >
+    SELECT 
+    <include refid="Base_Column_List" />
+    from t_report
+    WHERE  create_time BETWEEN #{start} AND  #{end}
+  </select>
+  
+  
+  
+  
+  <select id="selectCount" resultType="_int" >
+    SELECT 
+    COUNT(id)
+    from t_report
+    WHERE  create_time BETWEEN #{start} AND  #{end}
+  </select>
+  <select id="selectSum" resultType="_int"  >
+    SELECT 
+    SUM(id)
+    from t_report
+    WHERE  create_time BETWEEN #{start} AND  #{end}
+  </select>
+  
+  
+  
   
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
