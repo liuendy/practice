@@ -123,6 +123,12 @@
 		    <artifactId>sharding-jdbc-core-spring-boot-starter</artifactId>
 		    <version>${sharding-jdbc.version}</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>io.shardingjdbc</groupId>
+		    <artifactId>sharding-jdbc-core-spring-namespace</artifactId>
+		    <version>${sharding-jdbc.version}</version>
+		</dependency>
 
 
 		<dependency>

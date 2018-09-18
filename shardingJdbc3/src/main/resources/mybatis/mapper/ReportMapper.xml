@@ -50,7 +50,7 @@
     from t_report
     WHERE  create_time BETWEEN #{start} AND  #{end}
   </select>
-  <select id="selectSum" resultType="_int"  >
+  <select id="selectSum" resultType="_long"  >
     SELECT 
     SUM(id)
     from t_report
