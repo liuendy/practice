@@ -59,15 +59,5 @@ redis:
         max-active: 2000
         max-wait: 10000
 
-#小米推送
-push: 
-      xiaomi:
-        andriodAppSecretKey: 0G+EXDznoPPe4a6khHqKzg==
-        iosAppSecretKey: ZyuVX2C/XbadVRfOlBxmog==
-        pushPackageName: com.sunland.staffapp
-        pushCallBackUrl: http://ffg6fj.natappfree.cc/mobile-web/attendance/remind/mipushCallback.do
-      xinge: 
-        andriodAccessId: 2100282076
-        andriodSecretKey: 037d7726f01dac949ebeff1d9dc39b50
 
 

@@ -9,12 +9,12 @@ import org.springframework.core.env.Environment;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-@Configuration
+//@Configuration
 public class JdbcConfig {
-	@Autowired
+//	@Autowired
     private Environment env;
 	
-	@Bean
+//	@Bean
     public DataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
