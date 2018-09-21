@@ -69,21 +69,20 @@ public class RowMapperFactory {
 		public T mapRow(ResultSet rs, int rowNum) throws SQLException {
 
 			//TODO 这里可以插入代码对结果集进行处理
+			beforeMapRow(rs,rowNum);
+			
 			T obj = doMapRow( rs,  rowNum);
-			//TODO 这里可以插入代码对映射后的对象进行处理
 			return obj;
 		}
 		
 		
 		
-		/**
-		 * 在mapRow()方法执行后执行
-		 * 
-		 * @param obj mapRow()方法执行后返回的值
-		 */
-//		protected T afterDoMapRow(T obj) {
-//			return obj;
-//		}
+		private void beforeMapRow(ResultSet rs, int rowNum) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
 		
 
 		protected T doMapRow(ResultSet rs, int rowNum) throws SQLException {

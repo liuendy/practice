@@ -138,7 +138,7 @@ public abstract class BaseDao {
 						+ "' AND table_name='");
 		sql.append(tableName_Seq);
 		sql.append("' limit 1");
-		logger.debug("sql={}" , sql.toString());
+		logger.debug("sql={}", sql.toString());
 		return jdbcTemplate.queryForObject(sql.toString(), new Object[] {}, Long.class);
 
 	}
@@ -170,7 +170,8 @@ public abstract class BaseDao {
 	 *            方法
 	 * @return
 	 */
-	protected static <T extends Annotation> boolean hasAnnotation(Class<T> annotationClass, Field field, Method getMethod) {
+	protected static <T extends Annotation> boolean hasAnnotation(Class<T> annotationClass, Field field,
+			Method getMethod) {
 		return field.isAnnotationPresent(annotationClass) || getMethod.isAnnotationPresent(annotationClass);
 	}
 
@@ -187,8 +188,7 @@ public abstract class BaseDao {
 		}
 		return b.toString().replaceFirst(",", "(") + ")";
 	}
-	
-	
+
 	/**
 	 * 判断类是否基本类型的包装类
 	 * 
@@ -272,7 +272,7 @@ public abstract class BaseDao {
 					}
 				} catch (Exception e) {
 					logger.debug(e.getMessage(), e);
-					logger.error("读取   {}  {}  异常 ", entityClass.getName() ,field.getName());
+					logger.error("读取   {}  {}  异常 ", entityClass.getName(), field.getName());
 					throw e;
 				}
 			}
@@ -285,7 +285,7 @@ public abstract class BaseDao {
 		sql.append(") values ");
 		sql.append(getQuestionStr(colNamelist.size()));
 
-		logger.debug("sql={}" , sql);
+		logger.debug("sql={}", sql);
 		logger.debug("param:{}", objList.toString());
 
 		KeyHolder key = new GeneratedKeyHolder();
@@ -350,8 +350,8 @@ public abstract class BaseDao {
 			sql.append(" set ").append(colNamelist.toString().replace("[", "").replace("]", ""));
 			sql.append(" where ")
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
-			logger.debug("sql={}" , sql);
-			logger.debug("param:{}" , objList.toString());
+			logger.debug("sql={}", sql);
+			logger.debug("param:{}", objList.toString());
 			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -430,8 +430,8 @@ public abstract class BaseDao {
 			sql.append(" set ").append(colNamelist.toString().replace("[", "").replace("]", ""));
 			sql.append(" where ")
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
-			logger.debug("sql={}" , sql);
-			logger.debug("param:{}" , objList.toString());
+			logger.debug("sql={}", sql);
+			logger.debug("param:{}", objList.toString());
 			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -490,8 +490,8 @@ public abstract class BaseDao {
 			sql.append(" set ").append(colNamelist.toString().replace("[", "").replace("]", ""));
 			sql.append(" where ")
 					.append(idNameList.toString().replace("[", "").replace("]", "").replaceAll(",", " and "));
-			logger.debug("sql={}" , sql);
-			logger.debug("param:{}" , objList.toString());
+			logger.debug("sql={}", sql);
+			logger.debug("param:{}", objList.toString());
 			updateRows = jdbcTemplate.update(sql.toString(), objList.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -522,11 +522,10 @@ public abstract class BaseDao {
 			sql.append(entityClass.getAnnotation(Table.class).name());
 			sql.append(" WHERE ").append(idName).append("=? LIMIT 1");
 
-			logger.debug("sql={}" , sql);
-			logger.debug("param:{}" , id);
+			logger.debug("sql={}", sql);
+			logger.debug("param:{}", id);
 
-			List<T> list = jdbcTemplate.query(sql.toString(), new Object[] { id },
-					RowMapperFactory.newRowMapper(entityClass));
+			List<T> list = query(sql.toString(), new Object[] { id }, entityClass);
 			if (null != list && list.size() > 0) {
 				return list.get(0);
 			}
@@ -557,28 +556,26 @@ public abstract class BaseDao {
 		sql.append(entityClass.getAnnotation(Table.class).name());
 		sql.append(" WHERE ").append(idName).append("=?");
 
-		logger.debug("sql={}" , sql);
-		logger.debug("param:{}" , id);
+		logger.debug("sql={}", sql);
+		logger.debug("param:{}", id);
 
 		deleteRows = jdbcTemplate.update(sql.toString(), new Object[] { id });
 		return deleteRows;
 	}
-	
-	
-	
-	
+
 	/**
 	 * 自定义update 操作
 	 * 
-	 * @param sql 带占位符的sql
-	 * @param args 参数列表
+	 * @param sql
+	 *            带占位符的sql
+	 * @param args
+	 *            参数列表
 	 * @return
 	 * @throws DataAccessException
 	 */
 	public int update(String sql, Object... args) throws DataAccessException {
-		return jdbcTemplate.update(sql,args);
+		return jdbcTemplate.update(sql, args);
 	}
-	
 
 	/**
 	 * 根据ID批量删除
@@ -610,8 +607,8 @@ public abstract class BaseDao {
 			sql.append(entityClass.getAnnotation(Table.class).name());
 			sql.append(" WHERE ").append(idName).append(" IN (").append(idsSb).append(")");// in子集不能超过1000
 
-			logger.debug("sql={}" , sql);
-			logger.debug("param:{}" , idsSb);
+			logger.debug("sql={}", sql);
+			logger.debug("param:{}", idsSb);
 
 			deleteRows = jdbcTemplate.update(sql.toString());
 		} catch (Exception e) {
@@ -674,7 +671,7 @@ public abstract class BaseDao {
 					"the selectCountSql or selectRecordSql or entityClass can not be null!!");
 		}
 
-		int count = jdbcTemplate.queryForObject(selectCountSql, paramList.toArray(), Integer.class);
+		int count = queryForObject(selectCountSql, paramList.toArray(), Integer.class);
 		PageVo pageVo = new PageVo();
 		pageVo.setTotalRecords(count);
 		pageVo.setPageSize(pageSize);
@@ -695,8 +692,7 @@ public abstract class BaseDao {
 
 		paramList.add((pageNo - 1) * pageSize);
 		paramList.add(pageSize);
-		List<?> list = jdbcTemplate.query(selectRecordSql + " LIMIT ?,?", paramList.toArray(),
-				RowMapperFactory.newRowMapper(entityClass));
+		List<?> list = query(selectRecordSql + " LIMIT ?,?", paramList.toArray(), entityClass);
 		pageVo.setList(list);
 
 		return pageVo;
@@ -715,6 +711,10 @@ public abstract class BaseDao {
 	 * @return
 	 */
 	public <T> List<T> query(String sql, Object[] args, Class<T> entityClass) {
+		
+		if(!doFilterQuery(sql,args,entityClass)) {
+			return null;
+		}
 
 		if (entityClass.isPrimitive() || isWrapClass(entityClass)) {// 如果是基本类型或对应的原生类
 			return jdbcTemplate.query(sql, args,
@@ -724,6 +724,8 @@ public abstract class BaseDao {
 					new RowMapperResultSetExtractor<T>(RowMapperFactory.newRowMapper(entityClass)));
 		}
 	}
+
+	
 
 	/**
 	 * 查询单行数据
@@ -740,6 +742,11 @@ public abstract class BaseDao {
 	 */
 	public <T> T queryForObject(String sql, Object[] args, Class<T> entityClass)
 			throws IncorrectResultSizeDataAccessException {
+		
+		if(!doFilterQuery(sql,args,entityClass)) {
+			return null;
+		}
+		
 		List<T> results = jdbcTemplate.query(sql, args,
 				new RowMapperResultSetExtractor<T>(new SingleColumnRowMapper<T>(entityClass), 1));
 		if (null == results || 0 == results.size()) {
@@ -754,10 +761,10 @@ public abstract class BaseDao {
 
 	}
 	
-	
-	
-	
-	
+	private <T> boolean doFilterQuery(String sql, Object[] args, Class<T> entityClass) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
 	/**
 	 * 获取DataSource,大规模批量更新操作请用原生的jdbc
@@ -769,5 +776,4 @@ public abstract class BaseDao {
 		return jdbcTemplate.getDataSource();
 	}
 
-	
 }
