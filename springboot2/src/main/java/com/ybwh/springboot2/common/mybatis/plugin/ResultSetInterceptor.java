@@ -257,5 +257,26 @@ public class ResultSetInterceptor implements Interceptor {
 		BoundSql boundSql = (BoundSql) boundSqlField.get(resultSetHandler);
 		return boundSql.getSql();
 	}
+	
+	
+	/**
+	 * 
+	 * 获取sql参数
+	 * 
+	 * @param resultSetHandler
+	 * @return
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	private Map<String,Object> getSqlParameterMap(DefaultResultSetHandler resultSetHandler) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+
+        Field boundSqlField = DefaultResultSetHandler.class.getDeclaredField("boundSql");
+        boundSqlField.setAccessible(true);
+        BoundSql boundSql = (BoundSql) boundSqlField.get(resultSetHandler);
+
+        return (Map<String,Object>) boundSql.getParameterObject();
+    }
 
 }
