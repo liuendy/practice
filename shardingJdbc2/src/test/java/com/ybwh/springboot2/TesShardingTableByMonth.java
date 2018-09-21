@@ -31,13 +31,12 @@ public class TesShardingTableByMonth {
 	@Autowired
 	private ReportDao dao;
 
-	@Test
+	// @Test
 	public void testInsert() throws ParseException {
 		Assert.assertNotNull(dao);
 
-		
 		DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+
 		Report report = new Report();
 		report.setCreateTime(dFormat.parse("2018-08-19 16:27:20"));
 		report.setSaleCount(555);
@@ -63,21 +62,21 @@ public class TesShardingTableByMonth {
 
 //			List<Report> list = dao.selectEqCreateTime(dFormat.parse("2018-09-17 16:02:01"));
 //			System.out.println(list);
-
-//			List<Report> list1 = dao.selectInCreateTime(Arrays.asList(dFormat.parse("2018-09-17 16:02:01")));
+//
+//			List<Report> list1 = dao.selectInCreateTime(
+//					Arrays.asList(dFormat.parse("2018-09-17 16:02:01"), dFormat.parse("2018-08-19 16:27:20")));
 //			System.out.println(list1);
-			
-//			List<Report> list2 = dao.selectBetweenCreateTime(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
+//
+//			List<Report> list2 = dao.selectBetweenCreateTime(dFormat.parse("2018-08-17 16:02:00"),
+//					dFormat.parse("2018-09-17 16:27:20"));
 //			System.out.println(list2);
-			
-			
+//
 //			Integer count = dao.selectCount(dFormat.parse("2018-08-16 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
 //			System.out.println(count);
-			
-			int sum = dao.selectSum(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
+
+			Long sum = dao.selectSum(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
 			System.out.println(sum);
-			
-			
+
 			System.out.println(
 					"----------------------------------------------------------------------------------------------");
 		} catch (Exception e) {

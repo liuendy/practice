@@ -11,12 +11,6 @@
 	<name>shardingJdbc2</name>
 	<description>Demo project for sharding  Jdbc</description>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.1.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,10 +18,18 @@
 		<java.version>1.8</java.version>
 
 
-		<fastjson.version>1.2.29</fastjson.version>
-		<commons.lang3.version>3.7</commons.lang3.version>
-		<druid.version>1.1.8</druid.version>
+		<spring.verison>4.3.14.RELEASE</spring.verison>
+		<spring.boot.verison>1.5.10.RELEASE</spring.boot.verison>
+		<log4j.verion>1.2.17</log4j.verion>
 		<mybatis.spring.boot.version>1.3.2</mybatis.spring.boot.version>
+		<mysql.connector.version>5.1.45</mysql.connector.version>
+		<druid.version>1.1.8</druid.version>
+		<gson.version>2.8.2</gson.version>
+		<fastjson.version>1.2.29</fastjson.version>
+		<commons.codec.version>1.11</commons.codec.version>
+		<commons.lang3.version>3.7</commons.lang3.version>
+		<slf4j.version>1.7.21</slf4j.version>
+		<junit.version>4.12</junit.version>
 
 		<sharding-jdbc.version>2.0.3</sharding-jdbc.version>
 	</properties>
@@ -36,6 +38,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring.boot.verison}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -86,6 +89,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
+			<version>${spring.boot.verison}</version>
 		</dependency>
 
 
@@ -97,6 +101,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.connector.version}</version>
 		</dependency>
 
 		<dependency>
@@ -124,16 +129,17 @@
 		    <version>${sharding-jdbc.version}</version>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 		    <groupId>io.shardingjdbc</groupId>
 		    <artifactId>sharding-jdbc-core-spring-namespace</artifactId>
 		    <version>${sharding-jdbc.version}</version>
-		</dependency>
+		</dependency> -->
 
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring.boot.verison}</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>

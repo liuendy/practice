@@ -56,23 +56,18 @@
 		
 	<sharding:standard-strategy id="reportTableStrategy"
 		sharding-column="create_time"
-		precise-algorithm-class="com.ybwh.springboot2.sharding.DatetimeTablePreciseShardingAlgorithm" />
+		precise-algorithm-class="com.ybwh.springboot2.sharding.report.DateStandardShardingAlgorithm" />
 
 	<sharding:data-source id="shardingDataSource">
 		<sharding:sharding-rule data-source-names="ds0"
 			default-data-source-name="ds0" default-database-strategy-ref="noneStrategy"
 			default-table-strategy-ref="noneStrategy">
-
 			<!-- 只分表不分库 -->
 			<sharding:table-rules>
 				<sharding:table-rule logic-table="t_report"
 					dynamic="true" database-strategy-ref="noneStrategy"
 					table-strategy-ref="reportTableStrategy" />
 			</sharding:table-rules>
-			
-			
-			
-			
 		</sharding:sharding-rule>
 		<sharding:props>
 			<prop key="sql.show">true</prop>
@@ -83,11 +78,11 @@
 
 
 
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<!---datasource交给sharding-jdbc托管 -->
+	<!-- <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		-datasource交给sharding-jdbc托管
 		<property name="dataSource" ref="shardingDataSource" />
 		<property name="mapperLocations" value="classpath:mybatis/mapper/*.xml" />
-	</bean>
+	</bean> -->
 
 
 </beans>

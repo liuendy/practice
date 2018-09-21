@@ -54,7 +54,7 @@ public interface ReportDao {
 	
 	Integer selectCount(@Param("start") Date start, @Param("end") Date end);
 	
-	int selectSum(@Param("start") Date start, @Param("end") Date end);
+	long selectSum(@Param("start") Date start, @Param("end") Date end);
 	
 	
 	

@@ -39,7 +39,7 @@ public class TesShardingTableByMonth {
 		DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		Report report = new Report();
-		report.setCreateTime(dFormat.parse("2018-08-19 16:27:20"));
+		report.setCreateTime(dFormat.parse("2018-08-18 16:27:20"));
 		report.setSaleCount(555);
 		report.setSaleAmount(new BigDecimal(33333333.44D));
 
@@ -67,12 +67,12 @@ public class TesShardingTableByMonth {
 //			List<Report> list1 = dao.selectInCreateTime(Arrays.asList(dFormat.parse("2018-09-17 16:02:01")));
 //			System.out.println(list1);
 			
-			List<Report> list2 = dao.selectBetweenCreateTime(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
-			System.out.println(list2);
+//			List<Report> list2 = dao.selectBetweenCreateTime(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
+//			System.out.println(list2);
 			
 			
-//			Integer count = dao.selectCount(dFormat.parse("2018-08-16 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
-//			System.out.println(count);
+			Integer count = dao.selectCount(dFormat.parse("2018-08-16 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
+			System.out.println(count);
 			
 //			long sum = dao.selectSum(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
 //			System.out.println(sum);
