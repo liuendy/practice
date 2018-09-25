@@ -33,7 +33,7 @@
 		</plugin> -->
 		
 		 <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor">
+			interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor" >
 		</plugin>
 
 	</plugins>

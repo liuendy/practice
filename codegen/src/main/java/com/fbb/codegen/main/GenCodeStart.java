@@ -21,10 +21,15 @@ public class GenCodeStart {
 	}
 	
 	public static void main(String[] args) {
-		final String url = "jdbc:mysql://172.16.101.130:3306/ehr_message?characterEncoding=utf-8&useUnicode=true&zeroDateTimeBehavior=convertToNull";
+//		final String url = "jdbc:mysql://172.16.101.130:3306/ehr_message?characterEncoding=utf-8&useUnicode=true&zeroDateTimeBehavior=convertToNull";
+//		final String driver = "com.mysql.jdbc.Driver";
+//		final String user = "eHRAdmin";
+//		final String pwd = "shangde_wings";
+		final String url = "jdbc:mysql://127.0.0.1:3306/sharding_jdbc?characterEncoding=utf-8&useUnicode=true&zeroDateTimeBehavior=convertToNull";
 		final String driver = "com.mysql.jdbc.Driver";
-		final String user = "eHRAdmin";
-		final String pwd = "shangde_wings";
+		final String user = "root";
+		final String pwd = "fan1988";
+		
 		final String fileOutPath = "E:/tmp";
 		final String packageName = "com.fbb.book.model";
 		
