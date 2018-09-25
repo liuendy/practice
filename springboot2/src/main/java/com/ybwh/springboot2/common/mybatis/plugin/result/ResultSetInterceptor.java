@@ -1,4 +1,4 @@
-package com.ybwh.springboot2.common.mybatis.plugin;
+package com.ybwh.springboot2.common.mybatis.plugin.result;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -181,7 +181,7 @@ public class ResultSetInterceptor implements Interceptor {
 			String tel = rs1.getString(index);
 
 			if (null != tel && !"".equals(tel.trim())) {
-				rs1.updateString(index, EmployeeInfoMarkUtils.markTel(tel));
+//				rs1.updateString(index, EmployeeInfoMarkUtils.markTel(tel));
 			}
 		}
 	}
@@ -198,7 +198,7 @@ public class ResultSetInterceptor implements Interceptor {
 			String idNum = rs1.getString(index);
 
 			if (null != idNum && !"".equals(idNum.trim())) {
-				rs1.updateString(index, EmployeeInfoMarkUtils.markIdNum(idNum));
+//				rs1.updateString(index, EmployeeInfoMarkUtils.markIdNum(idNum));
 			}
 		}
 	}

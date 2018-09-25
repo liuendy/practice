@@ -1,4 +1,4 @@
-package com.ybwh.springboot2.common.mybatis.plugin;
+package com.ybwh.springboot2.common.mybatis.plugin.result;
 
 import java.io.InputStream;
 import java.io.Reader;

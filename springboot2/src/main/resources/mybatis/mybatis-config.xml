@@ -27,14 +27,14 @@
 
 	<!-- 插件 -->
 	<plugins>
-		<!-- <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.PaginationInterceptor">
+		<plugin
+			interceptor="com.ybwh.springboot2.common.mybatis.plugin.pagination.PaginationInterceptor">
 			<property name="dialect" value="mysql" />
-		</plugin> -->
-		
-		 <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor">
 		</plugin>
+		
+		<!--  <plugin
+			interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor">
+		</plugin> -->
 
 	</plugins>
 </configuration>
