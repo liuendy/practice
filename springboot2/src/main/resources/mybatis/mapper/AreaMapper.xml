@@ -36,6 +36,14 @@
     where t1.id = #{id} 
   </select>
   
+  
+  <select id="selectPagination" resultMap="BaseResultMap">
+    select 
+    t1.id, t1.area_name  areaName
+    from area t1 
+  </select>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from area
     where id = #{id}

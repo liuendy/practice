@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.ybwh.springboot2.common.mybatis.plugin.pagination.Pagination;
 import com.ybwh.springboot2.demo.dao.AreaDao;
+import com.ybwh.springboot2.demo.entity.Area;
 
 
 @RunWith(SpringRunner.class)
@@ -33,7 +38,9 @@ public class TestDao {
 		try {
 			Assert.assertNotNull(dao);
 			
-			System.out.println(dao.selectTest(110106));
+			List<Area> list = dao.selectPagination(new HashMap<>(),new RowBounds(10, 10));
+			
+			System.out.println(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,7 +48,7 @@ public class TestDao {
 	
 	
 	
-	@Test
+//	@Test
 	public void test01() throws SQLException, ClassNotFoundException {//返回多个结果集的例子
 	    String DBDRIVER = "com.mysql.jdbc.Driver";
 	    String DBURL = "jdbc:mysql://localhost:3306/member?allowMultiQueries=true";

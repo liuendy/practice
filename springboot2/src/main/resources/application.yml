@@ -11,7 +11,7 @@ server:
 # Spring settings
 spring:
     datasource:
-        url: jdbc:mysql://localhost:3306/memeber?useSSL=false&characterEncoding=utf8&useUnicode=true&zeroDateTimeBehavior=convertToNull
+        url: jdbc:mysql://localhost:3306/member?useSSL=false&characterEncoding=utf8&useUnicode=true&zeroDateTimeBehavior=convertToNull
         username: root
         password: fan1988
         driver-class-name: com.mysql.jdbc.Driver

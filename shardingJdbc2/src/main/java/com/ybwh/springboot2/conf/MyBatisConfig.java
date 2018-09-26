@@ -21,7 +21,6 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
 
-import com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor;
 
 /**
  * Created by jackl on 2017/2/13.
@@ -39,10 +38,10 @@ public class MyBatisConfig {
 	}
 
 	// @Bean
-	public ResultSetInterceptor sqlStatsInterceptor() {// 插件配置
-		ResultSetInterceptor interceptor = new ResultSetInterceptor();
-		return interceptor;
-	}
+//	public ResultSetInterceptor sqlStatsInterceptor() {// 插件配置
+//		ResultSetInterceptor interceptor = new ResultSetInterceptor();
+//		return interceptor;
+//	}
 
 	@Bean("sqlSessionFactory")
 	public SqlSessionFactoryBean sqlSessionFactory(/*@Qualifier("dataSource") */@Autowired DataSource dataSource)

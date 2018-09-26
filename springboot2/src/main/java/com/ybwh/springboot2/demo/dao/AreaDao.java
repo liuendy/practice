@@ -1,5 +1,11 @@
 package com.ybwh.springboot2.demo.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.RowBounds;
+
+import com.ybwh.springboot2.common.mybatis.plugin.pagination.Pagination;
 import com.ybwh.springboot2.demo.entity.Area;
 
 public interface AreaDao {
@@ -42,6 +48,10 @@ public interface AreaDao {
     
     
     Area selectTest(Integer id);
+    
+    
+    
+    List<Area> selectPagination(Map<String, Object> param, RowBounds rowBounds);
     
     
 }

@@ -12,6 +12,7 @@ import java.util.ListIterator;
  */
 public class DefaultPagination<T> implements Pagination<T>,List<T>{
 	
+	
 	/**
 	 * 记录列表
 	 */
@@ -25,12 +26,10 @@ public class DefaultPagination<T> implements Pagination<T>,List<T>{
 	
 	private int totalPage;
 	
+
 	
 	
-	
-	
-	public DefaultPagination(List<T> list){
-		this.list = list;
+	public DefaultPagination(){
 	}
 	
 	@Override
@@ -191,4 +190,14 @@ public class DefaultPagination<T> implements Pagination<T>,List<T>{
 		return list.subList(fromIndex, toIndex);
 	}
 
+	@Override
+	public String toString() {
+		return "DefaultPagination [list=" + list + ", total=" + total + ", pageSize=" + pageSize + ", pageIndex="
+				+ pageIndex + ", totalPage=" + totalPage + "]";
+	}
+
+	public void setList(List<T> list) {
+		this.list = list;
+	}
+	
 }
