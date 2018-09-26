@@ -23,18 +23,4 @@
 		<setting name="mapUnderscoreToCamelCase" value="true" />
 	</settings>
 
-
-
-	<!-- 插件 -->
-	<plugins>
-		<!-- <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.PaginationInterceptor">
-			<property name="dialect" value="mysql" />
-		</plugin> -->
-		
-		 <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor" >
-		</plugin>
-
-	</plugins>
 </configuration>
