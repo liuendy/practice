@@ -74,8 +74,8 @@ public class TesShardingTableByMonth {
 			Integer count = dao.selectCount(dFormat.parse("2018-08-16 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
 			System.out.println(count);
 			
-//			long sum = dao.selectSum(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
-//			System.out.println(sum);
+			long sum = dao.selectSum(dFormat.parse("2018-08-17 16:02:00"), dFormat.parse("2018-09-17 16:27:20"));
+			System.out.println(sum);
 			
 			
 			System.out.println(
