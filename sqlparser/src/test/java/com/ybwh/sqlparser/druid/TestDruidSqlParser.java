@@ -9,9 +9,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -19,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -99,7 +102,7 @@ public class TestDruidSqlParser {
 
 	@Test
 	public void testJoinQuery() {
-		String sql = "select * from emp_table t1,order t2 where t1.id=t2.id";
+		String sql = "select *,t1.*,t1.id,t2.id from emp_table t1,order t2 where t1.id=t2.id";
 		String dbType = JdbcConstants.MYSQL;
 
 		// 格式化输出
@@ -118,6 +121,41 @@ public class TestDruidSqlParser {
 			SQLSelectQuery sqlSelectQuery = selectStmt.getSelect().getQuery();
 			if (sqlSelectQuery instanceof MySqlSelectQueryBlock) {
 				MySqlSelectQueryBlock mysqlSelectQuery = (MySqlSelectQueryBlock) selectStmt.getSelect().getQuery();
+				
+				// 获取列
+				List<SQLSelectItem> columns = mysqlSelectQuery.getSelectList();
+				for (SQLSelectItem item : columns) {
+					String alias = item.getAlias();
+					String columnExpr = null;
+					String columnName=null;
+					String tableName = null;
+					
+					
+					if(item.getExpr() instanceof SQLPropertyExpr) {
+						SQLPropertyExpr expr = (SQLPropertyExpr) item.getExpr();
+						columnExpr = expr.toString();
+						columnName = expr.getName();
+						
+						SQLExprTableSource tableSource = (SQLExprTableSource) expr.getResolvedTableSource();
+						SQLIdentifierExpr table = (SQLIdentifierExpr) tableSource.getExpr();
+						tableName = table.getName();
+					}
+					
+					if(item.getExpr() instanceof SQLAllColumnExpr) {
+						SQLAllColumnExpr expr = (SQLAllColumnExpr) item.getExpr();
+						columnExpr = "*";
+						columnName = "*";
+						SQLJoinTableSource tableSource = (SQLJoinTableSource) expr.getResolvedTableSource();
+						tableName = tableSource.toString();
+					}
+					
+					
+					
+					System.out.println("alias=" + alias+ ",column=" + columnExpr+",columnName="+columnName+",tableName="+tableName);
+					
+				}
+				
+				
 				SQLLimit limit = new SQLLimit();
 				limit.setOffset(0);
 				limit.setRowCount(10);

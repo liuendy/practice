@@ -1,4 +1,4 @@
-package com.ybwh.sqlparser.druid.shardingjdbc;
+package com.ybwh.sqlparser.shardingjdbc;
 
 import org.junit.Test;
 
