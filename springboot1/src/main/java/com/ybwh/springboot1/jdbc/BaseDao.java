@@ -4,8 +4,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -16,7 +18,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -43,6 +45,8 @@ import org.springframework.jdbc.support.KeyHolder;
 public abstract class BaseDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseDao.class);
+	
+	public static final Object [] NULL_ARGS =   new Object[0] ;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -711,8 +715,8 @@ public abstract class BaseDao {
 	 * @return
 	 */
 	public <T> List<T> query(String sql, Object[] args, Class<T> entityClass) {
-		
-		if(!doFilterQuery(sql,args,entityClass)) {
+
+		if (!doFilterQuery(sql, args, entityClass)) {
 			return null;
 		}
 
@@ -724,8 +728,6 @@ public abstract class BaseDao {
 					new RowMapperResultSetExtractor<T>(RowMapperFactory.newRowMapper(entityClass)));
 		}
 	}
-
-	
 
 	/**
 	 * 查询单行数据
@@ -742,11 +744,11 @@ public abstract class BaseDao {
 	 */
 	public <T> T queryForObject(String sql, Object[] args, Class<T> entityClass)
 			throws IncorrectResultSizeDataAccessException {
-		
-		if(!doFilterQuery(sql,args,entityClass)) {
+
+		if (!doFilterQuery(sql, args, entityClass)) {
 			return null;
 		}
-		
+
 		List<T> results = jdbcTemplate.query(sql, args,
 				new RowMapperResultSetExtractor<T>(new SingleColumnRowMapper<T>(entityClass), 1));
 		if (null == results || 0 == results.size()) {
@@ -760,20 +762,80 @@ public abstract class BaseDao {
 		return results.get(0);
 
 	}
-	
+
+	/**
+	 * 用jdbc流式方式处理查询数据
+	 * 
+	 * @param sql
+	 * @param args
+	 * @param entityClass
+	 * @param callback
+	 * @throws SQLException
+	 */
+	public <T> void queryInStream(String sql, Object[] args, Class<T> entityClass, StreamDataCallback<T> callback)
+			throws SQLException {
+		
+		
+		Connection conn = getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		for(int i = 0;i < args.length;i++) {
+			setStatementParameter(ps,args[i],i+1);
+		}
+		// forward only read only也是mysql 驱动的默认值，所以不指定也是可以的
+		// 比如： PreparedStatement ps = connection.prepareStatement("select .. from ..");
+		ps.setFetchSize(Integer.MIN_VALUE);
+		// 也可以修改jdbc url通过defaultFetchSize参数来设置，这样默认所以的返回结果都是通过流方式读取.
+		ResultSet rs = ps.executeQuery();
+		
+		
+		RowMapper<T> rowMapper = RowMapperFactory.newRowMapper(entityClass);
+		int rowNum = 0;
+		while (rs.next()) {
+			callback.process(rowMapper.mapRow(rs,rowNum), rowNum);
+			rowNum ++ ;
+		}
+	}
+
+	private void setStatementParameter(PreparedStatement ps, Object parameter, int index) throws SQLException {
+		Class<?> filedType = parameter.getClass();
+		if (filedType .equals(String.class)) {
+			ps.setString(index, (String) parameter);
+		} else if (filedType.equals(Long.class) || filedType.equals(long.class)) {
+			ps.setLong(index, (long) parameter);
+		} else if (filedType.equals(Date.class) ) {
+			ps.setDate(index, (java.sql.Date) parameter);
+		} else if (filedType.equals(Double.class) || filedType.equals(double.class)) {
+			ps.setDouble(index, (double) parameter);
+		} else if (filedType.equals(Float.class) || filedType.equals(float.class)) {
+			ps.setFloat(index, (float) parameter);
+		} else if (filedType.equals(Short.class) || filedType.equals(short.class)) {
+			ps.setShort(index, (short) parameter);
+		} else if (filedType.equals(Integer.class) || filedType.equals(int.class)) {
+			ps.setInt(index, (int) parameter);
+		} else if (filedType.equals(BigDecimal.class)) {
+			ps.setBigDecimal(index, (BigDecimal) parameter);
+		} else {
+			ps.setObject(index, parameter);
+		}
+		
+	}
+
 	private <T> boolean doFilterQuery(String sql, Object[] args, Class<T> entityClass) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
 	/**
-	 * 获取DataSource,大规模批量更新操作请用原生的jdbc
-	 * 
+	 * 获取jdbc原生的Connection
 	 * 
 	 * @return
 	 */
-	public DataSource getDataSource() {
-		return jdbcTemplate.getDataSource();
+	public Connection getConnection() {
+		return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
+	}
+
+	public static interface StreamDataCallback<T> {
+		public void process(T obj, int rowNum);
 	}
 
 }

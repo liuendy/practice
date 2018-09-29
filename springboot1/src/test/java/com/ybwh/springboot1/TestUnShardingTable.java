@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ybwh.springboot1.dao.OrderDao;
+import com.ybwh.springboot1.jdbc.BaseDao;
+import com.ybwh.springboot1.jdbc.BaseDao.StreamDataCallback;
 import com.ybwh.springboot1.model.po.Order;
 
 
@@ -48,8 +50,32 @@ public class TestUnShardingTable {
 		 * 单列分表只要条件中带有分表列就可以查询成功，否则无法查询成功
 		 */
 		try {
-			Order o = orderDao.findById(Order.class, 6L);
-			System.out.println("%%%%%%%%"+o.toString());
+			Order o = orderDao.findById(Order.class, 228620604381593600L);
+			System.out.println("%%%%%%%%"+o);
+			
+			System.out.println("----------------------------------------------------------------------------------------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testSelectStream() {
+		Assert.assertNotNull(orderDao);
+		
+		/**
+		 * 单列分表只要条件中带有分表列就可以查询成功，否则无法查询成功
+		 */
+		try {
+			orderDao.queryInStream("select * from t_order", BaseDao.NULL_ARGS, Order.class, new StreamDataCallback<Order>() {
+
+				@Override
+				public void process(Order obj, int rowNum) {
+					System.out.println(obj);
+					
+				}
+				
+			});
 			
 			System.out.println("----------------------------------------------------------------------------------------------");
 		} catch (Exception e) {
