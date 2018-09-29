@@ -50,9 +50,11 @@ public class TestDruidSqlParser {
 
 			// SQLSelectStatement就是select语句解析树
 			SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
+			
 			SQLSelectQuery sqlSelectQuery = selectStmt.getSelect().getQuery();
+			
 			if (sqlSelectQuery instanceof MySqlSelectQueryBlock) {
-				MySqlSelectQueryBlock mysqlSelectQuery = (MySqlSelectQueryBlock) selectStmt.getSelect().getQuery();
+				MySqlSelectQueryBlock mysqlSelectQuery = (MySqlSelectQueryBlock) sqlSelectQuery;
 
 				// 获取列
 				List<SQLSelectItem> columns = mysqlSelectQuery.getSelectList();
@@ -203,5 +205,8 @@ public class TestDruidSqlParser {
 		}
 
 	}
+	
+	
+//	MySqlASTVisitorAdapter
 
 }
