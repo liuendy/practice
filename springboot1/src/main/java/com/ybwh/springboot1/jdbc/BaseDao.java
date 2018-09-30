@@ -774,8 +774,6 @@ public abstract class BaseDao {
 	 */
 	public <T> void queryInStream(String sql, Object[] args, Class<T> entityClass, StreamDataCallback<T> callback)
 			throws SQLException {
-		
-		
 		Connection conn = getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		for(int i = 0;i < args.length;i++) {
@@ -784,8 +782,10 @@ public abstract class BaseDao {
 		// forward only read only也是mysql 驱动的默认值，所以不指定也是可以的
 		// 比如： PreparedStatement ps = connection.prepareStatement("select .. from ..");
 		ps.setFetchSize(Integer.MIN_VALUE);
+		ResultSet rs = null;
+		try {
 		// 也可以修改jdbc url通过defaultFetchSize参数来设置，这样默认所以的返回结果都是通过流方式读取.
-		ResultSet rs = ps.executeQuery();
+		rs = ps.executeQuery();
 		
 		
 		RowMapper<T> rowMapper = RowMapperFactory.newRowMapper(entityClass);
@@ -793,6 +793,11 @@ public abstract class BaseDao {
 		while (rs.next()) {
 			callback.process(rowMapper.mapRow(rs,rowNum), rowNum);
 			rowNum ++ ;
+		}
+		}finally {//必须关闭ResultSet，否则整个连接将不再可用
+			if(null != rs) {
+				rs.close();
+			}
 		}
 	}
 
@@ -821,7 +826,6 @@ public abstract class BaseDao {
 	}
 
 	private <T> boolean doFilterQuery(String sql, Object[] args, Class<T> entityClass) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
