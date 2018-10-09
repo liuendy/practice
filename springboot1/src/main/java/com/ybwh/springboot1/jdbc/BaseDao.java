@@ -18,6 +18,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -784,20 +785,23 @@ public abstract class BaseDao {
 		ps.setFetchSize(Integer.MIN_VALUE);
 		ResultSet rs = null;
 		try {
-		// 也可以修改jdbc url通过defaultFetchSize参数来设置，这样默认所以的返回结果都是通过流方式读取.
-		rs = ps.executeQuery();
-		
-		
-		RowMapper<T> rowMapper = RowMapperFactory.newRowMapper(entityClass);
-		int rowNum = 0;
-		while (rs.next()) {
-			callback.process(rowMapper.mapRow(rs,rowNum), rowNum);
-			rowNum ++ ;
-		}
+			// 也可以修改jdbc url通过defaultFetchSize参数来设置，这样默认所以的返回结果都是通过流方式读取.
+			rs = ps.executeQuery();
+			
+			
+			RowMapper<T> rowMapper = RowMapperFactory.newRowMapper(entityClass);
+			int rowNum = 0;
+			while (rs.next()) {
+				callback.process(rowMapper.mapRow(rs,rowNum), rowNum);
+				rowNum ++ ;
+			}
 		}finally {//必须关闭ResultSet，否则整个连接将不再可用
 			if(null != rs) {
 				rs.close();
 			}
+			
+			releaseConnection(conn);
+			
 		}
 	}
 
@@ -824,6 +828,10 @@ public abstract class BaseDao {
 		}
 		
 	}
+	
+	public static interface StreamDataCallback<T> {
+		public void process(T obj, int rowNum);
+	}
 
 	private <T> boolean doFilterQuery(String sql, Object[] args, Class<T> entityClass) {
 		return true;
@@ -837,9 +845,17 @@ public abstract class BaseDao {
 	public Connection getConnection() {
 		return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
 	}
-
-	public static interface StreamDataCallback<T> {
-		public void process(T obj, int rowNum);
+	
+	
+	/**
+	 * 释放连接
+	 * 
+	 * @param conn
+	 */
+	public void releaseConnection(Connection conn) {
+		DataSourceUtils.releaseConnection(conn, jdbcTemplate.getDataSource());
 	}
+
+	
 
 }
