@@ -1,9 +1,6 @@
 package com.ybwh.springboot1.conf;
 
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -34,19 +31,20 @@ public class Springboot1ExceptionHandler {
 	 */
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	@ExceptionHandler({ MissingServletRequestParameterException.class})
+	@ExceptionHandler({ MissingServletRequestParameterException.class })
 	public Response<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e1) {
 
-		return new Response<Object>(Constant.FAIL_CODE, " miss parameters, "+ e1.getMessage());
+		return new Response<Object>(Constant.FAIL_CODE,
+				" miss parameters,name=[" + e1.getParameterName() + "],type=[" + e1.getParameterType() + "]");
 	}
-	
+
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	@ExceptionHandler({  TypeMismatchException.class })
-	public Response<Object> handleMissingServletRequestParameterException(
-			TypeMismatchException e2) {
+	@ExceptionHandler({ TypeMismatchException.class })
+	public Response<Object> handleMissingServletRequestParameterException(TypeMismatchException e2) {
 
-		return new Response<Object>(Constant.FAIL_CODE, "param type  error, "+e2.getMessage());
+		return new Response<Object>(Constant.FAIL_CODE, "param type  error, required type is[" + e2.getRequiredType()
+				+ "],actual value is [" + e2.getValue() + "].\n");
 	}
 
 	/**
