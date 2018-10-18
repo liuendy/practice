@@ -8,10 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.Column;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 
 /**
  * 创建RowMapper的工厂
@@ -20,16 +22,61 @@ import org.springframework.jdbc.core.RowMapper;
  *
  */
 public class RowMapperFactory {
+	/**
+	 * 缓存RowMapper
+	 */
+	@SuppressWarnings("rawtypes")
+	private static ConcurrentHashMap<Class, RowMapper> entityMapperMap = new ConcurrentHashMap<>();
 
 	/**
-	 * 创建RowMapper对象
+	 * 创建简单的RowMapper对象
 	 * 
 	 * @param entityClass
 	 * @return
 	 */
-	public static <T> RowMapper<T> newRowMapper(Class<T> entityClass) {
-		return new EntityMapper<T>(entityClass);
+	public static <T> RowMapper<T> newMultiColumnRowMapper(Class<T> entityClass) {
+		
+		if(null == entityClass) {
+			throw new IllegalArgumentException();
+		}
+		
+		@SuppressWarnings("unchecked")
+		RowMapper<T> rowMapper = entityMapperMap.get(entityClass);
+		
+		if(null == rowMapper) {
+			rowMapper = new SimpleRowMapper<T>(entityClass);
+			entityMapperMap.putIfAbsent(entityClass, rowMapper);
+		}
+		
+		return rowMapper;
 	}
+	
+	
+	/**
+	 * 创建单列RowMapper对象
+	 * 
+	 * @param entityClass
+	 * @return
+	 */
+	public static <T> SingleColumnRowMapper<T> newSingleColumnRowMapper(Class<T> resultClass) {
+		if(null == resultClass) {
+			throw new IllegalArgumentException();
+		}
+		
+		@SuppressWarnings("unchecked")
+		RowMapper<T> rowMapper = entityMapperMap.get(resultClass);
+		
+		if(null == rowMapper) {
+			rowMapper = new SingleColumnRowMapper<T>(resultClass);
+			entityMapperMap.putIfAbsent(resultClass, rowMapper);
+		}
+		
+		return (SingleColumnRowMapper<T>) rowMapper;
+	}
+	
+	
+	
+	
 
 	/**
 	 * 实体映射类
@@ -37,21 +84,22 @@ public class RowMapperFactory {
 	 * @author fanbeibei
 	 *
 	 */
-	private static class EntityMapper<T> implements RowMapper<T> {
+	private static class SimpleRowMapper<T> implements RowMapper<T> {
 
 		/**
 		 * 映射实体的class对象
 		 */
 		private Class<T> entityClass;
+		
 
 		/**
 		 * @param entityClass
 		 *            映射实体的class对象
 		 */
-		public EntityMapper(Class<T> entityClass) {
+		public SimpleRowMapper(Class<T> entityClass) {
 			this.entityClass = entityClass;
 		}
-
+		
 		/**
 		 * Implementations must implement this method to map each row of data in the
 		 * ResultSet. This method should not call <code>next()</code> on the ResultSet;
@@ -67,20 +115,13 @@ public class RowMapperFactory {
 		 *             there's no need to catch SQLException)
 		 */
 		public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-			//TODO 这里可以插入代码对结果集进行处理
-			beforeMapRow(rs,rowNum);
 			
 			T obj = doMapRow( rs,  rowNum);
+			
 			return obj;
 		}
 		
-		
-		
-		private void beforeMapRow(ResultSet rs, int rowNum) {
-			// TODO Auto-generated method stub
-			
-		}
+
 
 
 		

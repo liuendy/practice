@@ -18,7 +18,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.RowMapperResultSetExtractor;
-import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -717,18 +715,17 @@ public abstract class BaseDao {
 	 */
 	public <T> List<T> query(String sql, Object[] args, Class<T> entityClass) {
 
-		if (!doFilterQuery(sql, args, entityClass)) {
-			return null;
-		}
-
+		RowMapper<T> rowMapper = null;
 		if (entityClass.isPrimitive() || isWrapClass(entityClass)) {// 如果是基本类型或对应的原生类
-			return jdbcTemplate.query(sql, args,
-					new RowMapperResultSetExtractor<T>(new SingleColumnRowMapper<T>(entityClass), 1));
+			rowMapper = RowMapperFactory.newSingleColumnRowMapper(entityClass);
 		} else {
-			return jdbcTemplate.query(sql, args,
-					new RowMapperResultSetExtractor<T>(RowMapperFactory.newRowMapper(entityClass)));
+			rowMapper = RowMapperFactory.newMultiColumnRowMapper(entityClass);
 		}
+		
+		return jdbcTemplate.query(sql, args,
+				new RowMapperResultSetExtractor<T>(rowMapper));
 	}
+
 
 	/**
 	 * 查询单行数据
@@ -737,7 +734,7 @@ public abstract class BaseDao {
 	 *            查询语句
 	 * @param args
 	 *            参数
-	 * @param entityClass
+	 * @param resultClass
 	 *            结果类的对象
 	 * @return
 	 * @throws IncorrectResultSizeDataAccessException
@@ -745,13 +742,17 @@ public abstract class BaseDao {
 	 */
 	public <T> T queryForObject(String sql, Object[] args, Class<T> entityClass)
 			throws IncorrectResultSizeDataAccessException {
-
-		if (!doFilterQuery(sql, args, entityClass)) {
-			return null;
+		
+		RowMapper<T> rowMapper = null;
+		if (entityClass.isPrimitive() || isWrapClass(entityClass)) {// 如果是基本类型或对应的原生类
+			rowMapper = RowMapperFactory.newSingleColumnRowMapper(entityClass);
+		} else {
+			rowMapper = RowMapperFactory.newMultiColumnRowMapper(entityClass);
 		}
 
 		List<T> results = jdbcTemplate.query(sql, args,
-				new RowMapperResultSetExtractor<T>(new SingleColumnRowMapper<T>(entityClass), 1));
+				new RowMapperResultSetExtractor<T>(rowMapper, 1));
+		
 		if (null == results || 0 == results.size()) {
 			return null;
 		}
@@ -788,8 +789,13 @@ public abstract class BaseDao {
 			// 也可以修改jdbc url通过defaultFetchSize参数来设置，这样默认所以的返回结果都是通过流方式读取.
 			rs = ps.executeQuery();
 			
+			RowMapper<T> rowMapper = null;
+			if (entityClass.isPrimitive() || isWrapClass(entityClass)) {// 如果是基本类型或对应的原生类
+				rowMapper = RowMapperFactory.newSingleColumnRowMapper(entityClass);
+			} else {
+				rowMapper = RowMapperFactory.newMultiColumnRowMapper(entityClass);
+			}
 			
-			RowMapper<T> rowMapper = RowMapperFactory.newRowMapper(entityClass);
 			int rowNum = 0;
 			while (rs.next()) {
 				callback.process(rowMapper.mapRow(rs,rowNum), rowNum);
@@ -833,9 +839,6 @@ public abstract class BaseDao {
 		public void process(T obj, int rowNum);
 	}
 
-	private <T> boolean doFilterQuery(String sql, Object[] args, Class<T> entityClass) {
-		return true;
-	}
 
 	/**
 	 * 获取jdbc原生的Connection
