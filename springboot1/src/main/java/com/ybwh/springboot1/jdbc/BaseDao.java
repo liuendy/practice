@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BatchUpdateUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -47,7 +49,10 @@ public abstract class BaseDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseDao.class);
 	
-	public static final Object [] NULL_ARGS =   new Object[0] ;
+	/**
+	 * 空数组
+	 */
+	public static final Object [] EMPTY_ARRAY =   new Object[0] ;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -770,6 +775,20 @@ public abstract class BaseDao {
 		return results.get(0);
 
 	}
+	
+	/**
+	 * 
+	 * 批量更新
+	 * 
+	 * @param sql
+	 * @param pss
+	 * @return
+	 */
+	public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) {
+		logger.debug("sql={}", sql);
+		return jdbcTemplate.batchUpdate(sql, pss);
+	}
+	
 
 	/**
 	 * 用jdbc流式方式处理查询数据
