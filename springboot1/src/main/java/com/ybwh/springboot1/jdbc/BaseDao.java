@@ -574,7 +574,7 @@ public abstract class BaseDao {
 	}
 
 	/**
-	 * 自定义update 操作
+	 * 自定义update(insert,delete)操作
 	 * 
 	 * @param sql
 	 *            带占位符的sql
