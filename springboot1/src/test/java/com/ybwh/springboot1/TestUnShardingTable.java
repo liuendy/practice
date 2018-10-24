@@ -13,6 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.ybwh.springboot1.dao.OrderDao;
 import com.ybwh.springboot1.jdbc.BaseDao;
 import com.ybwh.springboot1.jdbc.BaseDao.StreamDataCallback;
+import com.ybwh.springboot1.jdbc.Pairs;
+import com.ybwh.springboot1.jdbc.PairsUtils;
 import com.ybwh.springboot1.model.po.Order;
 
 
@@ -45,6 +47,10 @@ public class TestUnShardingTable {
 	@Test
 	public void testSelect() {
 		Assert.assertNotNull(orderDao);
+		
+		
+		List<Pairs> list = orderDao.query("select order_id o1,user_id o2 from t_order", new Object[] {}, Pairs.class);
+		System.out.println(PairsUtils.toMap(list));
 		
 		/**
 		 * 单列分表只要条件中带有分表列就可以查询成功，否则无法查询成功

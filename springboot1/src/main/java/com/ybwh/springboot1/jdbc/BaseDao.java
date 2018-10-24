@@ -33,6 +33,8 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 提供了基本的增删查改操作、分页查询(仅支持mysql)和两个通用的查询方法(query和queryForObject),
  * 不建议使用insert或update*方法进行大规模批量更新操作，大规模批量更新操作请用原生的jdbc（通过getDataSource()获取DataSource进而获取jdbc连接）。
@@ -722,6 +724,8 @@ public abstract class BaseDao {
 			rowMapper = RowMapperFactory.newMultiColumnRowMapper(entityClass);
 		}
 		
+		logger.debug("sql={}", sql);
+		logger.debug("param:{}", JSON.toJSON(args));
 		return jdbcTemplate.query(sql, args,
 				new RowMapperResultSetExtractor<T>(rowMapper));
 	}
@@ -750,6 +754,8 @@ public abstract class BaseDao {
 			rowMapper = RowMapperFactory.newMultiColumnRowMapper(entityClass);
 		}
 
+		logger.debug("sql={}", sql);
+		logger.debug("param:{}", JSON.toJSON(args));
 		List<T> results = jdbcTemplate.query(sql, args,
 				new RowMapperResultSetExtractor<T>(rowMapper, 1));
 		
