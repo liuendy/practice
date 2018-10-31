@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.BatchUpdateUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -789,7 +788,14 @@ public abstract class BaseDao {
 		return jdbcTemplate.batchUpdate(sql, pss);
 	}
 	
-
+	/**
+	 * 执行任DDL语句
+	 * @param sql
+	 */
+	public void executeDDL(String sql) {
+		jdbcTemplate.execute(sql);
+	}
+	
 	/**
 	 * 用jdbc流式方式处理查询数据
 	 * 
