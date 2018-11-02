@@ -4,8 +4,12 @@
         "org/apache/ibatis/builder/xml/mybatis-3-config.dtd">
 <configuration>
 	<settings>
+		<!-- 开启二级缓存，默认是false -->
 		<setting name="cacheEnabled" value="false" />
+		<!-- lazyLoadingEnabled:延迟加载启动，默认是false -->
 		<setting name="lazyLoadingEnabled" value="false" />
+		<!-- aggressiveLazyLoading：积极的懒加载，false的话按需加载，默认是true -->
+		<setting name="aggressiveLazyLoading" value="false" />
 		<setting name="multipleResultSetsEnabled" value="true" />
 		<setting name="useColumnLabel" value="true" />
 		<setting name="useGeneratedKeys" value="false" />
@@ -26,19 +30,16 @@
 
 
 	<!-- 插件 -->
-	<plugins>
-		<!-- <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.result.PaginationInterceptor">
-			<property name="dialect" value="mysql" />
-		</plugin> -->
+	<!-- <plugins>
+		<plugin interceptor="com.ybwh.springboot2.common.mybatis.plugin.result.PaginationInterceptor"> 
+			<property name="dialect" value="mysql" /> </plugin>
 		<plugin
 			interceptor="com.ybwh.springboot2.common.mybatis.plugin.pagination.PaginationInterceptor">
 			<property name="dialect" value="mysql" />
-		</plugin> 
-		
-		<!-- <plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor">
-		</plugin> -->
+		</plugin>
 
-	</plugins>
+		<plugin interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor"> 
+			</plugin>
+
+	</plugins> -->
 </configuration>

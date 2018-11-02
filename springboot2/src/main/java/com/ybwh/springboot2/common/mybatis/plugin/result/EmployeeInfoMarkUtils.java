@@ -1,4 +1,4 @@
-package com.ybwh.springboot2.common.mybatis.plugin;
+package com.ybwh.springboot2.common.mybatis.plugin.result;
 
 /**
  * 员工信息打码工具

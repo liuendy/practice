@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.ybwh.springboot2.common.mybatis.plugin.pagination.Pagination;
 import com.ybwh.springboot2.demo.dao.AreaDao;
 import com.ybwh.springboot2.demo.entity.Area;
 

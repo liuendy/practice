@@ -41,6 +41,7 @@
     select 
     t1.id, t1.area_name  areaName
     from area t1 
+    <foreach collection="" item="" open="(" separator="," close=")"></foreach>
   </select>
   
   

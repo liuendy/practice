@@ -39,10 +39,20 @@ spring:
 #        time-zone: GMT+08
 
 # MyBatis settings
-mybatis:
-    config: classpath:mybatis/mybatis-config.xml
+#mybatis:
+#    config: classpath:mybatis/mybatis-config.xml
+#    mapper-locations: classpath:mybatis/mapper/*.xml
+    #type-aliases-package: com.incar.monitor.model.entity;com.incar.monitor.model.vo
+
+
+mybatis-plus:
+    config-location: classpath:mybatis/mybatis-config.xml
     mapper-locations: classpath:mybatis/mapper/*.xml
     #type-aliases-package: com.incar.monitor.model.entity;com.incar.monitor.model.vo
+
+
+
+
 
 # Redis settings
 #redis:
