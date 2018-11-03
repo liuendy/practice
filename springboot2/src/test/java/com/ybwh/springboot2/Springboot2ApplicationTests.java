@@ -22,7 +22,7 @@ public class Springboot2ApplicationTests {
 		try {
 			Assert.assertNotNull(dao);
 			
-			System.out.println(dao.selectByPrimaryKey(110112));
+			System.out.println(dao.selectById(110112));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

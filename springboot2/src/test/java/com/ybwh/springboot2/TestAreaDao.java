@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,7 +22,7 @@ import com.ybwh.springboot2.demo.entity.Area;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 //@TestPropertySource(properties= {"spring.config.location=E:/application.yml"})
-public class TestDao {
+public class TestAreaDao {
 	Logger logger = LoggerFactory.getLogger("TTTTTTTTTTTTTTT");
 	@Autowired
 	AreaDao dao;
