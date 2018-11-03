@@ -12,7 +12,7 @@ public class AreaService {
 	private AreaDao areaDao;
 	
 	public Area selectByPrimaryKey(Integer id) {
-		return areaDao.selectByPrimaryKey(id);
+		return areaDao.selectById(id);
 	}
 
 }

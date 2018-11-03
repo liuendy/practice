@@ -1,9 +1,6 @@
 package com.ybwh.springboot2.conf;
 
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -17,8 +14,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.ybwh.springboot2.common.Constant;
 import com.ybwh.springboot2.common.Response;
-
-
 
 /**
  * 全局异常处理
@@ -36,19 +31,18 @@ public class Springboot2ExceptionHandler {
 	 */
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	@ExceptionHandler({ MissingServletRequestParameterException.class})
+	@ExceptionHandler({ MissingServletRequestParameterException.class })
 	public Response<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e1) {
 
-		return new Response<Object>(Constant.FAIL_CODE, " miss parameters, "+ e1.getMessage());
+		return new Response<Object>(Constant.FAIL_CODE, " miss parameters, " + e1.getMessage());
 	}
-	
+
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	@ExceptionHandler({  TypeMismatchException.class })
-	public Response<Object> handleMissingServletRequestParameterException(
-			TypeMismatchException e2) {
+	@ExceptionHandler({ TypeMismatchException.class })
+	public Response<Object> handleMissingServletRequestParameterException(TypeMismatchException e2) {
 
-		return new Response<Object>(Constant.FAIL_CODE, "param type  error, "+e2.getMessage());
+		return new Response<Object>(Constant.FAIL_CODE, "param type  error, " + e2.getMessage());
 	}
 
 	/**

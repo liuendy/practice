@@ -1,14 +1,8 @@
 package com.ybwh.springboot2;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
-import org.apache.ibatis.session.RowBounds;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ybwh.springboot2.demo.dao.AreaDao;
 import com.ybwh.springboot2.demo.entity.Area;
 
@@ -31,59 +29,60 @@ public class TestDao {
 	AreaDao dao;
 
 	@Test
-	public void contextLoads() {
+	public void testSelect() {
 		logger.info("**************************************************");
 		
 		try {
 			Assert.assertNotNull(dao);
-			
-			List<Area> list = dao.selectPagination(new HashMap<>(),new RowBounds(10, 10));
-			
-			System.out.println(list);
+			//BaseMapper自带查询
+			Area a= dao.selectById(130121);
+			System.out.println(a);
+			//自定义查询
+			Area a2= dao.selectByPrimaryKey(130121);
+			System.out.println(a2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	
-	
-//	@Test
-	public void test01() throws SQLException, ClassNotFoundException {//杩斿洖澶氫釜缁撴灉闆嗙殑渚嬪瓙
-	    String DBDRIVER = "com.mysql.jdbc.Driver";
-	    String DBURL = "jdbc:mysql://localhost:3306/member?allowMultiQueries=true";
-	    String DBUSER = "root";
-	    String DBPASS = "root";
-
-	    Connection conn = null; 
-	    Class.forName(DBDRIVER); 
-	    conn = DriverManager.getConnection(DBURL, DBUSER, DBPASS); 
-	    System.out.println(conn);
-	    String sql = "SELECT * FROM category;"
-	            +"SELECT * FROM user;" ;
-	    Statement stmt = conn.createStatement();
-
-	    boolean isResultSet = stmt.execute(sql);
-	    ResultSet rs = null;
-	    int count = 0;
-	    while(true) {
-	        if(isResultSet) {
-	            rs = stmt.getResultSet();
-	            while(rs.next()) {
-	                System.out.println(rs.getString(1));
-	            }
-	            rs.close();
-	        } else {
-	            if(stmt.getUpdateCount() == -1) {
-	                break;
-	            }
-	            System.out.printf("Result {} is just a count: {}", count, stmt.getUpdateCount());
-	        }
-
-	        count ++;
-	        isResultSet = stmt.getMoreResults();
-	    }
-	    stmt.close();
-	    conn.close(); 
+	@Test
+	public void testSelectPage() {
+		logger.info("**************************************************");
+		
+		try {
+			Assert.assertNotNull(dao);
+			/**
+			 * 不建议用BaseMapper自带分页查询，设定条件太复杂，太不灵活
+			 */
+			
+			//BaseMapper自带分页查询
+			Page<Area> pageParam = new Page<>();
+			//当前页
+			pageParam.setCurrent(2);
+			//页大小
+			pageParam.setSize(10);
+			Wrapper<Area> queryWrapper =  new QueryWrapper<>();
+			IPage<Area> pageReslut = dao.selectPage(pageParam, queryWrapper);
+			System.out.println(pageReslut);
+			
+			
+			
+			//自定义分页查询
+			Page<Area> pageParam2 = new Page<>();
+			//当前页
+			pageParam2.setCurrent(2);
+			//页大小
+			pageParam2.setSize(10);
+			Map<String,Object> param = new HashMap<>();
+			param.put("parentId", 130100);
+			
+			IPage<Area> pageReslut2 = dao.selectPageVo(pageParam2 , param);
+			System.out.println(pageReslut2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
 
 }
