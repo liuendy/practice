@@ -62,10 +62,13 @@ public class TestDao {
 			pageParam.setCurrent(2);
 			//页大小
 			pageParam.setSize(10);
-			Wrapper<Area> queryWrapper =  new QueryWrapper<>();
+			QueryWrapper<Area> queryWrapper =  new QueryWrapper<>();
+			//查询条件
+			queryWrapper.eq("parent_id", 130100);
+			//排除不需要的列
+			queryWrapper.excludeColumns(Area.class,"short_name","area_code");
 			IPage<Area> pageReslut = dao.selectPage(pageParam, queryWrapper);
 			System.out.println(pageReslut);
-			
 			
 			
 			//自定义分页查询

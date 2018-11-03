@@ -16,7 +16,7 @@ import com.ybwh.springboot2.common.Constant;
 import com.ybwh.springboot2.common.Response;
 
 /**
- * 全局异常处理
+ * 
  *
  * @author Fan Beibei
  * @since 1.0-SNAPSHOT
@@ -25,7 +25,7 @@ import com.ybwh.springboot2.common.Response;
 public class Springboot2ExceptionHandler {
 
 	/**
-	 * 处理参数异常
+	 * 缺少参数
 	 *
 	 * @return
 	 */
@@ -46,7 +46,7 @@ public class Springboot2ExceptionHandler {
 	}
 
 	/**
-	 * 处理请求方式不支持异常
+	 * 参数类型错误
 	 *
 	 * @return
 	 */
@@ -68,7 +68,7 @@ public class Springboot2ExceptionHandler {
 	}
 
 	/**
-	 * 处理其他异常
+	 * 未捕获的异常
 	 *
 	 * @return
 	 */
@@ -80,7 +80,7 @@ public class Springboot2ExceptionHandler {
 	}
 
 	/**
-	 * 处理文件大小限制异常
+	 * 上传文件错误
 	 *
 	 * @return
 	 */

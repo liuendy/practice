@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
  */
 @Configuration
 public class MyBatisPlusConfig {
-	// 注意，由于MapperScannerConfigurer执行的比较早，所以必须有下面的注解
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
@@ -20,10 +19,6 @@ public class MyBatisPlusConfig {
         return mapperScannerConfigurer;
     }
     
-    
-    /**
-     * 分页插件
-     */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         return new PaginationInterceptor();
