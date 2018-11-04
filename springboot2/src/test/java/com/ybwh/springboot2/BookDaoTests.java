@@ -20,7 +20,7 @@ public class BookDaoTests {
 	@Autowired
 	BookDao dao;
 
-	@Test
+//	@Test
 	public void contextLoads() {
 		try {
 			Assert.assertNotNull(dao);

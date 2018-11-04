@@ -31,14 +31,8 @@
 
 	<!-- 插件 -->
 	<!-- <plugins>
-		<plugin interceptor="com.ybwh.springboot2.common.mybatis.plugin.result.PaginationInterceptor"> 
-			<property name="dialect" value="mysql" /> </plugin>
-		<plugin
-			interceptor="com.ybwh.springboot2.common.mybatis.plugin.pagination.PaginationInterceptor">
-			<property name="dialect" value="mysql" />
-		</plugin>
 
-		<plugin interceptor="com.ybwh.springboot2.common.mybatis.plugin.ResultSetInterceptor"> 
+		<plugin interceptor="com.ybwh.springboot2.common.mybatis.plugin.update.UpdateInterceptor"> 
 			</plugin>
 
 	</plugins> -->
