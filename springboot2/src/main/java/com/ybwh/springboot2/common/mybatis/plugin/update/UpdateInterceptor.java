@@ -1,13 +1,15 @@
 package com.ybwh.springboot2.common.mybatis.plugin.update;
 
 import java.lang.reflect.Field;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
@@ -16,17 +18,28 @@ import org.apache.ibatis.plugin.Signature;
 
 @Intercepts({
     @Signature(
-        type=Executor.class,method="update",args={ MappedStatement.class,Object.class })
+        type=StatementHandler.class,method="update",args={ Statement.class })
 })
 public class UpdateInterceptor implements Interceptor{
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		
-		Executor executor = (Executor) invocation.getTarget();
-		MappedStatement st = (MappedStatement) invocation.getArgs()[0];
-		Object param = invocation.getArgs()[1];
+		StatementHandler sh = (StatementHandler) invocation.getTarget();
+		Statement stmt = (Statement) invocation.getArgs()[0];
 		
+		BoundSql boundSql = sh.getBoundSql();
+		
+		System.out.println("sql:"+getSql(boundSql));
+		
+		List<ParameterMapping> params = getParameterMapping(boundSql);
+		if(null != params &&  params.size() > 0){
+			for(ParameterMapping pm :params){
+				System.out.println(pm.getExpression());
+			}
+		}
+		
+
 		
 		return invocation.proceed();
 	}
@@ -42,62 +55,14 @@ public class UpdateInterceptor implements Interceptor{
 	}
 	
 	
-	/**
-	 * 获取mybatis的sqlId
-	 *
-	 * @param resultSetHandler
-	 * @return
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	private String getSqlId(DefaultResultSetHandler resultSetHandler)
-			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-		Field mappedStatementField = DefaultResultSetHandler.class.getDeclaredField("mappedStatement");
-		mappedStatementField.setAccessible(true);
-		MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(resultSetHandler);
-		return mappedStatement.getId();
-	}
-
-	/**
-	 * 获取原始的sql
-	 *
-	 * @param resultSetHandler
-	 * @return
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	private String getRawSql(DefaultResultSetHandler resultSetHandler)
-			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Field boundSqlField = DefaultResultSetHandler.class.getDeclaredField("boundSql");
-		boundSqlField.setAccessible(true);
-		BoundSql boundSql = (BoundSql) boundSqlField.get(resultSetHandler);
+	protected  String getSql(BoundSql boundSql){
 		return boundSql.getSql();
 	}
 	
+
 	
-	/**
-	 * 
-	 * 获取sql参数
-	 * 
-	 * @param resultSetHandler
-	 * @return
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	private Map<String,Object> getSqlParameterMap(DefaultResultSetHandler resultSetHandler) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-        Field boundSqlField = DefaultResultSetHandler.class.getDeclaredField("boundSql");
-        boundSqlField.setAccessible(true);
-        BoundSql boundSql = (BoundSql) boundSqlField.get(resultSetHandler);
-
-        return (Map<String,Object>) boundSql.getParameterObject();
+	private List<ParameterMapping> getParameterMapping(BoundSql boundSql){
+        return boundSql.getParameterMappings();
     }
 
 }
