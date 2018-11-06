@@ -33,10 +33,10 @@ public class TestAreaDao {
 		
 		try {
 			Assert.assertNotNull(dao);
-			//BaseMapper×Ô´ø²éÑ¯
+			//BaseMapperè‡ªå¸¦æ–¹æ³•
 			Area a= dao.selectById(130121);
 			System.out.println(a);
-			//×Ô¶¨Òå²éÑ¯
+			//xmlçš„æ–¹æ³•
 			Area a2= dao.selectByPrimaryKey(130121);
 			System.out.println(a2);
 		} catch (Exception e) {
@@ -51,30 +51,26 @@ public class TestAreaDao {
 		
 		try {
 			Assert.assertNotNull(dao);
-			/**
-			 * ²»½¨ÒéÓÃBaseMapper×Ô´ø·ÖÒ³²éÑ¯£¬Éè¶¨Ìõ¼şÌ«¸´ÔÓ£¬Ì«²»Áé»î
-			 */
 			
-			//BaseMapper×Ô´ø·ÖÒ³²éÑ¯
+			//BaseMapperè‡ªå¸¦çš„åˆ†é¡µæŸ¥è¯¢
 			Page<Area> pageParam = new Page<>();
-			//µ±Ç°Ò³
+			//è®¾ç½®åˆ†é¡µå‚æ•°
 			pageParam.setCurrent(2);
-			//Ò³´óĞ¡
 			pageParam.setSize(10);
+			
 			QueryWrapper<Area> queryWrapper =  new QueryWrapper<>();
-			//²éÑ¯Ìõ¼ş
+			//è®¾ç½®æŸ¥è¯¢æ¡ä»¶
 			queryWrapper.eq("parent_id", 130100);
-			//ÅÅ³ı²»ĞèÒªµÄÁĞ
+			//è®¾ç½®ä¸éœ€è¦è¿”å›çš„åˆ—åˆ—
 			queryWrapper.excludeColumns(Area.class,"short_name","area_code");
 			IPage<Area> pageReslut = dao.selectPage(pageParam, queryWrapper);
 			System.out.println(pageReslut);
 			
 			
-			//×Ô¶¨Òå·ÖÒ³²éÑ¯
+			//xmlè‡ªå®šä¹‰sqlçš„åˆ†é¡µ
 			Page<Area> pageParam2 = new Page<>();
-			//µ±Ç°Ò³
+			//è®¾ç½®åˆ†é¡µå‚æ•°
 			pageParam2.setCurrent(2);
-			//Ò³´óĞ¡
 			pageParam2.setSize(10);
 			Map<String,Object> param = new HashMap<>();
 			param.put("parentId", 130100);

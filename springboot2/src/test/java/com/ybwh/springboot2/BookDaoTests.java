@@ -35,12 +35,11 @@ public class BookDaoTests {
 	
 	@Test
 	public void testInsert() {
-		//插入返回主键
 		try {
 			Assert.assertNotNull(dao);
 			
 			Book b = new Book();
-			b.setBookName("算法导论");
+			b.setBookName("绠楁硶瀵艰");
 			b.setBookCode("sfdl");
 			b.setCategory(1);
 			b.setIsDel(0);
@@ -62,7 +61,6 @@ public class BookDaoTests {
 	
 	@Test
 	public void testUpdate() {
-		//更新
 		try {
 			Assert.assertNotNull(dao);
 			
